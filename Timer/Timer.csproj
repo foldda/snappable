@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Foldda.DataAutomation.Timer</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="copy /Y $(TargetDir)$(ProjectName).dll $(SolutionDir)\Manager\bin\$(Configuration)\$(ProjectName).dll" />
+		<Exec Command="copy /Y $(TargetDir)$(ProjectName).pdb $(SolutionDir)\Manager\bin\$(Configuration)\$(ProjectName).pdb" />
+		<Exec Command="copy /Y $(TargetDir)$(ProjectName).dll $(SolutionDir)\WinService\bin\$(Configuration)\$(ProjectName).dll" />
+		<Exec Command="copy /Y $(TargetDir)$(ProjectName).pdb $(SolutionDir)\WinService\bin\$(Configuration)\$(ProjectName).pdb" />
+	</Target>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Charian\Charian.csproj" />
+	  <ProjectReference Include="..\Framework\Framework.csproj" />
+	</ItemGroup>
+
+</Project>

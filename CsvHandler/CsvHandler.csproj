@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Foldda.DataAutomation.CsvHandler</RootNamespace>
+    <AssemblyName>CsvHandler</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Framework\Framework.csproj" />
+    <ProjectReference Include="..\Util\Util.csproj" />
+  </ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="copy /Y $(TargetDir)$(ProjectName).dll $(SolutionDir)\Manager\bin\$(Configuration)\$(ProjectName).dll" />
+		<Exec Command="copy /Y $(TargetDir)$(ProjectName).pdb $(SolutionDir)\Manager\bin\$(Configuration)\$(ProjectName).pdb" />
+		<Exec Command="copy /Y $(TargetDir)$(ProjectName).dll $(SolutionDir)\WinService\bin\$(Configuration)\$(ProjectName).dll" />
+		<Exec Command="copy /Y $(TargetDir)$(ProjectName).pdb $(SolutionDir)\WinService\bin\$(Configuration)\$(ProjectName).pdb" />
+	</Target>
+
+</Project>

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Foldda.DataAutomation.Util
+namespace Foldda.Automation.Util
 {
     //a time object that can be store in Rda
     public class TimeRda : IRda

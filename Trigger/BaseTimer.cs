@@ -11,7 +11,7 @@ using System.Timers;
 
 namespace Foldda.Automation.Trigger
 {
-    public abstract class BaseTimer : AbstractDataHandler
+    public abstract class BaseTimer : BasicDataHandler
     {
         // 24-hour clock time of a day, eg "HH:mm:ss", or "mm:ss" if it's a HourlyTimer
         // can have multiple 
@@ -25,9 +25,9 @@ namespace Foldda.Automation.Trigger
         protected List<DayTimeSetting> TimeSettings { get; set; } = new List<DayTimeSetting>();
 
         //
-        string TimerId => HomePath.FullName;
+        protected string TimerId { get; set; }
 
-        public BaseTimer(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public BaseTimer(ILoggingProvider logger) : base(logger) { }
 
         public override AbstractCharStreamRecordScanner GetDefaultFileRecordScanner(ILoggingProvider loggingProvider)
         {
@@ -58,7 +58,7 @@ namespace Foldda.Automation.Trigger
             //in case the settings are not in order
             TimeSettings.OrderBy(x => x.DailyTime);
 
-           // TimerId = config.GetSettingValue(TIMER_ID, config.ConfigProviderId);
+            TimerId = config.ConfigFileURI;
         }
 
 
@@ -69,7 +69,7 @@ namespace Foldda.Automation.Trigger
         /// </summary>
         internal abstract void ResetTimeTable();
 
-        public override Task InputProducingTask(IDataReceiver inputStorage, CancellationToken cancellationToken)
+        public override Task InputProducingTask(IDataContainerStore inputStorage, CancellationToken cancellationToken)
         {
             while(TimeTable.TryPeek(out DateTime setTime) && setTime < DateTime.Now)
             {

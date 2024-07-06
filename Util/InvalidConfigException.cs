@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Foldda.DataAutomation.Util
+namespace Foldda.Automation.Util
 {
     [Serializable]
     public class InvalidConfigException : Exception

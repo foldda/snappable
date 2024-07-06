@@ -33,7 +33,7 @@ namespace Foldda.Automation.HL7Handler
         TcpClient _tcpClient;
         Timer _idleTimer;
 
-        public HL7NetSender(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public HL7NetSender(ILoggingProvider logger) : base(logger) { }
 
         public override void SetParameters(IConfigProvider config)
         {
@@ -82,7 +82,7 @@ namespace Foldda.Automation.HL7Handler
             }
         }
 
-        public override Task OutputConsumingTask(IDataReceiver outputStorage, CancellationToken cancellationToken)
+        public override Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
         {
             //stops connection idle-timer ticking,  
             //_idleTimer.Change(Timeout.Infinite, Timeout.Infinite);

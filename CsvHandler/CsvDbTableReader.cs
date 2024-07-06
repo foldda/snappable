@@ -28,7 +28,7 @@ namespace Foldda.Automation.CsvHandler
         public const string QUERY_WHERE_CLAUSE = "query-where-clause";
         public string QueryWhereClause { get; private set; }
 
-        public CsvDbTableReader(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public CsvDbTableReader(ILoggingProvider logger) : base(logger) { }
 
         public override void SetParameters(IConfigProvider config)
         {

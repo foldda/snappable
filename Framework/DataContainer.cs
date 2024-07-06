@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace Foldda.DataAutomation.Framework
+namespace Foldda.Automation.Framework
 {
     /// <summary>
     /// 
@@ -19,36 +19,50 @@ namespace Foldda.DataAutomation.Framework
     /// RDA container allows programming-late-binding like behavior, but even further i.e. also can be loose and adaptive, in messaging/data-exchange.
     /// 
     /// </summary>
-    public class DataContainer : Rda
+    public class DataContainer : IRda
     {
-        private enum RDA_INDEX : int { MetaData, Records, ProcessingContext }
+        public enum RDA_INDEX : int { MetaData, Records, ProcessingContext }
 
         /// <summary>
         /// The meta-data applicable to all records in this container
         /// </summary>
-        public Rda MetaData
-        {
-            get => this[(int)RDA_INDEX.MetaData];
-            set => this[(int)RDA_INDEX.MetaData] = value;
-        }
+        public IRda MetaData{ get; set; }
 
         /// <summary>
         /// Container payload
         /// </summary>
-        public List<Rda> Records => this[(int)RDA_INDEX.Records].Elements;
+        public List<IRda> Records { get; } = new List<IRda>();
+        
 
         /// <summary>
         /// Framework processing related 'context', eg processing instruction
         /// </summary>
-        public Rda ProcessingContext
-        {
-            get => this[(int)RDA_INDEX.ProcessingContext];
-            set => this[(int)RDA_INDEX.ProcessingContext] = value;
-        }
+        public IRda ProcessingContext { get; set; }
 
-        public void Add(Rda data)
+        public void Add(IRda data)
         {
             Records.Add(data);
+        }
+
+        public Rda ToRda()
+        {
+            Rda result = new Rda();
+            result[(int)RDA_INDEX.MetaData] = MetaData.ToRda();
+            foreach(var record in Records)
+            {
+                result[(int)RDA_INDEX.Records].Elements.Add(record.ToRda());
+            }
+            result[(int)RDA_INDEX.ProcessingContext] = ProcessingContext.ToRda();
+
+            return result;
+        }
+
+        public virtual IRda FromRda(Rda rda)
+        {
+            //sub-class to implement desrialization here
+            //.... (late binding) restoring MetaData, Records, and ProcessingContext
+
+            return this;
         }
     }
 }

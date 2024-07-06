@@ -1,6 +1,6 @@
 ﻿using Charian;
-using Foldda.DataAutomation.Framework;
-using Foldda.DataAutomation.HL7Handler;
+using Foldda.Automation.Framework;
+using Foldda.Automation.HL7Handler;
 
 using System;
 using System.IO;
@@ -18,7 +18,7 @@ namespace MyCompany.MyApp.MyCustomHandler
     /// </summary>
     public class HL7FileReader : BaseHL7Handler
     {
-        public HL7FileReader(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public HL7FileReader(ILoggingProvider logger) : base(logger) { }
 
         const string FILE_NAME_PATTERN = "file-name-pattern";
         const string SOURCE_PATH = "source-path";
@@ -52,7 +52,7 @@ namespace MyCompany.MyApp.MyCustomHandler
             TargetFileNamePattern = paramFileName;        
         }
 
-        public override Task InputProducingTask(IDataReceiver inputStorage, CancellationToken cancellationToken)
+        public override Task InputProducingTask(IDataContainerStore inputStorage, CancellationToken cancellationToken)
         {
             DirectoryInfo targetDirectory = new DirectoryInfo(SourcePath);
 

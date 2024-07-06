@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace Foldda.Automation.CsvHandler
 {
-    public abstract class BaseCsvHandler : AbstractDataHandler
+    public abstract class BaseCsvHandler : BasicDataHandler
     {
         const string CSV_COLUMN_DELIMITER = "csv-delimiter";
         const string CSV_COLUMN_QUALIFIER = "csv-qualifier";
@@ -22,7 +22,7 @@ namespace Foldda.Automation.CsvHandler
         internal TabularRecord.TabularRecordEncoding RecordEncoding { get; set; } = TabularRecord.DEFAULT_RECORD_ENCODING;
 
 
-        public BaseCsvHandler(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public BaseCsvHandler(ILoggingProvider logger) : base(logger) { }
 
         public override AbstractCharStreamRecordScanner GetDefaultFileRecordScanner(ILoggingProvider loggingProvider)
         {

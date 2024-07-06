@@ -17,7 +17,7 @@ namespace Foldda.Automation.MiscHandler
      * These parameters can also come from a inbound HandlerEvent record, i.e. like driving commands
      * 
      */
-    public class FtpDownloader : AbstractDataHandler
+    public class FtpDownloader : BasicDataHandler
     {
         public class FtpDownloadConfig : Rda
         {
@@ -103,7 +103,7 @@ namespace Foldda.Automation.MiscHandler
 
         List<string> DownloadUriExclusionList { get; } = new List<string>();    //full-path
 
-        public FtpDownloader(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath)
+        public FtpDownloader(ILoggingProvider logger) : base(logger)
         {
         }
 
@@ -147,7 +147,7 @@ namespace Foldda.Automation.MiscHandler
 
                 foreach(var fileReaderConfig in downloadedFiles)
                 {
-                    HandlerEvent event1 = new HandlerEvent(Id, DateTime.Now)
+                    HandlerEvent event1 = new HandlerEvent(Name, DateTime.Now)
                     {
                         EventDetailsRda = fileReaderConfig
                     };
@@ -256,7 +256,7 @@ namespace Foldda.Automation.MiscHandler
                     ftpRequest.UseBinary = downloadConfig.BinaryMode;
 
                     string localFileFullPath = Path.Combine(localFilePath, remoteFile);         //path+name
-                    string localTempFileFullPath = localFileFullPath + "_camino_tmp_";         //temp path+name
+                    string localTempFileFullPath = localFileFullPath + "_foldda_ftp_tmp_";         //temp path+name
 
                     try
                     {

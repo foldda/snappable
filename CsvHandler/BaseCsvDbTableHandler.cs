@@ -177,7 +177,7 @@ namespace Foldda.Automation.CsvHandler
             }
         }
 
-        public BaseCsvDbTableHandler(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public BaseCsvDbTableHandler(ILoggingProvider logger) : base(logger) { }
 
         private List<string> QueryTargetTableColumnNames(DbTableConnectionConfig config)
         {

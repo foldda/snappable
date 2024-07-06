@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Foldda.DataAutomation.Util
+namespace Foldda.Automation.Util
 {
 
     public static class ExtensionMethods

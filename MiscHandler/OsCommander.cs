@@ -14,7 +14,7 @@ namespace Foldda.Automation.MiscHandler
      * 
      */
 
-    public class OsCommander : AbstractDataHandler
+    public class OsCommander : BasicDataHandler
     {
         public class InputRecord : Rda
         {
@@ -70,7 +70,7 @@ namespace Foldda.Automation.MiscHandler
             public string ExecutionOutput { get; set; }
         }
 
-        public OsCommander(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath)
+        public OsCommander(ILoggingProvider logger) : base(logger)
         {
         }
 

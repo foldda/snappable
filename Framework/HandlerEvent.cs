@@ -5,12 +5,12 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace Foldda.DataAutomation.Framework
+namespace Foldda.Automation.Framework
 {
     //
     /// <summary>
     /// HandlerEvent is a generic type of data record that is passed between handlers. It has a time component
-    /// and a handler-dependent context.
+    /// and a handler-dependent "details".
     /// 
     /// A typical pattern is, a hanlder, along with its data-processing logic, can also (optionally) define 
     /// input-context Rda, and/or an output-context Rda, and these Rda are embeded inside HandlerEvent to 
@@ -25,7 +25,7 @@ namespace Foldda.DataAutomation.Framework
 
         public string EventSourceId { get; set; }
         public DateTime EventTime { get; set; }
-        public Rda EventContextRda { get; set; } = new Rda();
+        public Rda EventDetailsRda { get; set; } = new Rda();  //event "payload"
 
         public HandlerEvent(string sourceId, DateTime time)
         {
@@ -86,7 +86,7 @@ namespace Foldda.DataAutomation.Framework
             Rda result = new Rda();
             result[(int)HANDLER_EVENT.EVENT_SOURCE_ID].ScalarValue = EventSourceId;
             result[(int)HANDLER_EVENT.EVENT_TIME_TOKENS].ChildrenValueArray = tokens;
-            result[(int)HANDLER_EVENT.EVENT_CONTEXT] = EventContextRda;
+            result[(int)HANDLER_EVENT.EVENT_CONTEXT] = EventDetailsRda.ToRda();
 
             return result;
         }
@@ -99,7 +99,7 @@ namespace Foldda.DataAutomation.Framework
                 rda[(int)HANDLER_EVENT.EVENT_TIME_TOKENS].ChildrenValueArray.ToList();
             EventTime = MakeDateTime(timeValueTokensList);
 
-            EventContextRda = rda[(int)HANDLER_EVENT.EVENT_CONTEXT];
+            EventDetailsRda = rda[(int)HANDLER_EVENT.EVENT_CONTEXT];
 
             return this;
         }

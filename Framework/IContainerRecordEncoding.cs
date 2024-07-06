@@ -1,6 +1,6 @@
 ﻿using Charian;
 
-namespace Foldda.DataAutomation.Framework
+namespace Foldda.Automation.Framework
 {
     public interface IContainerRecordEncoding
     {

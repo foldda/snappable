@@ -21,7 +21,7 @@ namespace Foldda.Automation.HL7Handler
         public const string CSV_COLUMN_HL7_ELEMENTS = "csv-column-hl7-elements";
         HL7Filter.SelectionPathDefilition DataElementSelectionPathDefinition { get; set; }
 
-        public HL7ToCsvConverter(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public HL7ToCsvConverter(ILoggingProvider logger) : base(logger) { }
 
         public override void SetParameters(IConfigProvider config)
         {

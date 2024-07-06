@@ -17,7 +17,7 @@ namespace Foldda.Automation.HL7Handler
         public const string FILTERING_RULE = "filtering-rule";
         protected List<SelectionPathDefilition> MatchingRules { get; private set; } = new List<SelectionPathDefilition>();
 
-        public HL7Filter(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public HL7Filter(ILoggingProvider logger) : base(logger) { }
 
         public override void SetParameters(IConfigProvider config)
         {

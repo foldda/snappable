@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Foldda.DataAutomation.Util
+namespace Foldda.Automation.Util
 {
     public static class ConfigParser
     {

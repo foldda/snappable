@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Foldda.DataAutomation.Util
+namespace Foldda.Automation.Util
 {
     /*
      * This class looks for a header patternt in the char stream, AppendAndMatch() return the matched header char[]

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Threading;
 
 using System;
@@ -17,7 +17,7 @@ using System.Net;
 using Charian;
 
 
-namespace Foldda.DataAutomation.Util
+namespace Foldda.Automation.Util
 {
     /**
      * HttpSender sends http content to a Http receiver. 

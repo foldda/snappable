@@ -17,7 +17,7 @@ namespace Foldda.Automation.CsvHandler
         public const string INPUT_FILE_PATH = "csv-input-path";
 
         internal FileReaderConfig LocalConfig { get; private set; }
-        public CsvFileReader(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public CsvFileReader(ILoggingProvider logger) : base(logger) { }
         public override void SetParameters(IConfigProvider config)
         {
             base.SetParameters(config); //constructs the RecordEncoding
@@ -65,27 +65,37 @@ namespace Foldda.Automation.CsvHandler
 
         private Task ReadFileTask(string CsvSourceFolderPath, string SourceFileNamePattern, DataContainer outputContainer, CancellationToken cancellationToken)
         {
-            DirectoryInfo targetDirectory = new DirectoryInfo(CsvSourceFolderPath);
-
-            var result = ScanDirectory(targetDirectory, SourceFileNamePattern, SkippedFileList, GetDefaultFileRecordScanner(Logger), Logger, cancellationToken).Result;
-
-            foreach (var container in result)
+            try
             {
-                TabularRecord.MetaData metaData = new TabularRecord.MetaData() { SourceId = container.MetaData.ToRda().ScalarValue };
-                if(container.Records.Count > 0)
+                DirectoryInfo targetDirectory = new DirectoryInfo(CsvSourceFolderPath);
+
+                var result = ScanDirectory(targetDirectory, SourceFileNamePattern, SkippedFileList, GetDefaultFileRecordScanner(Logger), Logger, cancellationToken).Result;
+
+                foreach (var container in result)
                 {
-                    if(FirstLineIsHeader == true)
+                    TabularRecord.MetaData metaData = new TabularRecord.MetaData() { SourceId = container.MetaData.ToRda().ScalarValue };
+                    if (container.Records.Count > 0)
                     {
-                        var headerLine = container.Records.First();
-                        metaData.ColumnNames = headerLine.ToRda().ChildrenValueArray;
-                        container.Records.RemoveAt(0);
+                        if (FirstLineIsHeader == true)
+                        {
+                            var headerLine = container.Records.First();
+                            metaData.ColumnNames = headerLine.ToRda().ChildrenValueArray;
+                            container.Records.RemoveAt(0);
+                        }
+
+                        outputContainer.MetaData = metaData;
+
+                        outputContainer.Records.AddRange(container.Records);
                     }
-
-                    outputContainer.MetaData = metaData;
-
-                    outputContainer.Records.AddRange(container.Records);
                 }
+
             }
+            catch (Exception ex)
+            {
+                Log(ex.Message);
+                Task.Delay(5000).Wait();
+            }
+
             return Task.CompletedTask;
         }
     }

@@ -16,7 +16,7 @@ namespace Foldda.Automation.MiscHandler
      * HttpServer serves HTML content to a web broswer client, and handles Http inputs from the client. 
      * 
      */
-    public class SimpleWebServer : AbstractDataHandler
+    public class SimpleWebServer : BasicDataHandler
     {
 
         const string LISTENING_PORT = "server-port";
@@ -38,7 +38,7 @@ namespace Foldda.Automation.MiscHandler
   <body>Webpage source file is missing or empty.</body>
 </html>";
 
-        protected SimpleWebServer(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        protected SimpleWebServer(ILoggingProvider logger) : base(logger) { }
 
         public override void SetParameters(IConfigProvider config)
         {
@@ -48,14 +48,14 @@ namespace Foldda.Automation.MiscHandler
             PagePath = config.GetSettingValue(WEB_PAGE_SOURCE, string.Empty);
         }
 
-        public override Task InputProducingTask(IDataReceiver inputStorage, CancellationToken cancellationToken)
+        public override Task InputProducingTask(IDataContainerStore inputStorage, CancellationToken cancellationToken)
         {
             return Listen(URI, inputStorage, cancellationToken);// ListenAsync(ackProducer, cancellationToken);
         }
 
         const int MAX_CONCURRENT_CONNECTION = 10;
 
-        public async Task Listen(string prefix, IDataReceiver inputStorage, CancellationToken token)
+        public async Task Listen(string prefix, IDataContainerStore inputStorage, CancellationToken token)
         {
             HttpListener listener = new HttpListener();
             var requests = new HashSet<Task>();
@@ -115,7 +115,7 @@ namespace Foldda.Automation.MiscHandler
         }
 
         static int i = 0;
-        public async Task ProcessRequestAsync(HttpListenerContext ctx, IDataReceiver inputStorage, CancellationToken token)
+        public async Task ProcessRequestAsync(HttpListenerContext ctx, IDataContainerStore inputStorage, CancellationToken token)
         {
             //bool runServer = true;
 
@@ -167,15 +167,13 @@ namespace Foldda.Automation.MiscHandler
                     pageViews += 1;
 
                 string pageSource = null;
-                string filePath = null;
                 try
                 {
-                    filePath = Path.Combine(HomePath.FullName, PagePath);
-                    pageSource = File.ReadAllText(filePath);
+                    pageSource = File.ReadAllText(PagePath);
                 }
                 catch
                 {
-                    Log($"Error reading web page source file: {filePath}");
+                    Log($"Error reading web page source file: {PagePath}");
                 }
 
                 if (string.IsNullOrEmpty(pageSource))

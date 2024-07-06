@@ -479,7 +479,7 @@ namespace Charian
             }
             else
             {
-                return string.IsNullOrEmpty(rda.ScalarValue);
+                return string.IsNullOrEmpty(rda.PayLoad.Trim());
             }
         }
 

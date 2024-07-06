@@ -1,4 +1,4 @@
-﻿using Foldda.DataAutomation.Framework;
+﻿using Foldda.Automation.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Foldda.DataAutomation.Util
+namespace Foldda.Automation.Util
 {
 
     public static class CommonFileTasks

@@ -28,7 +28,7 @@ namespace Foldda.Automation.HL7Handler
         protected string _outputPrefix { get; private set; }
         protected bool _mllpSeparatorEncode { get; private set; }
 
-        public HL7FileWriter(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public HL7FileWriter(ILoggingProvider logger) : base(logger) { }
 
         public override void SetParameters(IConfigProvider config)
         {
@@ -83,7 +83,7 @@ namespace Foldda.Automation.HL7Handler
             }
         }
 
-        public override Task OutputConsumingTask(IDataReceiver outputStorage, CancellationToken cancellationToken)
+        public override Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
         {
             var outputReceiced = outputStorage.CollectReceived();
             if(outputReceiced.Count > 0)

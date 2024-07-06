@@ -14,9 +14,9 @@ using System.Collections.Concurrent;
 namespace Foldda.Automation.HL7Handler
 {
 
-    public abstract class BaseHL7Handler : AbstractDataHandler
+    public abstract class BaseHL7Handler : BasicDataHandler
     {
-        public BaseHL7Handler(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public BaseHL7Handler(ILoggingProvider logger) : base(logger) { }
 
         //protected IRda ProcessContainerRecord(DataContainer.Record record, CancellationToken cancellationToken)
         //{

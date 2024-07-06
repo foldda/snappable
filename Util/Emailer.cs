@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using System.Net.Mail;
 using System.Net;
 using System.Net.Sockets;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 
-namespace Foldda.DataAutomation.Util
+namespace Foldda.Automation.Util
 {
     public class Emailer 
     {

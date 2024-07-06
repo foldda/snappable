@@ -9,7 +9,7 @@ namespace Foldda.Automation.Trigger
     //repeat a number of events within an hour
     public class HourlyTimer : BaseTimer
     {
-        public HourlyTimer(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public HourlyTimer(ILoggingProvider logger) : base(logger) { }
 
         internal override void ResetTimeTable()
         {

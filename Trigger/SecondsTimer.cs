@@ -8,7 +8,7 @@ namespace Foldda.Automation.Trigger
     public class SecondsTimer : BaseTimer
     {
         public const string SECONDS_INTERVAL = "seconds-interval";
-        public SecondsTimer(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public SecondsTimer(ILoggingProvider logger) : base(logger) { }
 
         private int SecondsInterval { get; set; }
 

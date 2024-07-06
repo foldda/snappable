@@ -1,4 +1,4 @@
-﻿using Foldda.DataAutomation.Framework;
+﻿using Foldda.Automation.Framework;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
@@ -6,7 +6,7 @@ using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Foldda.DataAutomation.Util
+namespace Foldda.Automation.Util
 {
 
     public class FileLogger : ILoggingProvider

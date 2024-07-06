@@ -11,17 +11,17 @@ using System.Timers;
 
 namespace Foldda.Automation.Trigger
 {
-    public class OnOffSwitch : AbstractDataHandler
+    public class OnOffSwitch : BasicDataHandler
     {
         enum State : int { ON, OFF }
 
         State _state = State.OFF;
 
-        string TriggerId => HomePath.FullName;
+        string TriggerId => Name;
 
-        public OnOffSwitch(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public OnOffSwitch(ILoggingProvider logger) : base(logger) { }
 
-        public override Task InputProducingTask(IDataReceiver inputStorage, CancellationToken cancellationToken)
+        public override Task InputProducingTask(IDataContainerStore inputStorage, CancellationToken cancellationToken)
         {
             if(_state == State.OFF)
             {

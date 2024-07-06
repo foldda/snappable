@@ -1,7 +1,7 @@
-﻿using Foldda.DataAutomation.Framework;
+﻿using Foldda.Automation.Framework;
 using System;
 
-namespace Foldda.DataAutomation.Util
+namespace Foldda.Automation.Util
 {
     // a generic wrapper to a logging provider
     public class Logger : ILoggingProvider

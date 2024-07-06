@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Foldda.DataAutomation.Framework
+namespace Foldda.Automation.Framework
 {
     public abstract class AbstractCharStreamRecordScanner 
     {

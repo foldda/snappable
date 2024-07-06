@@ -14,7 +14,7 @@ namespace Foldda.Automation.MiscHandler
      * EmailSender - place holder
      * 
      */
-    public class EmailSender : AbstractDataHandler
+    public class EmailSender : BasicDataHandler
     {
         Emailer Mailer { get; set; }
 
@@ -35,7 +35,7 @@ namespace Foldda.Automation.MiscHandler
         public const string EMAIL_BODY_FILE = "email-body-file";  /* "template-file.txt"*/
         public const string EMAIL_SUBJECT = "email-subject";/* "default subject" */
 
-        public EmailSender(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath)
+        public EmailSender(ILoggingProvider logger) : base(logger)
         {
         }
 
@@ -45,7 +45,7 @@ namespace Foldda.Automation.MiscHandler
 
             //try get the default message content from the path in the config file
             string messageBody = string.Empty;
-            var path = Path.Combine(HomePath.FullName, config.GetSettingValue(EMAIL_BODY_FILE, string.Empty));
+            var path = Path.Combine((new FileInfo(config.ConfigFileURI)).DirectoryName, config.GetSettingValue(EMAIL_BODY_FILE, string.Empty));
             if (File.Exists(path))
             {
                 messageBody = File.ReadAllText(path);
@@ -74,7 +74,7 @@ namespace Foldda.Automation.MiscHandler
             Mailer = new Emailer(smtpHost, port, login, password, enableTLS, Logger);
         }
 
-        public override Task OutputConsumingTask(IDataReceiver outputStorage, CancellationToken cancellationToken)
+        public override Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
         {
 
             var outputReceiced = outputStorage.CollectReceived();
@@ -93,7 +93,7 @@ namespace Foldda.Automation.MiscHandler
             return Task.Delay(100);
         }
 
-        const string SENDER = "Foldda Camino";
+        const string SENDER = "Foldda Email Sender";
         private async void ConsumeOutputRecord(Rda record)
         {
             try

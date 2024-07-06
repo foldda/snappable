@@ -14,7 +14,7 @@ namespace Foldda.Automation.Trigger
 
         List<int> ExcludedWeekDays { get; set; } = new List<int>();
 
-        public DailyTimer(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public DailyTimer(ILoggingProvider logger) : base(logger) { }
 
         public override void SetParameters(IConfigProvider config)
         {

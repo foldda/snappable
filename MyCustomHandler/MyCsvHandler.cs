@@ -1,13 +1,9 @@
-﻿using Charian;
-using Foldda.DataAutomation.Framework;
-using Foldda.DataAutomation.CsvHandler;
-
-using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Foldda.Automation.CsvHandler;
+using Foldda.Automation.Framework;
 
 namespace MyCompany.MyApp.MyCustomHandler
 {
@@ -23,7 +19,7 @@ namespace MyCompany.MyApp.MyCustomHandler
 
         protected string SourceFileNamePattern { get; private set; }
         protected string CsvSourceFolderPath { get; private set; }
-        public MyCsvHandler(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public MyCsvHandler(ILoggingProvider logger) : base(logger) { }
         public override void SetParameters(IConfigProvider config)
         {
             base.SetParameters(config); //constructs the RecordEncoding
@@ -52,7 +48,7 @@ namespace MyCompany.MyApp.MyCustomHandler
             SourceFileNamePattern = paramFileName;
         }
 
-        public override Task InputProducingTask(IDataReceiver inputStorage, CancellationToken cancellationToken)
+        public override Task InputProducingTask(IDataContainerStore inputStorage, CancellationToken cancellationToken)
         {
             DirectoryInfo targetDirectory = new DirectoryInfo(CsvSourceFolderPath);
 
@@ -60,13 +56,13 @@ namespace MyCompany.MyApp.MyCustomHandler
 
             foreach (var container in result)
             {
-                TabularRecord.MetaData metaData = new TabularRecord.MetaData() { SourceId = container.MetaData.ScalarValue };
+                TabularRecord.MetaData metaData = new TabularRecord.MetaData() { SourceId = container.MetaData.ToRda().ScalarValue };
                 if(container.Records.Count > 0)
                 {
                     if(FirstLineIsHeader == true)
                     {
                         var headerLine = container.Records.First();
-                        metaData.ColumnNames = headerLine.ChildrenValueArray;
+                        metaData.ColumnNames = headerLine.ToRda().ChildrenValueArray;
                         container.Records.RemoveAt(0);
                     }
 

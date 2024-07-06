@@ -21,7 +21,7 @@ namespace Foldda.Automation.CsvHandler
          * mapping defined in the config file) to a database table.
          */
 
-        public CsvDbTableWriter(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public CsvDbTableWriter(ILoggingProvider logger) : base(logger) { }
 
         public override void SetParameters(IConfigProvider config)
         {
@@ -71,7 +71,7 @@ namespace Foldda.Automation.CsvHandler
          */
 
 
-        public override Task OutputConsumingTask(IDataReceiver outputStorage, CancellationToken cancellationToken)
+        public override Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
         {
             var outputReceiced = outputStorage.CollectReceived();
             if (outputReceiced.Count > 0)

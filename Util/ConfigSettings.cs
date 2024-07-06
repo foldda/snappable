@@ -10,7 +10,7 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
-namespace Foldda.DataAutomation.Util
+namespace Foldda.Automation.Util
 {
     //...
 

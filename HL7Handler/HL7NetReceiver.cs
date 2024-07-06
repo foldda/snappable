@@ -20,7 +20,7 @@ namespace Foldda.Automation.HL7Handler
         protected int Port { get; private set; }
         protected string HostName { get; private set; }
 
-        public HL7NetReceiver(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
+        public HL7NetReceiver(ILoggingProvider logger) : base(logger) { }
 
         public override void SetParameters(IConfigProvider config)
         {
@@ -28,7 +28,7 @@ namespace Foldda.Automation.HL7Handler
             HostName = Dns.GetHostName();
         }
 
-        public override Task InputProducingTask(IDataReceiver inputStorage, CancellationToken cancellationToken)
+        public override Task InputProducingTask(IDataContainerStore inputStorage, CancellationToken cancellationToken)
         {
             AckManager ackProducer = new AckManager(inputStorage, this.Logger);
             return ListenAsync(ackProducer, cancellationToken);
@@ -92,11 +92,11 @@ namespace Foldda.Automation.HL7Handler
         //client to extend this class for customized ACK generation
         public class AckManager
         {
-            IDataReceiver InputStorage { get; }
+            IDataContainerStore InputStorage { get; }
 
             ILoggingProvider Logger { get; }
 
-            public AckManager(IDataReceiver inputStorage, ILoggingProvider logger)
+            public AckManager(IDataContainerStore inputStorage, ILoggingProvider logger)
             {
                 InputStorage = inputStorage;
                 Logger = logger;
@@ -131,7 +131,7 @@ namespace Foldda.Automation.HL7Handler
                 string msh10 = MSH_10?.Value ?? string.Empty;
 
                 DateTime now = DateTime.UtcNow.ToLocalTime();
-                return $"MSH|^~\\&|Foldda|Camino|Foldda|Automation|{now:yyyyMMddHHmmss}||ACK|{msh10}|P|2.4|\rMSA|AA|{msh10}".ToCharArray();
+                return $"MSH|^~\\&|Foldda|Receiver|Foldda|Automation|{now:yyyyMMddHHmmss}||ACK|{msh10}|P|2.4|\rMSA|AA|{msh10}".ToCharArray();
             }
 
         }

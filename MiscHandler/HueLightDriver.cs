@@ -13,7 +13,7 @@ namespace Foldda.Automation.MiscHandler
      * HueLightDriver converts targetted values from a Lookup reposite to a HttpSenderInput parcel 
      * 
      */
-    public class HueLightDriver : AbstractDataHandler
+    public class HueLightDriver : BasicDataHandler
     {
         const string HUE_AUTH_ID = "hue-auth-id";
         const string HUE_HUB_END_POINT = "hue-api-end-point";   //the url prefix
@@ -24,7 +24,7 @@ namespace Foldda.Automation.MiscHandler
 
         private HueLight hueLight { get; set; }
 
-        public HueLightDriver(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath)
+        public HueLightDriver(ILoggingProvider logger) : base(logger)
         {
         }
 
@@ -51,7 +51,7 @@ namespace Foldda.Automation.MiscHandler
             }
         }
 
-        public override Task OutputConsumingTask(IDataReceiver outputStorage, CancellationToken cancellationToken)
+        public override Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
         {
 
             var outputReceiced = outputStorage.CollectReceived();

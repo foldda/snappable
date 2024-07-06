@@ -1,5 +1,5 @@
 ﻿using Charian;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 
 using System;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Foldda.DataAutomation.HL7Handler
+namespace Foldda.Automation.HL7Handler
 {
     public class HL7FileReader : BaseHL7Handler
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Threading;
 using System.Text;
 using System.Net;
@@ -11,7 +11,7 @@ using System.IO;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Foldda.DataAutomation.HL7Handler
+namespace Foldda.Automation.HL7Handler
 {
     public class HL7NetReceiver : BaseHL7Handler
     {
@@ -111,8 +111,8 @@ namespace Foldda.DataAutomation.HL7Handler
                     HL7Message incoming = new HL7Message(received, Encoding.Default);
 
                     //do something with the received HL7, in our case, save received message to outbound storage queue
-                    Logger.Log($"Processing received HL7 message in which MSH is '{incoming.MSH}'.");
-                    InputStorage.Receive(incoming.ToRda());
+                    Logger.Log($"Processing received HL7 message in which has MSH as '{incoming.MSH}'.");
+                    InputStorage.Receive(incoming);
 
                     //respond ACK to sender
                     return RespondAck(incoming);    
@@ -131,7 +131,7 @@ namespace Foldda.DataAutomation.HL7Handler
                 string msh10 = MSH_10?.Value ?? string.Empty;
 
                 DateTime now = DateTime.UtcNow.ToLocalTime();
-                return $"MSH|^~\\&|Foldda|Camino|Foldda|Camino|{now:yyyyMMddHHmmss}||ACK|{msh10}|P|2.4|\rMSA|AA|{msh10}".ToCharArray();
+                return $"MSH|^~\\&|Foldda|Camino|Foldda|Automation|{now:yyyyMMddHHmmss}||ACK|{msh10}|P|2.4|\rMSA|AA|{msh10}".ToCharArray();
             }
 
         }

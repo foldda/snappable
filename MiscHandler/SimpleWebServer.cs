@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Threading;
 
 using Charian;
@@ -8,9 +8,9 @@ using System.Net;
 using System;
 using System.Text;
 using System.IO;
-using Foldda.DataAutomation.Util;
+using Foldda.Automation.Util;
 
-namespace Foldda.DataAutomation.MiscHandler
+namespace Foldda.Automation.MiscHandler
 {
     /**
      * HttpServer serves HTML content to a web broswer client, and handles Http inputs from the client. 
@@ -152,7 +152,7 @@ namespace Foldda.DataAutomation.MiscHandler
                             lookup.Store.Add(key, req.QueryString[key]);
                         }   
                         
-                        container.Add(lookup.ToRda());
+                        container.Add(lookup);
                         
                         inputStorage.Receive(container);
                     }

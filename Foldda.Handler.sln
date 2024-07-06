@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.7.34003.232
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.34601.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{22B85503-B590-4DDA-9DF9-D709659B342B}"
 EndProject
@@ -13,13 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Framework", "Framework\Fram
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvHandler", "CsvHandler\CsvHandler.csproj", "{D4BE144B-3120-4BC0-BC6F-C1FFCE018A4A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Timer", "Timer\Timer.csproj", "{B13A964A-7556-4F20-BA1C-C38BC45027BF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiscHandler", "MiscHandler\MiscHandler.csproj", "{731809A8-1641-4C01-A022-A9C5E748C866}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HL7Handler", "HL7Handler\HL7Handler.csproj", "{712B8035-0C37-4A08-A0E9-B85CFC332ADE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCustomHandler", "MyCustomHandler\MyCustomHandler.csproj", "{0EE89E14-422F-4591-839A-F24646D22B7A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trigger", "Trigger\Trigger.csproj", "{A1402C53-B1D8-4B42-B1AD-B8170473B5C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +47,6 @@ Global
 		{D4BE144B-3120-4BC0-BC6F-C1FFCE018A4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4BE144B-3120-4BC0-BC6F-C1FFCE018A4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4BE144B-3120-4BC0-BC6F-C1FFCE018A4A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B13A964A-7556-4F20-BA1C-C38BC45027BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B13A964A-7556-4F20-BA1C-C38BC45027BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B13A964A-7556-4F20-BA1C-C38BC45027BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B13A964A-7556-4F20-BA1C-C38BC45027BF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{731809A8-1641-4C01-A022-A9C5E748C866}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{731809A8-1641-4C01-A022-A9C5E748C866}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{731809A8-1641-4C01-A022-A9C5E748C866}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,6 +59,10 @@ Global
 		{0EE89E14-422F-4591-839A-F24646D22B7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EE89E14-422F-4591-839A-F24646D22B7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EE89E14-422F-4591-839A-F24646D22B7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1402C53-B1D8-4B42-B1AD-B8170473B5C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1402C53-B1D8-4B42-B1AD-B8170473B5C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1402C53-B1D8-4B42-B1AD-B8170473B5C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1402C53-B1D8-4B42-B1AD-B8170473B5C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

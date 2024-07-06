@@ -7,10 +7,10 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Charian;
-using Foldda.DataAutomation.Framework;
-using static Foldda.DataAutomation.HL7Handler.HL7DataElement;
+using Foldda.Automation.Framework;
+using static Foldda.Automation.HL7Handler.HL7DataElement;
 
-namespace Foldda.DataAutomation.HL7Handler
+namespace Foldda.Automation.HL7Handler
 {
     public class HL7Filter : BaseHL7Handler
     {
@@ -32,11 +32,11 @@ namespace Foldda.DataAutomation.HL7Handler
             }            
         }
 
-        protected override void ProcessHL7MessageRecord(HL7Message record, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected override void ProcessHL7MessageRecord(HL7Message record, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
         {
             if(FilterHL7Message(record))
             {
-                outputContainer.Add(record.ToRda());
+                outputContainer.Add(record);
             }
         }
 

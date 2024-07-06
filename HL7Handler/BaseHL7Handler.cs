@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Text;
 using Charian;
-using Foldda.DataAutomation.Util;
+using Foldda.Automation.Util;
 using System.Threading;
 using System.Data;
 using System.Linq;
 using System.Collections.Concurrent;
 
-namespace Foldda.DataAutomation.HL7Handler
+namespace Foldda.Automation.HL7Handler
 {
 
     public abstract class BaseHL7Handler : AbstractDataHandler
@@ -29,22 +29,47 @@ namespace Foldda.DataAutomation.HL7Handler
             return new HL7Message.HL7MessageScanner(loggingProvider);
         }
 
-        public sealed override void ProcessRecord(Rda recordData, Rda processingContext, DataContainer outputContainer, CancellationToken cancellationToken)
+        /// <summary>
+        /// Determine what type the record is, then process accordingly.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <param name="inputContainer"></param>
+        /// <param name="outputContainer"></param>
+        /// <param name="cancellationToken"></param>
+        public sealed override void ProcessRecord(IRda record, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
         {
+
             try
             {
-                ProcessHL7MessageRecord(new HL7Message(recordData), outputContainer, cancellationToken);
+                if (record is HL7Message hl7Message)
+                {
+                    ProcessHL7MessageRecord(hl7Message, inputContainer, outputContainer, cancellationToken);
+                }
+                else if (record is HandlerEvent handlerEvent)
+                {
+                    ProcessEvent(handlerEvent, inputContainer, outputContainer, cancellationToken);
+                }
+                else
+                {
+                    Log($"WARNING: Record of type {record.GetType().FullName} is ignored. Record => {record?.ToRda()}");
+                }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Log($"Failed converting input record to HL7, record is skipped - {e.Message}.\n{e.StackTrace}");
             }
         }
 
-        protected virtual void ProcessHL7MessageRecord(HL7Message record, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected virtual void ProcessEvent(HandlerEvent eventDetails, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        {
+            //force sub-class to implement
+            throw new NotImplementedException();
+        }
+
+        protected virtual void ProcessHL7MessageRecord(HL7Message record, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
         {
             //default is a pass-through
-            outputContainer.Add(record.ToRda());
+            outputContainer.Add(record);
         }
 
         public class MllpConnectionHandler

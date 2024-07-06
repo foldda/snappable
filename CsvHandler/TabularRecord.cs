@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 
 using System.Threading.Tasks;
 
-namespace Foldda.DataAutomation.CsvHandler
+namespace Foldda.Automation.CsvHandler
 {
     public class TabularRecord : IRda
     {

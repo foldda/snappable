@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Text;
 using System.Linq;
 using Charian;
 using System.Threading;
 
-namespace Foldda.DataAutomation.CsvHandler
+namespace Foldda.Automation.CsvHandler
 {
     public abstract class BaseCsvHandler : AbstractDataHandler
     {
@@ -44,7 +44,7 @@ namespace Foldda.DataAutomation.CsvHandler
                     }
                     else
                     {
-                        throw new Exception($"Parameter '{CSV_FIXED_COLUMNS_LENGTHS}' value '{columnFixedLengths}' is invalid. It should be a comma-separated list of integers");
+                        throw new Exception($"Parameter '{CSV_FIXED_COLUMNS_LENGTHS}' value '{columnFixedLengths}' is invalid. It should be a list of comma-separated integers");
                     }
                 }
 
@@ -61,23 +61,52 @@ namespace Foldda.DataAutomation.CsvHandler
             FirstLineIsHeader = config.GetSettingValue(CSV_FIRST_LINE_IS_HEADER, YES_STRING, true);
         }
 
-        protected virtual void ProcessTabularRecord(TabularRecord record, Rda processingContext, DataContainer outputContainer, CancellationToken cancellationToken)
+        /// <summary>
+        /// Determine what type the record is, then process accordingly.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <param name="inputContainer"></param>
+        /// <param name="outputContainer"></param>
+        /// <param name="cancellationToken"></param>
+        public sealed override void ProcessRecord(IRda record, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
         {
-            //default is a pass-through
-            outputContainer.Add(record.ToRda());
-        }
 
-        public sealed override void ProcessRecord(Rda record, Rda processingContext, DataContainer outputContainer, CancellationToken cancellationToken)
-        {
             try
             {
-                ProcessTabularRecord(new TabularRecord(record), processingContext, outputContainer, cancellationToken);
+                if (record is TabularRecord csvRecord)
+                {
+                    ProcessTabularRecord(csvRecord, inputContainer, outputContainer, cancellationToken);
+                }
+                else if (record is HandlerEvent handlerEvent)
+                {
+                    ProcessEvent(handlerEvent, inputContainer, outputContainer, cancellationToken);
+                }
+                else
+                {
+                    Log($"WARNING: Record type UNKNOWN and is ignored. Record => {record?.ToRda()}");
+                }
             }
             catch (Exception e)
             {
                 Logger.Log($"Failed converting input record to TabularRecord, record is skipped - {e.Message}.\n{e.StackTrace}");
             }
         }
+
+        protected virtual void ProcessTabularRecord(TabularRecord record, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        {
+            //default is a pass-through
+            outputContainer.Add(record);
+
+            //force sub-class to implement
+            //throw new NotImplementedException();
+        }
+
+        protected virtual void ProcessEvent(HandlerEvent eventDetails, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        {
+            //force sub-class to implement
+            throw new NotImplementedException();
+        }
+
     }
 }
 

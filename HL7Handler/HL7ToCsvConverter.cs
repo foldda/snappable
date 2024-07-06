@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Threading;
-using Foldda.DataAutomation.CsvHandler;
+using Foldda.Automation.CsvHandler;
 using System.IO;
 
-namespace Foldda.DataAutomation.HL7Handler
+namespace Foldda.Automation.HL7Handler
 {
     /**
      * HL7ToCsvConverter selects elements of a HL7 message to form rows of CSV data lines
@@ -45,7 +45,7 @@ namespace Foldda.DataAutomation.HL7Handler
 
         }
 
-        protected override void ProcessHL7MessageRecord(HL7Message hl7, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected override void ProcessHL7MessageRecord(HL7Message hl7, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
         {
             List<List<string>> csvBlock = new List<List<string>>();
             foreach (var path in DataElementSelectionPathDefinition.GetQualifiedPaths(hl7.Segments))
@@ -57,7 +57,7 @@ namespace Foldda.DataAutomation.HL7Handler
             foreach(List<string> row in csvBlock)
             {
                 TabularRecord tabularRecord = new TabularRecord(row);
-                outputContainer.Add(tabularRecord.ToRda());
+                outputContainer.Add(tabularRecord);
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿
 using Charian;
-using Foldda.DataAutomation.Framework;
-using Foldda.DataAutomation.Util;
+using Foldda.Automation.Framework;
+using Foldda.Automation.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Foldda.DataAutomation.HL7Handler
+namespace Foldda.Automation.HL7Handler
 {
     public class HL7Message : IRda
     {

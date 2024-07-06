@@ -1,11 +1,11 @@
 ﻿using Charian;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Foldda.DataAutomation.Timer
+namespace Foldda.Automation.Trigger
 {
     public class DailyTimer : BaseTimer
     {

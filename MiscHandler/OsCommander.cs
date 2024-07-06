@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Threading;
 using System.Management.Automation;
 using Charian;
@@ -7,38 +7,8 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 
-namespace Foldda.DataAutomation.MiscHandler
+namespace Foldda.Automation.MiscHandler
 {
-    #region GetProcCommand
-
-    /// <summary>
-    /// Class that implements the GetProcCommand.
-    /// </summary>
-    [Cmdlet(VerbsCommon.Get, "Proc")]
-    public class GetProcCommand : Cmdlet
-    {
-        #region Cmdlet Overrides
-
-        /// <summary>
-        /// For each of the requested process names, retrieve and write
-        /// the associated processes.
-        /// </summary>
-        protected override void ProcessRecord()
-        {
-            // Get the current processes.
-            Process[] processes = Process.GetProcesses();
-
-            // Write the processes to the pipeline making them available
-            // to the next cmdlet. The second argument (true) tells the
-            // system to enumerate the array, and send one process object
-            // at a time to the pipeline.
-            WriteObject(processes, true);
-        }
-
-        #endregion Overrides
-    } // End GetProcCommand class.
-    #endregion GetProcCommand
-
     /**
      * Run the provided script thru the operating system
      * 
@@ -59,33 +29,33 @@ namespace Foldda.DataAutomation.MiscHandler
             {
             }
 
-            public InputRecord()
+            public InputRecord() : base()
             {
             }
 
             public enum RDA_INDEX : int { CMD_EXECUTABLE, ARGUMENTS, ARGUMENTS_2, ARGUMENTS_3 }
 
-            public string CMD_EXECUTABLE
+            public string CMD_EXECUTABLE 
             {
                 get => this[(int)RDA_INDEX.CMD_EXECUTABLE].ScalarValue;
-                set => this[(int)RDA_INDEX.CMD_EXECUTABLE].ScalarValue = value.ToString();
+                set => this[(int)RDA_INDEX.CMD_EXECUTABLE].ScalarValue = value;
             }
+
             public string ARGUMENTS
             {
                 get => this[(int)RDA_INDEX.ARGUMENTS].ScalarValue;
-                set => this[(int)RDA_INDEX.ARGUMENTS].ScalarValue = value.ToString();
+                set => this[(int)RDA_INDEX.ARGUMENTS].ScalarValue = value;
             }
-
             //addition arguments that can be optionally provided
             public string ARGUMENTS_2
             {
                 get => this[(int)RDA_INDEX.ARGUMENTS_2].ScalarValue;
-                set => this[(int)RDA_INDEX.ARGUMENTS_2].ScalarValue = value.ToString();
+                set => this[(int)RDA_INDEX.ARGUMENTS_2].ScalarValue = value;
             }
             public string ARGUMENTS_3
             {
                 get => this[(int)RDA_INDEX.ARGUMENTS_3].ScalarValue;
-                set => this[(int)RDA_INDEX.ARGUMENTS_3].ScalarValue = value.ToString();
+                set => this[(int)RDA_INDEX.ARGUMENTS_3].ScalarValue = value;
             }
         }
 
@@ -97,38 +67,24 @@ namespace Foldda.DataAutomation.MiscHandler
                 //
             }
 
-            public string ExecutionOutput   //screen or log output, eg stdout
-            {
-                get => EventContextRda.ScalarValue;
-                set => EventContextRda.ScalarValue = value;
-            }
+            public string ExecutionOutput { get; set; }
         }
 
-        protected OsCommander(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath)
+        public OsCommander(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath)
         {
         }
 
-        public override void ProcessRecord(Rda eventTriggerRecord, Rda processingContext, DataContainer outputContainer, CancellationToken cancellationToken)
+        public override void ProcessRecord(IRda eventTriggerRecord, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
         {
             try
             {
                 Log($"Downloading triggered by {eventTriggerRecord}");
 
-                InputRecord commandConfig;
+                //InputRecord commandConfig;
                 //testing if the trigger contains 'download instructions' in its context,
-                try
+                if(!(eventTriggerRecord is HandlerEvent evn) || !(evn.EventDetailsRda is InputRecord commandConfig) || string.IsNullOrEmpty(commandConfig.CMD_EXECUTABLE))
                 {
-                    HandlerEvent tigger = new HandlerEvent(eventTriggerRecord);
-                    commandConfig = new InputRecord(tigger.EventContextRda);
-                    if(string.IsNullOrEmpty(commandConfig.CMD_EXECUTABLE))
-                    {
-                        throw new Exception($"Parameter {InputRecord.PARAM_CMD_EXECUTABLE} is not provoded in input-record.");
-                    }
-                }
-                catch(Exception e)
-                {
-                    //if not, use the handler's local settings
-                    Log($"Trigger event has no command-exectution instrcution in input record - '{e.Message}', local config settings are used.");
+                    Log($"Trigger event has no command-exectution instrcution in input record, local config settings are used.");
                     commandConfig = LocalConfig;
                 }
 
@@ -148,21 +104,22 @@ namespace Foldda.DataAutomation.MiscHandler
             Process cmd = new Process();
             cmd.StartInfo.FileName = commandConfig.CMD_EXECUTABLE;
             cmd.StartInfo.Arguments = $"{commandConfig.ARGUMENTS} {commandConfig.ARGUMENTS_2} {commandConfig.ARGUMENTS_3}".Trim();
-            cmd.StartInfo.RedirectStandardInput = true;
+            Log($"Exec= '{cmd.StartInfo.FileName} {cmd.StartInfo.Arguments}'");
+
             cmd.StartInfo.RedirectStandardOutput = true;
             cmd.StartInfo.CreateNoWindow = true;
             cmd.StartInfo.UseShellExecute = false;
-            cmd.Start();
+            //cmd.StartInfo.WorkingDirectory = @"C:\Windows\System32";
 
-            cmd.StandardInput.WriteLine($"echo '{cmd.StartInfo.FileName} {cmd.StartInfo.Arguments}'");
-            cmd.StandardInput.Flush();
-            cmd.StandardInput.Close();
+            cmd.Start();
+            string output = cmd.StandardOutput.ReadToEnd();
+
             cmd.WaitForExit();
 
-            Log(cmd.StandardOutput.ReadToEnd());
+            Log(output);
             return new List<OutputRecord>()
             {
-                new OutputRecord(this.GetType().Name, DateTime.Now) { ExecutionOutput = cmd.StandardOutput.ReadToEnd()}
+                new OutputRecord(this.GetType().Name, DateTime.Now) { ExecutionOutput = output}
             };
         }
 

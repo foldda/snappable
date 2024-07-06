@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Foldda.DataAutomation.CsvHandler</RootNamespace>
+    <RootNamespace>Foldda.Automation.CsvHandler</RootNamespace>
     <AssemblyName>CsvHandler</AssemblyName>
   </PropertyGroup>
 
@@ -19,11 +19,5 @@
     <ProjectReference Include="..\Util\Util.csproj" />
   </ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="copy /Y $(TargetDir)$(ProjectName).dll $(SolutionDir)\Manager\bin\$(Configuration)\$(ProjectName).dll" />
-		<Exec Command="copy /Y $(TargetDir)$(ProjectName).pdb $(SolutionDir)\Manager\bin\$(Configuration)\$(ProjectName).pdb" />
-		<Exec Command="copy /Y $(TargetDir)$(ProjectName).dll $(SolutionDir)\WinService\bin\$(Configuration)\$(ProjectName).dll" />
-		<Exec Command="copy /Y $(TargetDir)$(ProjectName).pdb $(SolutionDir)\WinService\bin\$(Configuration)\$(ProjectName).pdb" />
-	</Target>
 
 </Project>

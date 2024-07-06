@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Threading;
 using Charian;
 using System;
@@ -7,7 +7,7 @@ using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Foldda.DataAutomation.MiscHandler
+namespace Foldda.Automation.MiscHandler
 {
     /**
      * Driven by trigger events (e.g. a timer), FtpDownloader attempts to download available files from 
@@ -85,25 +85,17 @@ namespace Foldda.DataAutomation.MiscHandler
 
             public FtpDownloadConfig(Rda originalRda) : base(originalRda)
             {
+                if (string.IsNullOrEmpty(this.FtpServer) || 
+                    string.IsNullOrEmpty(this.RemoteSourcePath) ||
+                    string.IsNullOrEmpty(this.TargetFileNamePattern) ||
+                    string.IsNullOrEmpty(this.LocalDestinationPath))
+                {
+                    throw new InvalidCastException("FtpDownloadConfig Rda input does not contain the expected data.");
+                }
             }
 
             public FtpDownloadConfig()
             {
-            }
-        }
-
-        //this data record tells the downstream handler (eg a Csv-Reader where to pick up the resulted data)
-        public class OutputRecord : HandlerEvent
-        {
-            public OutputRecord(string sourceId, DateTime time) : base(sourceId, time)
-            {
-               //
-            }
-
-            public string OutputFilePath   //
-            {
-                get => EventContextRda.ScalarValue;
-                set => EventContextRda.ScalarValue = value;
             }
         }
 
@@ -136,41 +128,34 @@ namespace Foldda.DataAutomation.MiscHandler
                 Login = config.GetSettingValue(FtpDownloadConfig.LOGIN, string.Empty),
                 Password = config.GetSettingValue(FtpDownloadConfig.PASSWORD, string.Empty)
             };
+
+            //in the event of re-starting the handler, reset the exclusion list
+            DownloadUriExclusionList.Clear();
         }
 
-        public override void ProcessRecord(Rda eventTriggerRecord, Rda processingContext, DataContainer outputContainer, CancellationToken cancellationToken)
+        public override void ProcessRecord(IRda eventTriggerRecord, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
         {
             try
             {
-
-                FtpDownloadConfig downloadConfig;
-                //testing if the trigger contains 'download instructions' in its context,
-                try
+                if (!(eventTriggerRecord is HandlerEvent evn) || !(evn.EventDetailsRda is FtpDownloadConfig downloadConfig) || string.IsNullOrEmpty(downloadConfig.FtpServer))
                 {
-                    Log($"Downloading triggered by {outputContainer.ProcessingContext}");
-                    downloadConfig = new FtpDownloadConfig(outputContainer.ProcessingContext);
-                }
-                catch
-                {
-                    //if not, use the handler's local settings
-                    Log($"Container has no file-download instrcution, local (FTP) config settings are used.");
+                    Log($"Trigger event has no download instrcution in input record, local config settings are used.");
                     downloadConfig = LocalConfig;
                 }
 
-                try
+                List<FileReaderConfig> downloadedFiles = RunFtpDownloadSession(downloadConfig, cancellationToken);
+
+                foreach(var fileReaderConfig in downloadedFiles)
                 {
-                    HandlerEvent trigger = new HandlerEvent(eventTriggerRecord);
-                    Log($"Download triggered on {trigger.EventTime}.");
-                }
-                catch
-                {
-                    //if not, use the handler's local settings
-                    Log($"Trigger event is invalid, default trigger is used.");
+                    HandlerEvent event1 = new HandlerEvent(Id, DateTime.Now)
+                    {
+                        EventDetailsRda = fileReaderConfig
+                    };
+
+                    outputContainer.Add(event1);
                 }
 
-                List<OutputRecord> recordsRead = RunFtpDownloadSession(downloadConfig, cancellationToken);
-
-                Log($"Downloaded {recordsRead.Count} files.");
+                Log($"Downloaded {downloadedFiles.Count} files.");
             }
             catch (Exception e)
             {
@@ -180,16 +165,9 @@ namespace Foldda.DataAutomation.MiscHandler
         }
 
         //returns output records each has a path of one of the files downloaded.
-        internal virtual List<OutputRecord> RunFtpDownloadSession(FtpDownloadConfig downloadConfig, CancellationToken cancellationToken)
+        internal virtual List<FileReaderConfig> RunFtpDownloadSession(FtpDownloadConfig downloadConfig, CancellationToken cancellationToken)
         {
             
-            if (string.IsNullOrEmpty(downloadConfig.RemoteSourcePath) ||
-                string.IsNullOrEmpty(downloadConfig.TargetFileNamePattern) ||
-                string.IsNullOrEmpty(downloadConfig.LocalDestinationPath))
-            {
-                return null;
-            }
-
             string ftpRemotePath = downloadConfig.RemoteSourcePath;
             string localFilePath = downloadConfig.LocalDestinationPath;
             string user = downloadConfig.Login;
@@ -239,9 +217,9 @@ namespace Foldda.DataAutomation.MiscHandler
             }
         }
 
-        private List<OutputRecord> FetchFiles(FtpDownloadConfig downloadConfig, List<string> matchingRemoteFiles, string uri, CancellationToken cancellationToken)
+        private List<FileReaderConfig> FetchFiles(FtpDownloadConfig downloadConfig, List<string> matchingRemoteFiles, string uri, CancellationToken cancellationToken)
         {
-            List<OutputRecord> result = new List<OutputRecord>();
+            List<FileReaderConfig> result = new List<FileReaderConfig>();
 
             string localFilePath = downloadConfig.LocalDestinationPath;
 
@@ -300,9 +278,11 @@ namespace Foldda.DataAutomation.MiscHandler
                         //move the completed file to the correct file name
                         File.Move(localTempFileFullPath, localFileFullPath);
 
-                        OutputRecord output = new OutputRecord(remoteFileUri, DateTime.Now) 
-                        { 
-                            OutputFilePath = localFileFullPath 
+                        FileInfo file = new FileInfo(localFileFullPath);
+                        FileReaderConfig output = new FileReaderConfig() 
+                        {
+                            InputFileNameOrPattern = file.Name,
+                            InputFilePath = file.DirectoryName
                         };
 
                         //2.2 clean-up the remote file after download

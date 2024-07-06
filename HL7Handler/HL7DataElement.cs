@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Foldda.DataAutomation.HL7Handler
+namespace Foldda.Automation.HL7Handler
 {
     public enum Level0 : int { Segment = -1, Field = 0, Repeat = 1, Component = 2, SubComponent = 3 }
 

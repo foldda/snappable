@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Threading;
 using System;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Globalization;
 using System.IO;
 
-namespace Foldda.DataAutomation.CsvHandler
+namespace Foldda.Automation.CsvHandler
 {
     //Write to MS SQL Server using BulkCopy
     public abstract class BaseCsvDbTableHandler : BaseCsvHandler
@@ -37,12 +37,12 @@ namespace Foldda.DataAutomation.CsvHandler
                 get => this[(int)RDA_INDEX.DbTableName].ScalarValue;
                 set => this[(int)RDA_INDEX.DbTableName].ScalarValue = value.ToString();
             }
-            internal string ColumnSpec
+            internal string[] ColumnSpec
             {
-                get => this[(int)RDA_INDEX.ColumnSpec].ScalarValue;
-                set => this[(int)RDA_INDEX.ColumnSpec].ScalarValue = value.ToString();
+                get => this[(int)RDA_INDEX.ColumnSpec].ChildrenValueArray;
+                set => this[(int)RDA_INDEX.ColumnSpec].ChildrenValueArray = value;
             }
-            internal string PreProcessingStoreProc
+            internal string PreProcessingStoredProc
             {
                 get => this[(int)RDA_INDEX.PreProcessingStoredProc].ScalarValue;
                 set => this[(int)RDA_INDEX.PreProcessingStoredProc].ScalarValue = value.ToString();
@@ -74,8 +74,16 @@ namespace Foldda.DataAutomation.CsvHandler
             LocalConfig = new DbTableConnectionConfig()
             {
                 DbConnectionString = config.GetSettingValue(DbTableConnectionConfig.PARAM_DB_CONNECTION_STRING, string.Empty),
-                DbTableName = config.GetSettingValue(DbTableConnectionConfig.PARAM_DB_TABLE_NAME, string.Empty)
+                DbTableName = config.GetSettingValue(DbTableConnectionConfig.PARAM_DB_TABLE_NAME, string.Empty),
+                PreProcessingStoredProc = config.GetSettingValue(DbTableConnectionConfig.PARAM_PRE_PROCESSING_STORED_PROC, string.Empty),
+                PostProcessingStoredProc = config.GetSettingValue(DbTableConnectionConfig.PARAM_POST_PROCESSING_STORED_PROC, string.Empty),
             };
+
+            var columSpec = config.GetSettingValues(DbTableConnectionConfig.PARAM_COLUMN_SPEC);
+            if(columSpec?.Count > 0)
+            {
+                LocalConfig.ColumnSpec = columSpec.ToArray();
+            }
 
             try
             {
@@ -130,6 +138,7 @@ namespace Foldda.DataAutomation.CsvHandler
          *  <Name>column-spec</Name>
          *  <Value>2|USER_HEIGHT;decimal</Value>
          * </Parameter>
+         * 
          * <Parameter>
          *  <Name>column-spec</Name>
          *  <Value>3|ADDRESS;string;120</Value>
@@ -145,9 +154,9 @@ namespace Foldda.DataAutomation.CsvHandler
 
         protected List<string> _targetTableSchema { get; set; } = new List<string>();
 
-        internal void RunStoredProc(OleDbConnection connection, string dbStoredProc, string param1, string param2, string param3, string param4)
+        internal int RunStoredProc(OleDbConnection connection, string dbStoredProc, string param1, string param2, string param3, string param4)
         {
-            if(!string.IsNullOrEmpty(dbStoredProc))
+            try
             {
                 using (OleDbCommand cmd = new OleDbCommand(dbStoredProc, connection))
                 {
@@ -158,8 +167,13 @@ namespace Foldda.DataAutomation.CsvHandler
                     if (!string.IsNullOrEmpty(param3)) { cmd.Parameters.Add(param3); }
                     if (!string.IsNullOrEmpty(param4)) { cmd.Parameters.Add(param4); }
                     
-                    cmd.ExecuteNonQuery();
+                    return cmd.ExecuteNonQuery();
                 }
+            }
+            catch(Exception e)
+            {
+                Log($"Exexcuting stored-proc '{dbStoredProc}' has encountered an error - {e.Message}");
+                return -1;
             }
         }
 
@@ -174,19 +188,17 @@ namespace Foldda.DataAutomation.CsvHandler
                 {
                     Deb($"OLE-DB connection string = [{config.DbConnectionString}]");
                     connection.Open();
-                    //get target table's column names - 
-                    //https://stackoverflow.com/questions/34517470/retrieve-column-names-and-types-from-sql-server-to-datatable-c-sharp
 
                     //dynamically retrieve the table's schema via a query ...
-                    using (var selectCommand = new OleDbCommand($"SELECT * FROM [{config.DbTableName}] WHERE 1 = 0", connection))
+                    //https://stackoverflow.com/questions/3775047/fetch-column-names-for-specific-table
+                    using (var cmd = new OleDbCommand($"SELECT * FROM [{config.DbTableName}] WHERE 1 = 0", connection))
+                    using (var reader = cmd.ExecuteReader(CommandBehavior.SchemaOnly))
                     {
-                        using (OleDbDataReader reader = selectCommand.ExecuteReader(CommandBehavior.SingleRow))
+                        var table = reader.GetSchemaTable();
+                        var nameCol = table.Columns["ColumnName"];
+                        foreach (DataRow row in table.Rows)
                         {
-                            var dataColumns = Enumerable.Range(0, reader.FieldCount)
-                                                        .Select(i => reader.GetName(i))
-                                                        .ToArray();
-
-                            result.AddRange(dataColumns);
+                            result.Add(row[nameCol].ToString());
                         }
                     }
                 }

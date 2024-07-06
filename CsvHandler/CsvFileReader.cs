@@ -1,5 +1,5 @@
 ﻿using Charian;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 
 using System;
 using System.IO;
@@ -8,45 +8,62 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Foldda.DataAutomation.CsvHandler
+namespace Foldda.Automation.CsvHandler
 {
     public class CsvFileReader : BaseCsvHandler
     {
-        const string INPUT_FILE_NAME_PATTERN = "input-file-name-pattern";
-        const string CSV_INPUT_PATH = "csv-input-path";
 
-        protected string SourceFileNamePattern { get; private set; }
-        protected string CsvSourceFolderPath { get; private set; }
+        public const string INPUT_FILE_NAME_PATTERN = "input-file-name-pattern";
+        public const string INPUT_FILE_PATH = "csv-input-path";
+
+        internal FileReaderConfig LocalConfig { get; private set; }
         public CsvFileReader(ILoggingProvider logger, DirectoryInfo homePath) : base(logger, homePath) { }
         public override void SetParameters(IConfigProvider config)
         {
             base.SetParameters(config); //constructs the RecordEncoding
 
-            var paramSourcePath = config.GetSettingValue(CSV_INPUT_PATH, string.Empty);
-            if (string.IsNullOrEmpty(paramSourcePath))
+            LocalConfig = new FileReaderConfig()
             {
-                Log($"ERROR - parameter '{CSV_INPUT_PATH}' is mandatory and it's not supplied.");
-            }
-            else if (!Directory.Exists(paramSourcePath))
+                InputFileNameOrPattern = config.GetSettingValue(INPUT_FILE_NAME_PATTERN, string.Empty),
+                InputFilePath = config.GetSettingValue(INPUT_FILE_PATH, string.Empty)
+            };
+
+            var paramSourcePath = LocalConfig.InputFilePath;
+            if (string.IsNullOrEmpty(paramSourcePath) || !Directory.Exists(paramSourcePath))
             {
-                Log($"ERROR - supplied path '{paramSourcePath}' does not exist.");
-            }
-            else
-            {
-                CsvSourceFolderPath = paramSourcePath;
+                Log($"ERROR - '{INPUT_FILE_PATH}' parameter in setting '{paramSourcePath}' is invalid.");
             }
 
-            var paramFileName = config.GetSettingValue(INPUT_FILE_NAME_PATTERN, string.Empty);
-            if (string.IsNullOrEmpty(paramFileName))
+            if (string.IsNullOrEmpty(LocalConfig.InputFilePath))
             {
                 Log($"ERROR - parameter '{INPUT_FILE_NAME_PATTERN}' is mandatory and it's not supplied.");
             }
-
-            //parameters checked OK
-            SourceFileNamePattern = paramFileName;
         }
 
-        public override Task InputProducingTask(IDataReceiver inputStorage, CancellationToken cancellationToken)
+        protected override void ProcessEvent(HandlerEvent event1, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        {
+            try
+            {
+                //testing if the trigger contains 'file-read config instructions' in its context,
+                if(!(event1.EventDetailsRda is FileReaderConfig fileReaderConfig))
+                {
+                    //if not, use the handler's local settings
+                    Log($"Container has no file-download instrcution, local (FTP) config settings are used.");
+                    fileReaderConfig = LocalConfig;
+                }
+
+                ReadFileTask(fileReaderConfig.InputFilePath, fileReaderConfig.InputFileNameOrPattern, outputContainer, cancellationToken);
+
+                Log($"Read {outputContainer.Records.Count} records.");
+            }
+            catch (Exception e)
+            {
+                Log(e);
+                throw e;
+            }
+        }
+
+        private Task ReadFileTask(string CsvSourceFolderPath, string SourceFileNamePattern, DataContainer outputContainer, CancellationToken cancellationToken)
         {
             DirectoryInfo targetDirectory = new DirectoryInfo(CsvSourceFolderPath);
 
@@ -54,19 +71,19 @@ namespace Foldda.DataAutomation.CsvHandler
 
             foreach (var container in result)
             {
-                TabularRecord.MetaData metaData = new TabularRecord.MetaData() { SourceId = container.MetaData.ScalarValue };
+                TabularRecord.MetaData metaData = new TabularRecord.MetaData() { SourceId = container.MetaData.ToRda().ScalarValue };
                 if(container.Records.Count > 0)
                 {
                     if(FirstLineIsHeader == true)
                     {
                         var headerLine = container.Records.First();
-                        metaData.ColumnNames = headerLine.ChildrenValueArray;
+                        metaData.ColumnNames = headerLine.ToRda().ChildrenValueArray;
                         container.Records.RemoveAt(0);
                     }
 
-                    container.MetaData = metaData;
+                    outputContainer.MetaData = metaData;
 
-                    inputStorage.Receive(container);
+                    outputContainer.Records.AddRange(container.Records);
                 }
             }
             return Task.CompletedTask;

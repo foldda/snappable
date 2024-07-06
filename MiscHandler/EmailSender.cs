@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Threading;
 using Charian;
 using System.IO;
 using System.Threading.Tasks;
 using System;
-using Foldda.DataAutomation.Util;
+using Foldda.Automation.Util;
 using System.Net.Mail;
 
-namespace Foldda.DataAutomation.MiscHandler
+namespace Foldda.Automation.MiscHandler
 {
     /**
      * EmailSender - place holder
@@ -85,7 +85,7 @@ namespace Foldda.DataAutomation.MiscHandler
                 {
                     foreach(var record in container.Records)
                     {
-                        ConsumeOutputRecord(record);
+                        ConsumeOutputRecord(record as EmailContent);
                     }
                 }
             }
@@ -99,14 +99,7 @@ namespace Foldda.DataAutomation.MiscHandler
             try
             {
                 //1. construct the mail-content object from record's Rda (or use the default from local config) 
-                EmailContent email;
-                //testing if the record contains email context,
-                //if not, use the handler's local default email settings
-                try
-                {
-                    email = new EmailContent(record);
-                }
-                catch
+                if(!(record is EmailContent email))
                 {
                     Log($"Container record '{record}' triggered emailing content based on local settings.");
                     email = DefaultMailContent;

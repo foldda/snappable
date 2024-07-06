@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Threading;
 using System.Text;
 using Charian;
@@ -10,7 +10,7 @@ using System.Net.Sockets;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Foldda.DataAutomation.HL7Handler
+namespace Foldda.Automation.HL7Handler
 {
     public class HL7NetSender : BaseHL7Handler
     {
@@ -238,7 +238,7 @@ namespace Foldda.DataAutomation.HL7Handler
                 int retry = 0;
                 foreach (var hl7Record in container.Records)
                 {
-                    HL7Message hl7Msg = new HL7Message(hl7Record);
+                    HL7Message hl7Msg = hl7Record as HL7Message;
                     char[] hl7 = hl7Msg.ToChars();
                     Log($"Sending HL7 [{new string(hl7)}]");
                     MllpConnectionHandler mllp = GetMllpConnectionHandler(retry);

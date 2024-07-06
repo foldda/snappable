@@ -1,5 +1,5 @@
 ﻿using Charian;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace Foldda.DataAutomation.Timer
+namespace Foldda.Automation.Trigger
 {
     public abstract class BaseTimer : AbstractDataHandler
     {
@@ -69,14 +69,14 @@ namespace Foldda.DataAutomation.Timer
         /// </summary>
         internal abstract void ResetTimeTable();
 
-        public override Task InputProducingTask(IDataReceiver inputStorage, System.Threading.CancellationToken cancellationToken)
+        public override Task InputProducingTask(IDataReceiver inputStorage, CancellationToken cancellationToken)
         {
             while(TimeTable.TryPeek(out DateTime setTime) && setTime < DateTime.Now)
             {
                 if(TimeTable.TryDequeue(out DateTime setTime1))
                 {
                     //create an event and send to down-stream
-                    inputStorage.Receive((new HandlerEvent(TimerId, setTime1)).ToRda());
+                    inputStorage.Receive(new HandlerEvent(TimerId, setTime1));
 
                     Log($"Timer '{TimerId}' fired at {setTime1.ToString("HH:mm:ss")}.");
                 }

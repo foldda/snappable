@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Threading;
 using System;
 using System.IO;
 
-namespace Foldda.DataAutomation.Timer
+namespace Foldda.Automation.Trigger
 {
     //repeat a number of events within an hour
     public class HourlyTimer : BaseTimer

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Threading;
 using System;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Globalization;
 using System.IO;
 
-namespace Foldda.DataAutomation.CsvHandler
+namespace Foldda.Automation.CsvHandler
 {
     //Write to MS SQL Server using OleDb Driver
     public class CsvDbTableWriter : BaseCsvDbTableHandler
@@ -38,9 +38,6 @@ namespace Foldda.DataAutomation.CsvHandler
                 Log(e.Message);
                 throw e;
             }
-
-
-
         }
 
         /**
@@ -84,11 +81,14 @@ namespace Foldda.DataAutomation.CsvHandler
                 {
                     try
                     {
-                        recordsWritten += this.WriteToDatabase(LocalConfig /**using local DB config**/, container, cancellationToken);
+                        if(container.MetaData is TabularRecord.MetaData metaData)
+                        {
+                            recordsWritten += this.WriteToDatabase(LocalConfig /**using local DB config**/, container.Records, metaData, cancellationToken);
+                        }
                     }
                     catch (Exception e)
                     {
-                        Log($"ERROR: Write container '{container.MetaData.ScalarValue}' to database failed with exception: {e.Message}");
+                        Log($"ERROR: Write container '{container.MetaData.ToRda().ScalarValue}' to database table [{LocalConfig.DbTableName}] failed with exception: {e.Message}");
                         Deb(e.StackTrace);
                     }
                 }
@@ -109,7 +109,7 @@ namespace Foldda.DataAutomation.CsvHandler
         /// <param name="container"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected virtual int WriteToDatabase(DbTableConnectionConfig config, DataContainer container, CancellationToken cancellationToken)
+        protected virtual int WriteToDatabase(DbTableConnectionConfig config, List<IRda> tabularRecords, TabularRecord.MetaData metaData, CancellationToken cancellationToken)
         {
             using (OleDbConnection connection = new OleDbConnection(config.DbConnectionString))
             {
@@ -117,9 +117,9 @@ namespace Foldda.DataAutomation.CsvHandler
                 connection.Open();
 
                 //(optional) run pre-processing stored-proc if provided.
-                if (!string.IsNullOrEmpty(config.PreProcessingStoreProc))
+                if (!string.IsNullOrEmpty(config.PreProcessingStoredProc))
                 {
-                    base.RunStoredProc(connection, config.PreProcessingStoreProc, null, null, null, null);
+                    base.RunStoredProc(connection, config.PreProcessingStoredProc, null, null, null, null);
                 }
 
                 using (var insertCommand = connection.CreateCommand())
@@ -144,9 +144,9 @@ namespace Foldda.DataAutomation.CsvHandler
 
                     //2. now use the prepared query to insert each record
                     int rowIndex = 0;
-                    foreach (var line in container.Records)
+                    foreach (var line in tabularRecords)
                     {
-                        TabularRecord row = new TabularRecord(line);
+                        TabularRecord row = line as TabularRecord;  //casting
 
                         foreach (var columnMappingDef in _columnDefinitions.Values)
                         {
@@ -164,7 +164,7 @@ namespace Foldda.DataAutomation.CsvHandler
                             }
                         }
 
-                        //insert the line
+                        //insert the line of records
                         insertCommand.ExecuteNonQuery();
 
                         rowIndex++;
@@ -179,7 +179,7 @@ namespace Foldda.DataAutomation.CsvHandler
 
             }
 
-            return container.Records.Count;
+            return tabularRecords.Count;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Text;
@@ -9,7 +9,7 @@ using Charian;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Foldda.DataAutomation.CsvHandler
+namespace Foldda.Automation.CsvHandler
 {
     public class CsvFileWriter : BaseCsvHandler
     {
@@ -83,7 +83,7 @@ namespace Foldda.DataAutomation.CsvHandler
         protected void ProcessCsvContainer(DataContainer container, CancellationToken cancellationToken)
         {
             //Csv container label would carry the meta-data such as the source-file-id, also columns name, data-types etc.
-            TabularRecord.MetaData csvContainerMetaData = TabularRecord.GetMetaData(container.MetaData);
+            TabularRecord.MetaData csvContainerMetaData = TabularRecord.GetMetaData(container.MetaData.ToRda());
 
             //https://stackoverflow.com/questions/6053541/regex-every-non-alphanumeric-character-except-white-space-or-colon/6053606
             //change non aplha-numeric (except period) to under-score
@@ -98,13 +98,11 @@ namespace Foldda.DataAutomation.CsvHandler
             if (_mode == Mode.ByRecord)
             {
                 int index = 0;
-                foreach (Rda csvRecord in container.Records)
+                //construct the file name per record
+                string outputFileName = $@"{fileName}-{index++}";
+                string filePath = $@"{OutputFolderPath}\{outputFileName}{TypeExt}";
+                foreach (TabularRecord csvRow in container.Records)
                 {
-                    //construct the file name per record
-                    string outputFileName = $@"{fileName}-{index++}";
-                    string filePath = $@"{OutputFolderPath}\{outputFileName}{TypeExt}";
-
-                    TabularRecord csvRow = new TabularRecord(csvRecord);
                     WriteRecordLineToFile(filePath, csvRow, true);  //overwrite
                 }
             }
@@ -113,19 +111,18 @@ namespace Foldda.DataAutomation.CsvHandler
                 string filePath = $@"{OutputFolderPath}\{fileName}{TypeExt}";
 
                 //if the file is first created, add a header row
-                if(!File.Exists(filePath))
+                if (!File.Exists(filePath))
                 {
-                    TabularRecord.MetaData meta = TabularRecord.GetMetaData(container.MetaData);
-                    if(meta.ColumnNames?.Length > 0)
+                    //TabularRecord.MetaData meta = TabularRecord.GetMetaData(container.MetaData);
+                    if (csvContainerMetaData.ColumnNames?.Length > 0)
                     {
-                        TabularRecord csvHeaderRow = new TabularRecord(meta.ColumnNames.ToList());
+                        TabularRecord csvHeaderRow = new TabularRecord(csvContainerMetaData.ColumnNames.ToList());
                         WriteRecordLineToFile(filePath, csvHeaderRow, true);  //create a file with header line columns
                     }
                 }
 
-                foreach (Rda csvRecord in container.Records)
+                foreach (TabularRecord csvDataRow in container.Records)
                 {
-                    TabularRecord csvDataRow = new TabularRecord(csvRecord);
                     WriteRecordLineToFile(filePath, csvDataRow, false);  //append
                 }
             }

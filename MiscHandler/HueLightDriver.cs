@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using Foldda.DataAutomation.Framework;
+using Foldda.Automation.Framework;
 using System.Threading;
 using System.IO;
 using System;
 using Charian;
-using Foldda.DataAutomation.Util;
+using Foldda.Automation.Util;
 using System.Threading.Tasks;
 
-namespace Foldda.DataAutomation.MiscHandler
+namespace Foldda.Automation.MiscHandler
 {
     /**
      * HueLightDriver converts targetted values from a Lookup reposite to a HttpSenderInput parcel 
@@ -70,23 +70,22 @@ namespace Foldda.DataAutomation.MiscHandler
             return Task.Delay(100); //avoid a busy loop
         }
 
-        private void ConsumeOutputRecord(Rda record, CancellationToken cancellationToken)
+        private void ConsumeOutputRecord(IRda record, CancellationToken cancellationToken)
         {
             try
             {
                 //this a reposite of name-value pairs from upstream
-                LookupRda httpRequestResult = new LookupRda(record);
-
-                foreach(var lightId in lightIds)
+                if(record is LookupRda httpRequestResult)
                 {
-                    HueLight.LIGHT_STATUS lightStatus = 
-                        "true".Equals(httpRequestResult.Store[lightId]) ? HueLight.LIGHT_STATUS.ON : HueLight.LIGHT_STATUS.OFF;
+                    foreach(var lightId in lightIds)
+                    {
+                        HueLight.LIGHT_STATUS lightStatus = 
+                            "true".Equals(httpRequestResult.Store[lightId]) ? HueLight.LIGHT_STATUS.ON : HueLight.LIGHT_STATUS.OFF;
 
-                    //2. drive the light
-                    hueLight.Switch(lightId, lightStatus, cancellationToken);
+                        //2. drive the light
+                        hueLight.Switch(lightId, lightStatus, cancellationToken);
+                    }
                 }
-
-
             }
             catch (OperationCanceledException)
             {

@@ -1,8 +1,8 @@
-﻿using Foldda.DataAutomation.Framework;
+﻿using Foldda.Automation.Framework;
 using System;
 using System.IO;
 
-namespace Foldda.DataAutomation.Timer
+namespace Foldda.Automation.Trigger
 {
     //triggers an event at a pre-set (in seconds) interval
     public class SecondsTimer : BaseTimer

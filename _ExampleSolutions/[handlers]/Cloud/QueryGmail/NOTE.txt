@@ -1,0 +1,3 @@
+Place-holder for a Gmail API handler
+
+https://github.com/smiley22/S22.Imap

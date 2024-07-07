@@ -19,9 +19,10 @@ namespace Foldda.Automation.Framework
     /// <summary>
     /// 
     /// This class implements the default ("do nothing") behavior for the three abstract tasks defined by the IDataProcessor:
+    /// 
     /// 1) For gathering/generating input data of the data-processing chain (placing the produced data to the 'input storage')
     /// 2) For translating/transforming data based on the input from the 'input storage', and placing the result to the 'output storage'.
-    /// 3) For dispatching data to an outside destination (eg database, file, network, etc)
+    /// 3) For dispatching processed data to an outside destination (eg database, file, network, etc)
     /// 
     /// The container stores parameters are supplied by a handler-hosting runtime environment, like Foldda (foldda.com).
     /// 

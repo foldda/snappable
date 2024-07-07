@@ -9,7 +9,7 @@ namespace Foldda.Automation.Framework
     /// 
     /// 1) For gathering/generating input data of the data-processing chain (placing the produced data to the 'input storage')
     /// 2) For translating/transforming data based on the input from the 'input storage', and placing the result to the 'output storage'.
-    /// 3) For dispatching data to an outside destination (eg database, file, network, etc)
+    /// 3) For dispatching processed data to an outside destination (eg database, file, network, etc)
     /// 
     /// A data-processing handler class can implement (or extend the default behavior of ) any one of these methods.
     /// 
@@ -20,7 +20,7 @@ namespace Foldda.Automation.Framework
     public interface IDataHandler
     {
         /// <summary>
-        /// 
+        /// 1) For gathering/generating input data of the data-processing chain (placing the produced data to the 'input storage')
         /// </summary>
         /// <param name="inputStorage"></param>
         /// <param name="cancellationToken"></param>
@@ -28,7 +28,7 @@ namespace Foldda.Automation.Framework
         Task InputCollectingProcess(IDataContainerStore inputStorage, CancellationToken cancellationToken);
 
         /// <summary>
-        /// 
+        /// 2) For translating/transforming data based on the input from the 'input storage', and placing the result to the 'output storage'.
         /// </summary>
         /// <param name="inputStorage"></param>
         /// <param name="outputStorage"></param>
@@ -37,7 +37,7 @@ namespace Foldda.Automation.Framework
         Task InputProcessingProcess(IDataContainerStore inputStorage, IDataContainerStore outputStorage, CancellationToken cancellationToken);
 
         /// <summary>
-        /// 
+        /// 3) For dispatching processed data to an outside destination (eg database, file, network, etc)
         /// </summary>
         /// <param name="outputStorage">Data to be dispatched are taken from this storage</param>
         /// <param name="cancellationToken"></param>

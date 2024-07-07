@@ -48,7 +48,7 @@ namespace MyCompany.MyApp.MyCustomHandler
             SourceFileNamePattern = paramFileName;
         }
 
-        public override Task InputProducingTask(IDataContainerStore inputStorage, CancellationToken cancellationToken)
+        public override Task InputProducingTask(IDataReceiver inputStorage, CancellationToken cancellationToken)
         {
             DirectoryInfo targetDirectory = new DirectoryInfo(CsvSourceFolderPath);
 

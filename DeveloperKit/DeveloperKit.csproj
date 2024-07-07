@@ -139,11 +139,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Charian\Charian.csproj">
       <Project>{2b0a45b6-15f2-4106-b93e-fd82f7b08fb3}</Project>
       <Name>Charian</Name>

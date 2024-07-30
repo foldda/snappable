@@ -1,6 +1,16 @@
-# Foldda Automation Framework
+# Foldda - Building Apps Like No Other!
 
-Foldda is a modular app-development framework and runtime service, for assembling apps by stacking modules physically represented as folders. In a Foldda app, each folder encapsulates a specific function of a data-processing step, the parent-children relationship of the stacked folders is used for representing the processing's data flow.
+Foldda is an unique modular app development framework where an app is assembled by stacking (i.e. drag-n-drop) modules that are physically represented as folders. App-building in such a way saves money and time, as it does not require purchasing and training using vendor-specific tools (i.e. the "IDEs"). More significantly though, it means in a Foldda app it allows modules from different vendors to be freely joined and collaborate, in other words, a Foldda app has a *truly open* component-based architecture where any module can connect to any module regardless of their vendor[1].
+
+[1] A Foldda module needs to comply with the open-sourced Foldda Framework API specified in this repo.
+
+This repo contains the open-sourced Foldda Framework API, as well as many free, ready-to-use modules for building Foldda apps out of the box. If the features of these modules haven't already met your requirements, the available source code can serve as boilerplate templates for your further (unrestricted) customization.
+
+This repo is anticipated to benefit from being part of the OS community, including being transparent and having continuous improvement.
+
+# How does Foldda Work
+
+In a Foldda app, each folder encapsulates a specific function of a data-processing step, the parent-children relationship of the stacked folders is used for representing the processing's data flow.
 
 <<A pic of Foldda program flow>>
 
@@ -8,7 +18,7 @@ When a Foldda app executes in a runtime, each module's logic (a specific data-pr
 
 << foldda app execution with runtime >>
 
-The advantage of building apps in such a way is that app-building no longer requires vendor-specific tools ("IDE"). It not only means saving money and time on buying and learning these tools, but most significantly, by removing vendor dependency in app-building, it enables a truly open component-based software construction process, as the app's architecture allows modules from different vendors to be freely placed and collaborate in an app. In other words, as long as a module complies with the Foldda Automation Framework API, immediately it can be dropped into (literally), and become a functional part of, any Foldda app.
+
 
 ## Framework API Overview
 

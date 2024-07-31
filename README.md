@@ -1,12 +1,12 @@
-# Foldda - Building Apps Like No Other!
+# Foldda Automation Framework
 
-Foldda is a unique modular app development framework where an app is assembled by stacking (i.e. drag-n-drop) modules that are packaged as file system folders. App-building in such a way is quick and easy because it does not require using vendor-specific tools (i.e. the "IDEs"), so it saves money and time. But more significantly, the reason there is no vendor dependency in the app-building process is that the Foldda framework allows modules from different vendors to be freely joined and collaborate in an app, without the modules having to be compiled or linked inside an IDE. In other words, a Foldda app has a *truly open* component-based architecture where any module can connect to any module regardless of the vendor[1].
+Foldda is a unique modular app development framework where an app is assembled by stacking (i.e. drag-n-drop) modules that are packaged as file system folders. App-building in such a way is quick and easy because it does not require using vendor-specific tools (i.e. the "IDEs"), so it saves money and time. More significantly though, there is no vendor dependency in the app-building process because the Foldda framework allows modules from different vendors to be freely joined and collaborate in an app, without the modules having to be compiled or linked inside an IDE. In other words, a Foldda app has a *truly open* component-based architecture where any module can connect to any module regardless of the vendor.
 
-This repo contains the open-sourced Foldda Framework API, as well as many free, ready-to-use modules for building Foldda apps out of the box. If these modules do not have all the features you want, the modules' available source code serves as boilerplate templates, based on which you can further customize to your requirements. The only restriction is that for your customized module to collaborate with the other Foldda modules out there, it needs to comply with the Foldda Framework API, which is explained below.
+This repo contains the open-sourced Foldda Framework API and many free, ready-to-use modules for building Foldda apps out of the box, and if these modules do not have all the features you want, the available source code could be served as boilerplate templates, which can be used to develop your own modules that are customized to your requirement. The only restriction is that, for your customized module to collaborate with the other Foldda modules out there, it needs to comply with the Foldda Framework API that is specified in this repo.
 
 # How does Foldda Work
 
-In a Foldda app, each folder encapsulates a specific function of a data-processing step, the parent-children relationship of the stacked folders is used for representing the processing's data flow.
+In a Foldda app, each folder encapsulates a specific function of a data-processing step, the parent-children relationship of the stacked folders defines the data flow of the processing.
 
 <<A pic of Foldda program flow>>
 

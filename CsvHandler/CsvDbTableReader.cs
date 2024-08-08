@@ -30,11 +30,11 @@ namespace Foldda.Automation.CsvHandler
 
         public CsvDbTableReader(ILoggingProvider logger) : base(logger) { }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
             try
             {
-                base.SetParameters(config);
+                base.SetParameter(config);
                 QueryWhereClause = config.GetSettingValue(QUERY_WHERE_CLAUSE, string.Empty);
             }
             catch(Exception e)
@@ -45,7 +45,7 @@ namespace Foldda.Automation.CsvHandler
         }
 
         //part of the virtual CsvHandler's DataTransformationTask()
-        protected override void ProcessEvent(HandlerEvent event1, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected override void ProcessEvent(HandlerEvent event1, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace Foldda.Automation.CsvHandler
         /// <param name="outputContainer"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected virtual int ReadFromDatabase(DbTableConnectionConfig config, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected virtual int ReadFromDatabase(DbTableConnectionConfig config, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             try
             {

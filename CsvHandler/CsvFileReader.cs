@@ -18,9 +18,9 @@ namespace Foldda.Automation.CsvHandler
 
         internal FileReaderConfig LocalConfig { get; private set; }
         public CsvFileReader(ILoggingProvider logger) : base(logger) { }
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
-            base.SetParameters(config); //constructs the RecordEncoding
+            base.SetParameter(config); //constructs the RecordEncoding
 
             LocalConfig = new FileReaderConfig()
             {
@@ -40,7 +40,7 @@ namespace Foldda.Automation.CsvHandler
             }
         }
 
-        protected override void ProcessEvent(HandlerEvent event1, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected override void ProcessEvent(HandlerEvent event1, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             try
             {
@@ -63,13 +63,13 @@ namespace Foldda.Automation.CsvHandler
             }
         }
 
-        private Task ReadFileTask(string CsvSourceFolderPath, string SourceFileNamePattern, DataContainer outputContainer, CancellationToken cancellationToken)
+        private Task ReadFileTask(string CsvSourceFolderPath, string SourceFileNamePattern, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             try
             {
                 DirectoryInfo targetDirectory = new DirectoryInfo(CsvSourceFolderPath);
 
-                var result = ScanDirectory(targetDirectory, SourceFileNamePattern, SkippedFileList, GetDefaultFileRecordScanner(Logger), Logger, cancellationToken).Result;
+                var result = ScanDirectory(targetDirectory, SourceFileNamePattern, GetDefaultFileRecordScanner(Logger), Logger, cancellationToken).Result;
 
                 foreach (var container in result)
                 {

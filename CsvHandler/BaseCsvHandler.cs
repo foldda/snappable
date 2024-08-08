@@ -29,7 +29,7 @@ namespace Foldda.Automation.CsvHandler
             return new TabularRecord.TabularRecordStreamScanner(loggingProvider, RecordEncoding);
         }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
             string columnFixedLengths = config.GetSettingValue(CSV_FIXED_COLUMNS_LENGTHS, null);
             if(!string.IsNullOrEmpty(columnFixedLengths))
@@ -68,7 +68,7 @@ namespace Foldda.Automation.CsvHandler
         /// <param name="inputContainer"></param>
         /// <param name="outputContainer"></param>
         /// <param name="cancellationToken"></param>
-        public sealed override void ProcessRecord(IRda record, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected sealed override Task ProcessRecord(IRda record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
 
             try
@@ -77,22 +77,21 @@ namespace Foldda.Automation.CsvHandler
                 {
                     ProcessTabularRecord(csvRecord, inputContainer, outputContainer, cancellationToken);
                 }
-                else if (record is HandlerEvent handlerEvent)
-                {
-                    ProcessEvent(handlerEvent, inputContainer, outputContainer, cancellationToken);
-                }
                 else
                 {
                     Log($"WARNING: Record type UNKNOWN and is ignored. Record => {record?.ToRda()}");
                 }
+
             }
             catch (Exception e)
             {
                 Logger.Log($"Failed converting input record to TabularRecord, record is skipped - {e.Message}.\n{e.StackTrace}");
             }
+
+            return Task.Delay(50);
         }
 
-        protected virtual void ProcessTabularRecord(TabularRecord record, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected virtual void ProcessTabularRecord(TabularRecord record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             //default is a pass-through
             outputContainer.Add(record);
@@ -101,7 +100,7 @@ namespace Foldda.Automation.CsvHandler
             //throw new NotImplementedException();
         }
 
-        protected virtual void ProcessEvent(HandlerEvent eventDetails, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected virtual void ProcessEvent(HandlerEvent eventDetails, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             //force sub-class to implement
             throw new NotImplementedException();

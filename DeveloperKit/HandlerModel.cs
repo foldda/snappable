@@ -7,24 +7,26 @@ using Foldda.Automation.Framework;
 
 namespace Foldda.Automation.HandlerDevKit
 {
-    public enum ENTITY_STATE : int
-    {
-        // ---- these states responds to command
-        NODE_STARTED,     //starts thread for receiving inbound and producing outbound
-        // ---- these states do not have receive/dispose threads
-        NODE_STOPPED,    //respond to "start" command, in state-transit table
-    }
 
-    public enum COMMAND_TYPE : int
-    {
-        NODE_CMD_START,    //
-        NODE_CMD_RESTART,    //
-        NODE_CMD_STOP,
-        UNKNOWN_CMD
-    }
 
     public class HandlerModel : ILoggingProvider
-    {
+    {    
+        public enum ENTITY_STATE : int
+        {
+            // ---- these states responds to command
+            NODE_STARTED,     //starts thread for receiving inbound and producing outbound
+            // ---- these states do not have receive/dispose threads
+            NODE_STOPPED,    //respond to "start" command, in state-transit table
+        }
+
+        public enum COMMAND_TYPE : int
+        {
+            NODE_CMD_START,    //
+            NODE_CMD_RESTART,    //
+            NODE_CMD_STOP,
+            UNKNOWN_CMD
+        }
+
         private HandlerModel() { }
 
         public class Dummy : HandlerModel

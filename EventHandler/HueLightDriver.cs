@@ -7,7 +7,7 @@ using Charian;
 using Foldda.Automation.Util;
 using System.Threading.Tasks;
 
-namespace Foldda.Automation.MiscHandler
+namespace Foldda.Automation.EventHandler
 {
     /**
      * HueLightDriver converts targetted values from a Lookup reposite to a HttpSenderInput parcel 
@@ -31,7 +31,7 @@ namespace Foldda.Automation.MiscHandler
         //sample Hue lights' IDs
         string[] lightIds { get; set; }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
             /*
 
@@ -51,23 +51,30 @@ namespace Foldda.Automation.MiscHandler
             }
         }
 
-        public override Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
+        protected override RecordContainer ProcessContainer(RecordContainer container, CancellationToken cancellationToken)
         {
-
-            var outputReceiced = outputStorage.CollectReceived();
-
-            if (outputReceiced.Count > 0)
+            if (container.Records.Count > 0)
             {
-                foreach (var container in outputReceiced)
+                int recordsWritten = 0;
+                try
                 {
                     foreach (var record in container.Records)
                     {
                         ConsumeOutputRecord(record, cancellationToken);
                     }
+
+                    OutputStorage.Receive(new HandlerEvent(Id, DateTime.Now));  //create a dummy event 
                 }
+                catch (Exception e)
+                {
+                    Log($"ERROR: Sending Hue command failed with exception: {e.Message}");
+                    Deb(e.StackTrace);
+                }
+
+                Log($"Total {recordsWritten} records processed.");
             }
 
-            return Task.Delay(100); //avoid a busy loop
+            return null;    //output container 
         }
 
         private void ConsumeOutputRecord(IRda record, CancellationToken cancellationToken)

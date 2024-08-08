@@ -20,6 +20,10 @@ namespace Foldda.Automation.Framework
         /// </summary>
         public BlockingCollection<char[]> HarvestedRecords { get; internal set; } = new BlockingCollection<char[]>();
 
+        //stores any file (full-names) that will be excluded from future scanning (such as files that contains no data)
+        public HashSet<string> SkippedFileList { get; } = new HashSet<string>();
+
+
         ILoggingProvider Logger { get; }
 
         public AbstractCharStreamRecordScanner(ILoggingProvider logger)
@@ -68,10 +72,10 @@ namespace Foldda.Automation.Framework
             try
             {
                 ////check if this scanner is being reused, if so we need to "renew" the AsyncCollection
-                if (HarvestedRecords.IsCompleted == true)
-                {
-                    HarvestedRecords = new BlockingCollection<char[]>();
-                }
+                //if (HarvestedRecords.IsCompleted == true)
+                //{
+                //    HarvestedRecords = new BlockingCollection<char[]>();
+                //}
 
                 int totalCharsRead = 0;
                 Count = 0;
@@ -100,7 +104,7 @@ namespace Foldda.Automation.Framework
                 }
 
                 //tell the consumer it's done. 
-                HarvestedRecords.CompleteAdding();
+                //HarvestedRecords.CompleteAdding();
                 scanningStopwatch.Stop();
                 Log($"Data-scanning completed: fetched {Count.ToString("#,###")} records from {totalCharsRead.ToString("#,###")} bytes, in {(scanningStopwatch.ElapsedMilliseconds/1000.0).ToString("0.000")} seconds.");
             }

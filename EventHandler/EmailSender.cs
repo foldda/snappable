@@ -8,7 +8,7 @@ using System;
 using Foldda.Automation.Util;
 using System.Net.Mail;
 
-namespace Foldda.Automation.MiscHandler
+namespace Foldda.Automation.EventHandler
 {
     /**
      * EmailSender - place holder
@@ -40,7 +40,7 @@ namespace Foldda.Automation.MiscHandler
         }
 
         static readonly char[] addressSepatatorChars = new char[] { ';', ',' };
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
 
             //try get the default message content from the path in the config file
@@ -74,52 +74,51 @@ namespace Foldda.Automation.MiscHandler
             Mailer = new Emailer(smtpHost, port, login, password, enableTLS, Logger);
         }
 
-        public override Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
+
+        const string SENDER = "no-reply@foldda.com";
+        protected override async Task ProcessRecord(IRda record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
-
-            var outputReceiced = outputStorage.CollectReceived();
-
-            if (outputReceiced.Count > 0)
+            //1. construct the mail-content object from record's Rda (or use the default from local config) 
+            if(record is EmailContent email)
             {
-                foreach (var container in outputReceiced)
-                {
-                    foreach(var record in container.Records)
-                    {
-                        ConsumeOutputRecord(record as EmailContent);
-                    }
-                }
+                await SendEmail(email);
+            }
+            else
+            {
+                Log($"Record of type {record?.GetType().FullName} is not the expected 'EmailContent' type and is ignored.");
             }
 
-            return Task.Delay(100);
         }
 
-        const string SENDER = "Foldda Email Sender";
-        private async void ConsumeOutputRecord(Rda record)
+        protected override async Task ProcessHandlerEvent(HandlerEvent handlerEvent, CancellationToken cancellationToken)
+        {
+            if (handlerEvent is OsCommander.OutputRecord output)
+            {
+                DefaultMailContent.EmailBody = output.ExecutionOutput;
+                await SendEmail(DefaultMailContent);
+            }
+        }
+
+        private async Task SendEmail(EmailContent email)
         {
             try
             {
-                //1. construct the mail-content object from record's Rda (or use the default from local config) 
-                if(!(record is EmailContent email))
-                {
-                    Log($"Container record '{record}' triggered emailing content based on local settings.");
-                    email = DefaultMailContent;
-                }
-
                 //2. send the email via SMTP mailer
-                using( MailMessage mailMessage = new MailMessage()
-                    {
-                        Subject = email.EmailSubject,
-                        Body = email.EmailBody,
-                        From = new MailAddress(SENDER)
-                    })
+                using (MailMessage mailMessage = new MailMessage()
+                {
+                    Subject = email.EmailSubject,
+                    Body = email.EmailBody,
+                    From = new MailAddress(SENDER)
+                })
                 {
                     //send the email
                     await Mailer.Send(mailMessage, email.EmailAddress, email.EmailCcAddress, email.EmailBccAddress);
+                    Log($"Email '{mailMessage.Subject}' sent - successful.");
                 }
             }
-            catch (OperationCanceledException)
+            catch (Exception e)
             {
-                Log($"TabularEmailSender.ProcessContainerData() is cancelled");
+                Log($"ERROR: error sending email - {e.Message}");
             }
         }
 

@@ -17,17 +17,18 @@ namespace Foldda.Automation.Trigger
 
         State _state = State.OFF;
 
-        string TriggerId => Name;
+        string TriggerId => Id;
 
         public OnOffSwitch(ILoggingProvider logger) : base(logger) { }
 
-        public override Task InputProducingTask(IDataContainerStore inputStorage, CancellationToken cancellationToken)
+        public override Task ProcessData(CancellationToken cancellationToken)
         {
             if(_state == State.OFF)
             {
-                var now = DateTime.Now; 
+                var now = DateTime.Now;
                 //create an event and send to down-stream
-                inputStorage.Receive(new HandlerEvent(TriggerId, now) { EventDetailsRda = new Rda() { ScalarValue = "Switch is turned ON." } });
+                HandlerEvent record = new HandlerEvent(TriggerId, now) { EventDetailsRda = new Rda() { ScalarValue = "Switch is turned ON." } };
+                OutputStorage.Receive(record);
 
                 _state = State.ON;
                 Log($"Switch '{TriggerId}' is turned ON at {now.ToString("HH:mm:ss")}.");
@@ -37,7 +38,7 @@ namespace Foldda.Automation.Trigger
         }
 
         //this gets called when a node is started.
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
             _state = State.OFF;
         }

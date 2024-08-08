@@ -4,6 +4,8 @@ using Foldda.Automation.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Xml;
 
 namespace Foldda.Automation.Trigger
 {
@@ -16,9 +18,9 @@ namespace Foldda.Automation.Trigger
 
         public DailyTimer(ILoggingProvider logger) : base(logger) { }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
-            base.SetParameters(config);
+            base.SetParameter(config);
 
             string setting = config.GetSettingValue(EXCLUDED_DAYS_OF_WEEK, string.Empty);
 
@@ -38,10 +40,13 @@ namespace Foldda.Automation.Trigger
             {
                 DateTime settingTime = setting.DailyTime;
 
-                if (settingTime > DateTime.Now && 
+                if (settingTime > DateTime.Now /* settingTime is in the future */ && 
                     !ExcludedWeekDays.Contains((int)settingTime.DayOfWeek))
                 {
-                    TimeTable.Enqueue(settingTime);
+                    if(!TimeTable.Contains(settingTime))
+                    {
+                        TimeTable.Enqueue(settingTime);
+                    }
                     Log(setting.HourlyTime.ToString("HH:mm:ss"));
                 }
                 //else, the specific time is already passed, don't add to time-table

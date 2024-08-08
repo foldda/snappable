@@ -19,7 +19,7 @@ namespace Foldda.Automation.HL7Handler
 
         public HL7Filter(ILoggingProvider logger) : base(logger) { }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
             MatchingRules.Clear(); 
             var parameters = config.GetSettingValues(FILTERING_RULE); 
@@ -32,12 +32,13 @@ namespace Foldda.Automation.HL7Handler
             }            
         }
 
-        protected override void ProcessHL7MessageRecord(HL7Message record, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected override Task ProcessInputHL7MessageRecord(HL7Message record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             if(FilterHL7Message(record))
             {
                 outputContainer.Add(record);
             }
+            return Task.Delay(50);
         }
 
         private bool FilterHL7Message(HL7Message hl7)

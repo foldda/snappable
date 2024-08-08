@@ -35,7 +35,7 @@ namespace Foldda.Automation.HL7Handler
 
         public HL7NetSender(ILoggingProvider logger) : base(logger) { }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
             ServerName = config.GetSettingValue(SERVER_ADDRESS, string.Empty); //Node.GetFirstConfigValue(SERVER_ADDRESS) ?? string.Empty;
             ServerPort = config.GetSettingValue(SERVER_PORT, 0);
@@ -82,23 +82,12 @@ namespace Foldda.Automation.HL7Handler
             }
         }
 
-        public override Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
+        protected override RecordContainer ProcessContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
         {
-            //stops connection idle-timer ticking,  
-            //_idleTimer.Change(Timeout.Infinite, Timeout.Infinite);
-            _connInUse = true;
 
-            var outputReceiced = outputStorage.CollectReceived();
+            SendContainer(inputContainer, cancellationToken);
 
-            if (outputReceiced.Count > 0)
-            {
-                foreach (var container in outputReceiced)
-                {
-                    SendContainer(container, cancellationToken);
-                }
-            }
-
-            return Task.Delay(100, cancellationToken); //avoid a busy loop
+            return null;
         }
 
         //idle times up, tear down the connection
@@ -181,7 +170,7 @@ namespace Foldda.Automation.HL7Handler
                         streamToUse = sslStream;
                     }
 
-                    _mllpHandler = new MllpConnectionHandler(streamToUse, Encoding.Default);
+                    _mllpHandler = new MllpConnectionHandler(streamToUse, Encoding.Default, (_tcpClient.Client.RemoteEndPoint as IPEndPoint).ToString());
                     Log($"Connected successfully.");
                 }
                 catch (Exception e)
@@ -230,81 +219,66 @@ namespace Foldda.Automation.HL7Handler
             }
         }
 
-
-        private async void SendContainer(DataContainer container, CancellationToken token)
+        private async void SendContainer(RecordContainer container, CancellationToken token)
         { 
             try
             {
+                _connInUse = true;
+
                 int retry = 0;
+                MllpConnectionHandler mllp = null;
                 foreach (var hl7Record in container.Records)
                 {
                     HL7Message hl7Msg = hl7Record as HL7Message;
                     char[] hl7 = hl7Msg.ToChars();
                     Log($"Sending HL7 [{new string(hl7)}]");
-                    MllpConnectionHandler mllp = GetMllpConnectionHandler(retry);
-                    while (mllp == null)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        await Task.Delay(500);
-                        mllp = GetMllpConnectionHandler(retry);
-                        retry++;
-                    }
+                    char[] ack = default;
 
-                    //send and handle ACK
-                    retry = 0;
-                    while(true)
+                    //sending record re-using the same connection
+                    while (!token.IsCancellationRequested)
                     {
-                        char[] ack = default;
-                        token.ThrowIfCancellationRequested();
                         try
                         {
-                            ack = await mllp.HandleHl7MessageSendAsync(hl7, AckTimeout, token, this as ILoggingProvider);
-                            Log($"Received ACK [{new string(ack)}]");
-                            break;
+                            if (mllp != null)
+                            {
+                                //send and handle ACK
+                                ack = await mllp.HandleHl7MessageSendAsync(hl7, AckTimeout, token, this as ILoggingProvider);
+                                Log($"Received ACK [{new string(ack)}]");
+                                break;  //finished sending this record.
+                            }
+                            else
+                            {
+                                mllp = GetMllpConnectionHandler(retry++);
+                            }
                         }
-                        catch(Exception e)
+                        catch (OperationCanceledException)
                         {
-                            //TODO implement "pause" state when data-processing encounted error
-                            Log(e);
-                            Log($"Error transmitting data via MLLP, re-tried {retry++} times.");
-                            await Task.Delay(100 + retry * 10); //pause a bit
-
-                            //try reconnecting (in a forever-loop)
-                            try
-                            {
-                                while (true)
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    await Task.Delay(500);
-
-                                    mllp = GetMllpConnectionHandler(retry);
-                                    if (mllp != null) { break; }
-                                }
-                            }
-                            catch 
-                            {
-                                Log("Could not re-establish connection.");
-                            }
-
-                            continue;
+                            throw;
                         }
-                    }
+                        catch (Exception exMllp)
+                        {
+                            Log($"ERROR: transmitting data via MLLP had exception '{exMllp.Message}', re-tried {retry} times.");
+                            await Task.Delay(100 + retry * 10); //pause a bit
+                            mllp = null;    //reset MLLP
+                        }
 
+                        await Task.Delay(100);
+                    }
                 }
             }
             catch(OperationCanceledException)
             {
-                Log($"HL7NetSender.Process() is stopped.");
+                Log($"HL7NetSender.Process() is stopped by command.");
                 throw;
             }
-            catch
+            catch(Exception e)
             {
-                Disconnect();   //the connection cannot be reused, so we force a disconnect/clean-up
-                Log($"Network connection disconnected.");
-                //throw;
+                Log($"Net sender stopped due to exception {e.Message}");
             }
             finally
             {
+                Disconnect();   //the connection cannot be reused, so we force a disconnect/clean-up
+                Log($"Network connection disconnected.");
                 _connInUse = false; //release this connection so it can be reused /or disconnected.
             }
 

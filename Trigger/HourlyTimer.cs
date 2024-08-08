@@ -3,6 +3,7 @@ using Foldda.Automation.Framework;
 using System.Threading;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace Foldda.Automation.Trigger
 {
@@ -20,8 +21,11 @@ namespace Foldda.Automation.Trigger
             {
                 if (setting.HourlyTime > nowTime)
                 {
-                    TimeTable.Enqueue(setting.HourlyTime);
-                    Log(setting.HourlyTime.ToString("mm:ss"));
+                    if (!TimeTable.Contains(setting.HourlyTime))
+                    {
+                        TimeTable.Enqueue(setting.HourlyTime);
+                        Log(setting.HourlyTime.ToString("mm:ss"));
+                    }
                 }
                 //else, the specific time is already passed, don't add to time-table
             }

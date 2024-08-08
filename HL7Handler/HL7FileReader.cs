@@ -1,4 +1,5 @@
-﻿using Foldda.Automation.Framework;
+﻿using Charian;
+using Foldda.Automation.Framework;
 
 using System;
 using System.IO;
@@ -14,41 +15,56 @@ namespace Foldda.Automation.HL7Handler
         const string FILE_NAME_PATTERN = "file-name-pattern";
         const string SOURCE_PATH = "source-path";
 
-        protected string TargetFileNamePattern { get; private set; }
-        protected string SourcePath { get; private set; }
+        //protected string TargetFileNamePattern { get; private set; }
+        //protected string SourcePath { get; private set; }
 
-        public override void SetParameters(IConfigProvider config)
+        protected FileReaderConfig DefaultFileReaderConfig { get; private set; }
+
+        public override void SetParameter(IConfigProvider config)
         {
-            SourcePath = config.GetSettingValue(SOURCE_PATH, string.Empty);
+            string SourcePath = config.GetSettingValue(SOURCE_PATH, string.Empty);
             if (string.IsNullOrEmpty(SourcePath)|| !Directory.Exists(SourcePath))
             {
                 Log($"ERROR - supplied path '{SourcePath}' does not exist.");
             }
 
-            var paramFileName = config.GetSettingValue(FILE_NAME_PATTERN, string.Empty);
-            if (string.IsNullOrEmpty(paramFileName))
+            var paramFileNamePattern = config.GetSettingValue(FILE_NAME_PATTERN, string.Empty);
+            if (string.IsNullOrEmpty(paramFileNamePattern))
             {
                 Log($"ERROR - parameter '{FILE_NAME_PATTERN}' is mandatory and it's not supplied.");
             }
-            
+
+            string TargetFileNamePattern = paramFileNamePattern;        
+
             //parameters checked OK
-            TargetFileNamePattern = paramFileName;        
+            DefaultFileReaderConfig = new FileReaderConfig()
+            {
+                InputFilePath = SourcePath,
+                InputFileNameOrPattern = TargetFileNamePattern
+            };
         }
 
-        public override Task InputProducingTask(IDataContainerStore inputStorage, CancellationToken cancellationToken)
+        protected override async Task ProcessHandlerEvent(HandlerEvent handlerEvent, CancellationToken cancellationToken)
+        {
+            //ATM, any event would trigger a read action.
+            if (!(handlerEvent.EventDetailsRda is FileReaderConfig readConfig))
+            {
+                readConfig = DefaultFileReaderConfig;
+            }
+
+            await ScanHL7Data(readConfig, cancellationToken);
+        }
+
+        private Task ScanHL7Data(FileReaderConfig readConfig, CancellationToken cancellationToken)
         {
             try
             {
-                if (string.IsNullOrEmpty(SourcePath) || !Directory.Exists(SourcePath))
-                {
-                    throw new Exception($"ERROR - supplied path '{SourcePath}' does not exist.");
-                }
-                DirectoryInfo targetDirectory = new DirectoryInfo(SourcePath);
+                DirectoryInfo targetDirectory = new DirectoryInfo(readConfig.InputFilePath);
 
-                var result = ScanDirectory(targetDirectory, TargetFileNamePattern, SkippedFileList, GetDefaultFileRecordScanner(Logger), Logger, cancellationToken).Result;
+                var result = ScanDirectory(targetDirectory, readConfig.InputFileNameOrPattern, GetDefaultFileRecordScanner(Logger), Logger, cancellationToken).Result;
                 foreach (var container in result)
                 {
-                    inputStorage.Receive(container);
+                    OutputStorage.Receive(container);
                 }
             }
             catch(Exception ex) 

@@ -33,12 +33,6 @@ namespace Foldda.Automation.Framework
             EventTime = time;
         }
 
-        public HandlerEvent(string sourceId, List<string> dateTimeTokens)
-        {
-            EventSourceId = sourceId;
-            EventTime = MakeDateTime(dateTimeTokens);
-        }
-
         private DateTime MakeDateTime(List<string> dateTimeTokens)
         {
             if(dateTimeTokens.Count < 3)

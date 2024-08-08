@@ -36,18 +36,14 @@ namespace Foldda.Automation.HL7Handler
         /// <param name="inputContainer"></param>
         /// <param name="outputContainer"></param>
         /// <param name="cancellationToken"></param>
-        public sealed override void ProcessRecord(IRda record, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected sealed override async Task ProcessRecord(IRda record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
 
             try
             {
                 if (record is HL7Message hl7Message)
                 {
-                    ProcessHL7MessageRecord(hl7Message, inputContainer, outputContainer, cancellationToken);
-                }
-                else if (record is HandlerEvent handlerEvent)
-                {
-                    ProcessEvent(handlerEvent, inputContainer, outputContainer, cancellationToken);
+                    await ProcessInputHL7MessageRecord(hl7Message, inputContainer, outputContainer, cancellationToken);
                 }
                 else
                 {
@@ -60,16 +56,11 @@ namespace Foldda.Automation.HL7Handler
             }
         }
 
-        protected virtual void ProcessEvent(HandlerEvent eventDetails, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
-        {
-            //force sub-class to implement
-            throw new NotImplementedException();
-        }
-
-        protected virtual void ProcessHL7MessageRecord(HL7Message record, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected virtual Task ProcessInputHL7MessageRecord(HL7Message record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             //default is a pass-through
             outputContainer.Add(record);
+            return Task.Delay(50);
         }
 
         public class MllpConnectionHandler
@@ -88,8 +79,9 @@ namespace Foldda.Automation.HL7Handler
 
             private Stream networkStream;
             private Encoding encoding;
+            private string connectionClientId = string.Empty;
 
-            public MllpConnectionHandler(Stream networkStream, Encoding encoding)
+            private MllpConnectionHandler(Stream networkStream, Encoding encoding)
             {
                 this.networkStream = networkStream;
                 this.encoding = encoding;
@@ -97,7 +89,12 @@ namespace Foldda.Automation.HL7Handler
                 this.ReceivedMllpPayload = new BlockingCollection<char[]>(10);
             }
 
-            public async Task HandleHl7MessageReceiveAsync(HL7NetReceiver.AckManager processHl7, CancellationToken token, ILoggingProvider loggingClient)
+            public MllpConnectionHandler(Stream networkStream, Encoding encoding, string remoteClientId) : this(networkStream, encoding)
+            {
+                this.connectionClientId = remoteClientId;
+            }
+
+            public async Task HandleHl7MessageReceiveAsync(HL7NetReceiver.AckManager ackManager, CancellationToken token, ILoggingProvider loggingClient)
             {
                 byte[] buffer = new byte[2048];
                 int count = 0;
@@ -119,7 +116,7 @@ namespace Foldda.Automation.HL7Handler
 
                             while (ReceivedMllpPayload.TryTake(out char[] data) == true)
                             {
-                                char[] ack = processHl7.ProcessNetReceived(data);
+                                char[] ack = ackManager.ProcessNetReceived(data, connectionClientId);
                                 await SendAsync(ack, loggingClient);
                                 loggingClient.Log($"Responsed ACK => '{new string(ack)}'");
                             }
@@ -142,11 +139,12 @@ namespace Foldda.Automation.HL7Handler
 
                 //now try to receive for ACK
                 byte[] buffer = new byte[2048];
-                int count = 0;
+                int count;
                 while (true)
                 {
                     try
                     {
+                        nodeStopCancellationToken.ThrowIfCancellationRequested();
                         var streamReadTask = networkStream.ReadAsync(buffer, 0, buffer.Length);
 
                         //wait for task to complete with timeout.
@@ -167,12 +165,11 @@ namespace Foldda.Automation.HL7Handler
                                 return ack;
                             }
 
-                            nodeStopCancellationToken.ThrowIfCancellationRequested();
                         }
                         else
                         {
                             // timeout logic
-                            throw new Exception($"Timeout ({timeout / 1000.0} sec) waiting ACK.");
+                            throw new Exception($"Timeout ({timeout / 1000.0} sec) awaiting ACK.");
                         }
                     }
                     catch (Exception e)

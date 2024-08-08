@@ -12,24 +12,22 @@ using System.Text.RegularExpressions;
 using System.IO.Compression;
 using System.Data;
 //using Foldda.OpenConnect.Framework;
-//using Foldda.OpenConnect.Util;
+//using Foldda.Automation.;
 
 namespace Foldda.Automation.Framework
 {
     /// <summary>
     /// 
-    /// This class implements the default ("do nothing") behavior for the three abstract tasks defined by the IDataProcessor:
+    /// This class implements the default ("do nothing") behavior for the 1 abstract task defined by the IDataHandler:
     /// 
-    /// 1) For gathering/generating input data of the data-processing chain (placing the produced data to the 'input storage')
     /// 2) For translating/transforming data based on the input from the 'input storage', and placing the result to the 'output storage'.
-    /// 3) For dispatching processed data to an outside destination (eg database, file, network, etc)
     /// 
-    /// The container stores parameters are supplied by a handler-hosting runtime environment, like Foldda (foldda.com).
+    /// The container stores parameters are supplied by a hosting runtime environment, like Foldda from foldda.com.
     /// 
     /// </summary>
     public class BasicDataHandler : IDataHandler
     {
-        public string Name { set; get; }
+        public string Id { set; get; }
 
         public BasicDataHandler(ILoggingProvider logger)
         {
@@ -40,11 +38,13 @@ namespace Foldda.Automation.Framework
         public const string YES_STRING = "YES";
         public const string NO_STRING = "NO";
 
+        public IDataStore InputStorage { get; protected set; }
+        public IDataStore OutputStorage { get; protected set; }
+
         public ILoggingProvider Logger { get; set; }
 
         public class FileReaderConfig : Rda
         {
-
             public enum RDA_INDEX : int { InputFileNameOrPattern, InputFilePath }
 
             public string InputFileNameOrPattern
@@ -59,65 +59,23 @@ namespace Foldda.Automation.Framework
             }
         }
 
-        public virtual void SetParameters(IConfigProvider config) { }
+        public virtual void SetParameter(IConfigProvider config) { }
 
-        //public abstract Task ScanDirectory(DirectoryInfo directoryInfo, IDataReceiver handlerInputAggregatorReceiver, CancellationToken cancellationToken);
-
-
-        /// <summary>
-        /// Default is to run the node-folder file-scanning processor
-        /// </summary>
-        /// <param name="inputStorage"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public virtual async Task InputCollectingProcess(IDataContainerStore inputStorage, CancellationToken cancellationToken)
+        public void Setup(IConfigProvider config, IDataStore inputStorage, IDataStore outputStorage)
         {
-            await Task.Run(async () =>
-            {
-                try
-                {
-                    do
-                    {
-                        await InputProducingTask(inputStorage, cancellationToken);
-                        await Task.Delay(1000);
-                    } while (cancellationToken.IsCancellationRequested == false);
-                }
-                catch (Exception e)
-                {
-                    if (e is OperationCanceledException)
-                    {
-                        Log($"Handler '{this.GetType().Name}' operation is cancelled.");
-                    }
-                    else
-                    {
-                        Deb($"\nHandler operation is stopped unexpected due to error - {e.Message}.");
-                        Log(e);
-                        throw e;
-                    }
-                }
-                finally
-                {
-                    Log($"Producing-input task stopped.");
-                }
-
-            });
-
-            return;
-        }
-
-        public virtual async Task InputProducingTask(IDataContainerStore inputStorage, CancellationToken cancellationToken)
-        {
-            await Task.Delay(50);
+            this.InputStorage = inputStorage;
+            this.OutputStorage = outputStorage;
+            SetParameter(config);
         }
 
         /// <summary>
         /// This is a wrapper to the more simplified DataTransformationTask (method)
         /// </summary>
         /// <param name="inputStorage">Input records are from here</param>
-        /// <param name="outputStorage">Result (output) records are stored here.</param>
+        /// <param name="OutputStorage">Result (output) records are stored here.</param>
         /// <param name="cancellationToken">Used to stop the processing loop.</param>
         /// <returns></returns>
-        public virtual async Task InputProcessingProcess(IDataContainerStore inputStorage, IDataContainerStore outputStorage, CancellationToken cancellationToken)
+        public virtual async Task ProcessData(CancellationToken cancellationToken)
         {
             await Task.Run(async () =>
             {
@@ -125,8 +83,28 @@ namespace Foldda.Automation.Framework
                 {
                     do
                     {
-                        await DataTransformationTask(inputStorage, outputStorage, cancellationToken);
-                    } while (cancellationToken.IsCancellationRequested == false) ;
+                        var input = InputStorage.CollectReceived();
+                        foreach (var item in input)
+                        {
+                            if (item is RecordContainer inputRecordContainer)
+                            {
+                                var outputContainer = ProcessContainer(inputRecordContainer, cancellationToken);
+
+                                if (outputContainer?.Records.Count > 0)
+                                {
+                                    OutputStorage.Receive(outputContainer);
+                                }
+                            }
+                            else if (item is HandlerEvent handlerEvent)
+                            {
+                                await ProcessHandlerEvent(handlerEvent, cancellationToken);
+                            }
+
+                        }
+
+                        await Task.Delay(50);
+                    } 
+                    while (cancellationToken.IsCancellationRequested == false) ;
                 }
                 catch (Exception e)
                 {
@@ -136,7 +114,7 @@ namespace Foldda.Automation.Framework
                     }
                     else
                     {
-                        Deb($"Handler data-transfomation process is stopped unexpected due to error - {e.Message}.");
+                        Deb($"ERROR: Handler data-processing task is unexpectedly stopped due to error - {e.Message}.\n{e.StackTrace}");
                         throw e;
                     }
                 }
@@ -148,32 +126,23 @@ namespace Foldda.Automation.Framework
             });
         }
 
-        //take records from inputStorage, "processing" them, then result records are stored into the outputStorage.
-        public virtual async Task DataTransformationTask(IDataContainerStore inputStorage, IDataContainerStore outputStorage, CancellationToken cancellationToken)
+        protected virtual Task ProcessHandlerEvent(HandlerEvent handlerEvent, CancellationToken cancellationToken)
         {
-            var input = inputStorage.CollectReceived();
-            foreach (var inputContainer in input)
-            {
-                var outputContainer = ProcessContainer(inputContainer, cancellationToken);
-
-                if (outputContainer.Records.Count > 0)
-                {
-                    outputStorage.Receive(outputContainer);
-                }
-            }
-
-            await Task.Delay(50);
+            //force sub-class to implement
+            Logger.Log($"WARNING - HandlerEvent from upstream is not handled - {handlerEvent.EventSourceId}: {handlerEvent.EventDetailsRda}"); ;
+            //throw new NotImplementedException();
+            return Task.Delay(50);
         }
 
         /// <summary>
-        /// Check if the container is expected -  eg from the correct sender/source, if so, continue to process each record.
+        /// If the container is expected, by checking the Meta data - eg from the correct sender/source, continue to process each record.
         /// </summary>
         /// <param name="inputContainer"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>A container of output/produced records</returns>
-        protected virtual DataContainer ProcessContainer(DataContainer inputContainer, CancellationToken cancellationToken)
+        protected virtual RecordContainer ProcessContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
         {
-            DataContainer outputContainer = new DataContainer() { MetaData = inputContainer.MetaData };
+            RecordContainer outputContainer = new RecordContainer() { MetaData = inputContainer.MetaData };
             //label the processed container .. default just keeping it as the input
 
             //process each record
@@ -186,63 +155,66 @@ namespace Foldda.Automation.Framework
         }
 
         /// <summary>
-        /// Check is the record is expected. Each handler can expect one or more types of records to handle.
+        /// Check if the record is expected. Each handler can expect one or more types of records to handle.
         /// </summary>
         /// <param name="record"></param>
         /// <param name="outputContainer">This is where to deposite the produced (output) record if applicable.</param>
         /// <param name="cancellationToken"></param>
-        public virtual void ProcessRecord(IRda record, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected virtual Task ProcessRecord(IRda record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             //default is a pass-through
             outputContainer.Add(record);
+
+            return Task.Delay(50);
         }
 
 
-        /// <summary>
-        /// Implements the default behavior of consuming the output that are available in the output storage.
-        /// 
-        /// Sub-class override this method to implement output dispatching, eg. write to a file/database/network destination.
-        /// </summary>
-        /// <param name="outputStorage"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public virtual async Task OutputDispatchingProcess(IDataContainerStore outputStorage, CancellationToken cancellationToken)
-            {
-                await Task.Run(async () =>
-                {
-                    try
-                    {
-                        do
-                        {
-                            await OutputConsumingTask(outputStorage, cancellationToken);
-                        } while (cancellationToken.IsCancellationRequested == false);
-                    }
-                    catch (Exception e)
-                    {
-                        if (e is OperationCanceledException)
-                        {
-                            Log($"Handler '{this.GetType().Name}' operation is cancelled.");
-                        }
-                        else
-                        {
-                            throw e;
-                        }
-                    }
-                    finally
-                    {
-                        Log($"Consume-output task stopped.");
-                    }
+        ///// <summary>
+        ///// Implements the default behavior of consuming the output that are available in the output storage.
+        ///// 
+        ///// Sub-class override this method to implement output dispatching, eg. write to a file/database/network destination.
+        ///// </summary>
+        ///// <param name="outputStorage"></param>
+        ///// <param name="cancellationToken"></param>
+        ///// <returns></returns>
+        //public virtual async Task OutputDispatchingProcess(IDataContainerStore outputStorage, CancellationToken cancellationToken)
+        //{
+        //    await Task.Run(async () =>
+        //    {
+        //        try
+        //        {
+        //            do
+        //            {
+        //                await OutputConsumingTask(outputStorage, cancellationToken);
+        //            }
+        //            while (cancellationToken.IsCancellationRequested == false);
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            if (e is OperationCanceledException)
+        //            {
+        //                Log($"Handler '{this.GetType().Name}' operation is cancelled.");
+        //            }
+        //            else
+        //            {
+        //                throw e;
+        //            }
+        //        }
+        //        finally
+        //        {
+        //            Log($"Consume-output task stopped.");
+        //        }
 
-                });
-            }
+        //    });
+        //}
 
-        public virtual async Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
-        {
-            //the output is disregarded by default.
-            _ = outputStorage.CollectReceived();
+        //public virtual async Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
+        //{
+        //    //the output is disregarded by default.
+        //    _ = outputStorage.CollectReceived();
 
-            await Task.Delay(50);   //delay is to avoid being a busy-loop
-        }
+        //    await Task.Delay(50);   //delay is to avoid being a busy-loop
+        //}
 
         //Concrete sub-type handler to implement type-specific record-parser from char-stream (eg from a text file).
         //eg a HL7 message hander would provide a HL7 record parser here (see BaseHL7Handler class)
@@ -257,8 +229,7 @@ namespace Foldda.Automation.Framework
             Logger?.Log(v, LoggingLevel.Debug);
         }
 
-        //stores any file (full-names) that will be excluded from future scanning (such as files that contains no data)
-        public HashSet<string> SkippedFileList { get; } = new HashSet<string>();
+
         private static bool Match(string strValue, string regexPattern)
         {
             if(string.IsNullOrEmpty(strValue)) { return false; }
@@ -286,10 +257,10 @@ namespace Foldda.Automation.Framework
         }
 
         const string tempFileNameSuffix = "$$FolddaTmp$$";  //for "moving-aside" a file before reading
-        protected static async Task<List<DataContainer>> ScanDirectory(
+        public static async Task<List<RecordContainer>> ScanDirectory(
             DirectoryInfo targetDirectory, 
             string regexPattern, 
-            ICollection<string> skippedFileList, 
+            //ICollection<string> skippedFileList, 
             //IDataReceiver dataReceiver, 
             AbstractCharStreamRecordScanner scanner, 
             ILoggingProvider logger, 
@@ -297,7 +268,7 @@ namespace Foldda.Automation.Framework
         {
             int total_count = 0;
             int scanned_files_count = 0;
-            List<DataContainer> result = new List<DataContainer>();
+            List<RecordContainer> result = new List<RecordContainer>();
 
             //check 
             if(targetDirectory == null || !targetDirectory.Exists)
@@ -309,14 +280,14 @@ namespace Foldda.Automation.Framework
             FileInfo[] files = targetDirectory.GetFiles().OrderBy(p => p.LastWriteTime).ToArray();
             foreach (FileInfo file in files)
             {
-                if (skippedFileList.Contains(file.FullName))
+                if (scanner.SkippedFileList.Contains(file.FullName))
                 {
                     await Task.Delay(100);
                     continue;
                 }
                 else if (!Match(file.Name, regexPattern) && !file.Name.EndsWith(tempFileNameSuffix))
                 {
-                    skippedFileList.Add(file.FullName);
+                    scanner.SkippedFileList.Add(file.FullName);
                     logger.Log($@"File [{file.Name}] in the target directory doesn't match the name-filter '{regexPattern}' and is skipped.");
                     continue;
                 }
@@ -342,6 +313,7 @@ namespace Foldda.Automation.Framework
                 {
                     scanned_files_count++;
                     int count = 0;
+                    bool producerCompleted = false;
 
                     Task producer = Task.Run(async () =>
                     {
@@ -350,6 +322,7 @@ namespace Foldda.Automation.Framework
                            logger?.Log($"Input scanner is scanning file [{newTempFileName}] ... ");
 
                            await scanner.ScanRecordsInStreamAsync(stream, cancellationToken); //remember to end with bc.CompleteAdding();
+                           producerCompleted = true;
                         } //stream-reading end
                     });
 
@@ -357,7 +330,7 @@ namespace Foldda.Automation.Framework
                     Task consumer = Task.Run(async () =>
                     {
                         //this task harvests the scanner-produced records
-                        DataContainer container = new DataContainer() { MetaData = new Rda() { ScalarValue = file.Name } };
+                        RecordContainer container = new RecordContainer() { MetaData = new Rda() { ScalarValue = file.Name } };
 
                         while (!cancellationToken.IsCancellationRequested)
                         {
@@ -368,7 +341,7 @@ namespace Foldda.Automation.Framework
                                 container.Add(record);
                                 count++;
                             }
-                            else if (scanner.HarvestedRecords.IsCompleted)
+                            else if (producerCompleted)
                             {
                                 break;
                             }
@@ -393,7 +366,7 @@ namespace Foldda.Automation.Framework
                         File.Move(newTempFileName, file.FullName);
                         logger.Log($"Restored {newTempFileName} to {file.FullName} and will not attempt to process it until next restart.");
                         //if no records found, exclude this file (but don't delete) in the future scanning 
-                        skippedFileList.Add(file.FullName);
+                        scanner.SkippedFileList.Add(file.FullName);
                     }
                     else
                     {

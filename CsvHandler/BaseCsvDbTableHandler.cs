@@ -65,7 +65,7 @@ namespace Foldda.Automation.CsvHandler
 
         internal DbTableConnectionConfig LocalConfig { get; private set; }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
             /*
              * Set the default settings if these are unavailable from the input parameter records

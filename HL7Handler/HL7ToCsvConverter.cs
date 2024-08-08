@@ -3,6 +3,7 @@ using Foldda.Automation.Framework;
 using System.Threading;
 using Foldda.Automation.CsvHandler;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Foldda.Automation.HL7Handler
 {
@@ -23,7 +24,7 @@ namespace Foldda.Automation.HL7Handler
 
         public HL7ToCsvConverter(ILoggingProvider logger) : base(logger) { }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
             /*
              * implied group hierarchy and option for filtering
@@ -45,7 +46,7 @@ namespace Foldda.Automation.HL7Handler
 
         }
 
-        protected override void ProcessHL7MessageRecord(HL7Message hl7, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected override Task ProcessInputHL7MessageRecord(HL7Message hl7, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             List<List<string>> csvBlock = new List<List<string>>();
             foreach (var path in DataElementSelectionPathDefinition.GetQualifiedPaths(hl7.Segments))
@@ -59,6 +60,8 @@ namespace Foldda.Automation.HL7Handler
                 TabularRecord tabularRecord = new TabularRecord(row);
                 outputContainer.Add(tabularRecord);
             }
+
+            return Task.Delay(50);
         }
     }
 }

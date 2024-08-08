@@ -23,11 +23,11 @@ namespace Foldda.Automation.CsvHandler
 
         public CsvDbTableWriter(ILoggingProvider logger) : base(logger) { }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
             try
             {
-                base.SetParameters(config);
+                base.SetParameter(config);
                 if(_columnDefinitions.Count == 0)
                 {
                     throw new Exception("Csv-index to table-column mapping (parameter 'column-spec') missing in the config parameters, and database-write cannot proceed..");
@@ -71,32 +71,31 @@ namespace Foldda.Automation.CsvHandler
          */
 
 
-        public override Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
+        protected override RecordContainer ProcessContainer(RecordContainer container, CancellationToken cancellationToken)
         {
-            var outputReceiced = outputStorage.CollectReceived();
-            if (outputReceiced.Count > 0)
+            if (container.Records.Count > 0)
             {
+
                 int recordsWritten = 0;
-                foreach (var container in outputReceiced)
+                try
                 {
-                    try
+                    if (container.MetaData is TabularRecord.MetaData metaData)
                     {
-                        if(container.MetaData is TabularRecord.MetaData metaData)
-                        {
-                            recordsWritten += this.WriteToDatabase(LocalConfig /**using local DB config**/, container.Records, metaData, cancellationToken);
-                        }
+                        recordsWritten += this.WriteToDatabase(LocalConfig /**using local DB config**/, container.Records, metaData, cancellationToken);
                     }
-                    catch (Exception e)
-                    {
-                        Log($"ERROR: Write container '{container.MetaData.ToRda().ScalarValue}' to database table [{LocalConfig.DbTableName}] failed with exception: {e.Message}");
-                        Deb(e.StackTrace);
-                    }
+
+                    OutputStorage.Receive(new HandlerEvent(Id, DateTime.Now));  //create a dummy event 
+                }
+                catch (Exception e)
+                {
+                    Log($"ERROR: Write container '{container.MetaData.ToRda().ScalarValue}' to database table [{LocalConfig.DbTableName}] failed with exception: {e.Message}");
+                    Deb(e.StackTrace);
                 }
 
-                Log($"{outputReceiced.Count} container(s) with total {recordsWritten} records processed.");
+                Log($"Total {recordsWritten} records processed.");
             }
 
-            return Task.Delay(100, cancellationToken);
+            return null;    //output container 
         }
 
         /// <summary>

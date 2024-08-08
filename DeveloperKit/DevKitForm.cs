@@ -102,8 +102,8 @@ namespace Foldda.Automation.HandlerDevKit
 
                 //assign image lists for customize controls.
                 ImageList nodeImageList = new ImageList() { ImageSize = new Size(16, 16) };
-                nodeImageList.Images.Add(HandlerModel.STATES[ENTITY_STATE.NODE_STARTED], Properties.Resources.node_started);
-                nodeImageList.Images.Add(HandlerModel.STATES[ENTITY_STATE.NODE_STOPPED], Properties.Resources.node_stopped);
+                nodeImageList.Images.Add(HandlerModel.STATES[HandlerModel.ENTITY_STATE.NODE_STARTED], Properties.Resources.node_started);
+                nodeImageList.Images.Add(HandlerModel.STATES[HandlerModel.ENTITY_STATE.NODE_STOPPED], Properties.Resources.node_stopped);
                 nodeImageList.Images.Add(HandlerView.IMAGE_CONFIG, Properties.Resources.config);
                 nodeImageList.Images.Add(HandlerView.IMAGE_TIME, Properties.Resources.time);
 

@@ -35,9 +35,9 @@ namespace Foldda.Automation.CsvHandler
 
         public CsvFileWriter(ILoggingProvider logger) : base(logger) { }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
-            base.SetParameters(config); //constructs the RecordEncoding
+            base.SetParameter(config); //constructs the RecordEncoding
 
             OutputFolderPath = config.GetSettingValue(OUTPUT_FOLDER_PATH, string.Empty); 
 
@@ -64,23 +64,30 @@ namespace Foldda.Automation.CsvHandler
 
         public string TypeExt { get; } = ".csv";  //eg, .hl7, .txt
 
-        public override Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
+        protected override RecordContainer ProcessContainer(RecordContainer container, CancellationToken cancellationToken)
         {
-            var outputReceiced = outputStorage.CollectReceived();
-            if (outputReceiced.Count > 0)
+            if (container.Records.Count > 0)
             {
                 int recordsWritten = 0;
-                foreach (var container in outputReceiced)
+                try
                 {
                     ProcessCsvContainer(container, cancellationToken);
+
+                    OutputStorage.Receive(new HandlerEvent(Id, DateTime.Now));  //create a dummy event 
                 }
-                Log($"{outputReceiced.Count} container(s) with total {recordsWritten} records processed.");
+                catch (Exception e)
+                {
+                    Log($"ERROR: Writing file failed with exception: {e.Message}");
+                    Deb(e.StackTrace);
+                }
+
+                Log($"Total {recordsWritten} records processed.");
             }
 
-            return Task.Delay(100, cancellationToken);
+            return null;    //output container 
         }
 
-        protected void ProcessCsvContainer(DataContainer container, CancellationToken cancellationToken)
+        protected void ProcessCsvContainer(RecordContainer container, CancellationToken cancellationToken)
         {
             //Csv container label would carry the meta-data such as the source-file-id, also columns name, data-types etc.
             TabularRecord.MetaData csvContainerMetaData = TabularRecord.GetMetaData(container.MetaData.ToRda());

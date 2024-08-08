@@ -6,8 +6,9 @@ using System;
 using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
-namespace Foldda.Automation.MiscHandler
+namespace Foldda.Automation.EventHandler
 {
     /**
      * Driven by trigger events (e.g. a timer), FtpDownloader attempts to download available files from 
@@ -113,7 +114,7 @@ namespace Foldda.Automation.MiscHandler
             return null;    // throw new NotImplementedException();
         }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
             LocalConfig = new FtpDownloadConfig()
             {
@@ -133,26 +134,27 @@ namespace Foldda.Automation.MiscHandler
             DownloadUriExclusionList.Clear();
         }
 
-        public override void ProcessRecord(IRda eventTriggerRecord, DataContainer inputContainer, DataContainer outputContainer, CancellationToken cancellationToken)
+        protected override Task ProcessHandlerEvent(HandlerEvent handlerEvent, CancellationToken cancellationToken)
         {
             try
             {
-                if (!(eventTriggerRecord is HandlerEvent evn) || !(evn.EventDetailsRda is FtpDownloadConfig downloadConfig) || string.IsNullOrEmpty(downloadConfig.FtpServer))
+                if (!(handlerEvent.EventDetailsRda is FtpDownloadConfig downloadConfig) || string.IsNullOrEmpty(downloadConfig.FtpServer))
                 {
                     Log($"Trigger event has no download instrcution in input record, local config settings are used.");
                     downloadConfig = LocalConfig;
                 }
 
+                //pass down the file references to fellow readers
                 List<FileReaderConfig> downloadedFiles = RunFtpDownloadSession(downloadConfig, cancellationToken);
 
-                foreach(var fileReaderConfig in downloadedFiles)
+                foreach (var fileReaderConfig in downloadedFiles)
                 {
-                    HandlerEvent event1 = new HandlerEvent(Name, DateTime.Now)
+                    HandlerEvent event1 = new HandlerEvent(Id, DateTime.Now)
                     {
                         EventDetailsRda = fileReaderConfig
                     };
 
-                    outputContainer.Add(event1);
+                    OutputStorage.Receive(event1);
                 }
 
                 Log($"Downloaded {downloadedFiles.Count} files.");
@@ -162,6 +164,8 @@ namespace Foldda.Automation.MiscHandler
                 Log(e);
                 throw e;
             }
+
+            return Task.Delay(50);
         }
 
         //returns output records each has a path of one of the files downloaded.

@@ -30,7 +30,7 @@ namespace Foldda.Automation.HL7Handler
 
         public HL7FileWriter(ILoggingProvider logger) : base(logger) { }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
             _targetPath = config.GetSettingValue(TARGET_PATH, string.Empty);
             if (string.IsNullOrEmpty(_targetPath))
@@ -83,29 +83,45 @@ namespace Foldda.Automation.HL7Handler
             }
         }
 
-        public override Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
-        {
-            var outputReceiced = outputStorage.CollectReceived();
-            if(outputReceiced.Count > 0)
-            {
-                int recordsWritten = 0;
-                foreach(var container in outputReceiced)
-                {
-                    recordCount = 0;
-                    string sourceContainerId = GetNextFilePrefix(container.MetaData.ToRda().ScalarValue);
-                    //https://stackoverflow.com/questions/6053541/regex-every-non-alphanumeric-character-except-white-space-or-colon/6053606
-                    sourceContainerId = Regex.Replace(sourceContainerId /*OriginSourceName*/, @"[^a-zA-Z\d\.]", "_");
-                    foreach (HL7Message hl7 in container.Records)
-                    {
-                        //HL7Message hl7 = new HL7Message(hl7Record);
-                        ProcessHL7Record(hl7, sourceContainerId);
-                        recordsWritten++;
-                    }
-                }
-                Log($"{outputReceiced.Count} container(s) with total {recordsWritten} records processed.");
-            }
+        //public override Task OutputConsumingTask(IDataStore outputStorage, CancellationToken cancellationToken)
+        //{
+        //    var outputReceiced = outputStorage.CollectReceived();
+        //    if(outputReceiced.Count > 0)
+        //    {
+        //        int recordsWritten = 0;
+        //        foreach(var container in inputReceiced)
+        //        {
+        //            recordCount = 0;
+        //            string sourceContainerId = GetNextFilePrefix(container.MetaData.ToRda().ScalarValue);
+        //            //https://stackoverflow.com/questions/6053541/regex-every-non-alphanumeric-character-except-white-space-or-colon/6053606
+        //            sourceContainerId = Regex.Replace(sourceContainerId /*OriginSourceName*/, @"[^a-zA-Z\d\.]", "_");
+        //            foreach (HL7Message hl7 in container.Records)
+        //            {
+        //                //HL7Message hl7 = new HL7Message(hl7Record);
+        //                ProcessHL7Record(hl7, sourceContainerId);
+        //                recordsWritten++;
+        //            }
+        //        }
+        //        Log($"{outputReceiced.Count} container(s) with total {recordsWritten} records processed.");
+        //    }
 
-            return Task.Delay(100, cancellationToken);
+        //    return Task.Delay(100, cancellationToken);
+        //}
+
+        protected override Task ProcessInputHL7MessageRecord(HL7Message record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        {
+            int recordsWritten = 0;
+            //default is a pass-through
+            string sourceContainerId = GetNextFilePrefix(inputContainer.MetaData.ToRda().ScalarValue);
+            //https://stackoverflow.com/questions/6053541/regex-every-non-alphanumeric-character-except-white-space-or-colon/6053606
+            sourceContainerId = Regex.Replace(sourceContainerId /*OriginSourceName*/, @"[^a-zA-Z\d\.]", "_");
+            foreach (HL7Message hl7 in inputContainer.Records)
+            {
+                //HL7Message hl7 = new HL7Message(hl7Record);
+                ProcessHL7Record(hl7, sourceContainerId);
+                recordsWritten++;
+            }
+            return Task.Delay(50);
         }
 
         protected IRda ProcessHL7Record(HL7Message record, string sourceContainerId)

@@ -1,5 +1,6 @@
 ﻿using Charian;
 using Foldda.Automation.Framework;
+using Foldda.Automation.Util;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -34,9 +35,10 @@ namespace Foldda.Automation.Trigger
             return null;    // throw new NotImplementedException();
         }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
             TimeSettings.Clear();
+            TimeTable = new ConcurrentQueue<DateTime>();
 
             foreach (string setting in config.GetSettingValues(TIMEUPS))
             {
@@ -69,26 +71,71 @@ namespace Foldda.Automation.Trigger
         /// </summary>
         internal abstract void ResetTimeTable();
 
-        public override Task InputProducingTask(IDataContainerStore inputStorage, CancellationToken cancellationToken)
+        public override async Task ProcessData(CancellationToken cancellationToken)
         {
-            while(TimeTable.TryPeek(out DateTime setTime) && setTime < DateTime.Now)
+            await Task.Run(async () =>
             {
-                if(TimeTable.TryDequeue(out DateTime setTime1))
+                try
                 {
-                    //create an event and send to down-stream
-                    inputStorage.Receive(new HandlerEvent(TimerId, setTime1));
+                    while (cancellationToken.IsCancellationRequested == false)
+                    {
+                        int count = TimeTable.Count;
+                        if(count == 0)
+                        {
+                            await Task.Delay(200);
+                            ResetTimeTable();   //sub-class adds new entries into the table
+                        }
+                        else
+                        {
+                            //used for removing duplicated entries
+                            HashSet<DateTime> hashSet = new HashSet<DateTime>();
 
-                    Log($"Timer '{TimerId}' fired at {setTime1.ToString("HH:mm:ss")}.");
+                            //lopp thru all events and see if any of them shall be fired
+                            while (count > 0)
+                            {
+                                if (TimeTable.TryDequeue(out DateTime t))
+                                {
+                                    if (t > DateTime.Now)
+                                    {
+                                        /* use hashset to de-duplicate */
+                                        if (hashSet.Add(t)) 
+                                        { 
+                                            TimeTable.Enqueue(t); //do nothing with future events
+                                        }
+                                        //else are duplicates
+                                    }                                    
+                                    else if (t > DateTime.Now.AddSeconds(-1))
+                                    {
+                                        //fire an event if it's 'just' expired
+                                        OutputStorage.Receive(new HandlerEvent(TimerId, t));
+                                        Log($"Timer '{TimerId}' fired at {t.ToString("HH:mm:ss")}.");
+                                    }
+                                    //else the 'long expired' events are dropped
+
+                                    count--;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+
+                        await Task.Delay(100);
+                    }
                 }
-            }
+                catch (Exception e)
+                {
+                    Log($"\nHandler operation is stopped due to exception - {e.Message}.");
+                }
+                finally
+                {
+                    //Node.LogEvent(Constant.NodeEventType.LastStop);
+                    //don't set STATE here, let command and state-table to drive state 
+                    Log($"Node handler '{this.GetType().Name}' tasks stopped.");
+                }
 
-            //refill time-table when scheduled events have been exhausted
-            if (TimeTable.Count == 0)
-            {
-                ResetTimeTable();
-            }
-
-            return Task.CompletedTask;
+            });
         }
 
         protected class DayTimeSetting

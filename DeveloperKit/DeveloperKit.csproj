@@ -217,14 +217,6 @@
   </Target>
   <!--handler dll needs to be manually copied to executables folder, as it's an add-on, not a dependency 	D:\Foldda.Connect\Handler.V1\bin\Debug\netstandard2.0 -->
   <Target Name="AfterBuild">
-    <Copy SourceFiles="$(SolutionDir)CsvHandler\bin\$(Configuration)\netstandard2.0\CsvHandler.dll" DestinationFolder="bin\$(Configuration)" ContinueOnError="false" />
-    <Copy SourceFiles="$(SolutionDir)CsvHandler\bin\$(Configuration)\netstandard2.0\CsvHandler.pdb" DestinationFolder="bin\$(Configuration)" ContinueOnError="false" />
-    <Copy SourceFiles="$(SolutionDir)HL7Handler\bin\$(Configuration)\netstandard2.0\HL7Handler.dll" DestinationFolder="bin\$(Configuration)" ContinueOnError="false" />
-    <Copy SourceFiles="$(SolutionDir)HL7Handler\bin\$(Configuration)\netstandard2.0\HL7Handler.pdb" DestinationFolder="bin\$(Configuration)" ContinueOnError="false" />
-    <Copy SourceFiles="$(SolutionDir)MiscHandler\bin\$(Configuration)\netstandard2.0\MiscHandler.dll" DestinationFolder="bin\$(Configuration)" ContinueOnError="false" />
-    <Copy SourceFiles="$(SolutionDir)MiscHandler\bin\$(Configuration)\netstandard2.0\MiscHandler.pdb" DestinationFolder="bin\$(Configuration)" ContinueOnError="false" />
-    <Copy SourceFiles="$(SolutionDir)Trigger\bin\$(Configuration)\netstandard2.0\Trigger.dll" DestinationFolder="bin\$(Configuration)" ContinueOnError="false" />
-    <Copy SourceFiles="$(SolutionDir)Trigger\bin\$(Configuration)\netstandard2.0\Trigger.pdb" DestinationFolder="bin\$(Configuration)" ContinueOnError="false" />
   </Target>
   <!-- Target Name="PreBuild" AfterTargets="PreBuildEvent">
 		<Exec Command="copy /Y $(SolutionDir)\Handler.V1\bin\$(Configuration)\$(ProjectName).dll" $(TargetDir)$(ProjectName).dll  />
@@ -236,6 +228,6 @@
     <Error Condition="!Exists('..\packages\Obfuscar.2.2.25\build\obfuscar.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Obfuscar.2.2.25\build\obfuscar.props'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>Powershell.exe -file "$(SolutionDir)_Scripts\runtime-host-post-build.ps1" $(TargetDir) "CsvHandler;HL7Handler;MiscHandler;Trigger"</PostBuildEvent>
+    <PostBuildEvent>Powershell.exe -file "$(SolutionDir)_Scripts\runtime-host-post-build.ps1" $(TargetDir) CsvHandler;HL7Handler;EventHandler;Trigger $(ProjectName)</PostBuildEvent>
   </PropertyGroup>
 </Project>

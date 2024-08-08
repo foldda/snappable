@@ -10,7 +10,7 @@ using System.Text;
 using System.IO;
 using Foldda.Automation.Util;
 
-namespace Foldda.Automation.MiscHandler
+namespace Foldda.Automation.Trigger
 {
     /**
      * HttpServer serves HTML content to a web broswer client, and handles Http inputs from the client. 
@@ -18,7 +18,6 @@ namespace Foldda.Automation.MiscHandler
      */
     public class SimpleWebServer : BasicDataHandler
     {
-
         const string LISTENING_PORT = "server-port";
         const string WEB_PAGE_SOURCE = "webpage-source";
 
@@ -35,12 +34,12 @@ namespace Foldda.Automation.MiscHandler
   <head>
     <title>Error</title>
   </head>
-  <body>Webpage source file is missing or empty.</body>
+  <body>Webpage source file in config is missing or empty.</body>
 </html>";
 
         protected SimpleWebServer(ILoggingProvider logger) : base(logger) { }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
             int port = config.GetSettingValue(LISTENING_PORT, 80);
             URI = $"http://localhost:{port}/";
@@ -48,14 +47,12 @@ namespace Foldda.Automation.MiscHandler
             PagePath = config.GetSettingValue(WEB_PAGE_SOURCE, string.Empty);
         }
 
-        public override Task InputProducingTask(IDataContainerStore inputStorage, CancellationToken cancellationToken)
-        {
-            return Listen(URI, inputStorage, cancellationToken);// ListenAsync(ackProducer, cancellationToken);
-        }
+        public override Task ProcessData(CancellationToken cancellationToken) => Listen(URI, cancellationToken);
+
 
         const int MAX_CONCURRENT_CONNECTION = 10;
 
-        public async Task Listen(string prefix, IDataContainerStore inputStorage, CancellationToken token)
+        public async Task Listen(string prefix, CancellationToken token)
         {
             HttpListener listener = new HttpListener();
             var requests = new HashSet<Task>();
@@ -83,7 +80,7 @@ namespace Foldda.Automation.MiscHandler
                         //get the context from request completed listening-thread's result
                         var context = (t as Task<HttpListenerContext>).Result;
                         //create a thread for responding to the request 
-                        requests.Add(ProcessRequestAsync(context, inputStorage, token));
+                        requests.Add(ProcessRequestAsync(context, token));
 
                         //add a new request-listening thread back to the pool
                         requests.Add(listener.GetContextAsync());
@@ -115,7 +112,7 @@ namespace Foldda.Automation.MiscHandler
         }
 
         static int i = 0;
-        public async Task ProcessRequestAsync(HttpListenerContext ctx, IDataContainerStore inputStorage, CancellationToken token)
+        public async Task ProcessRequestAsync(HttpListenerContext ctx, CancellationToken token)
         {
             //bool runServer = true;
 
@@ -143,7 +140,7 @@ namespace Foldda.Automation.MiscHandler
                 {
                     try
                     {
-                        DataContainer container = new DataContainer();
+                        RecordContainer container = new RecordContainer();
 
                         //store all the query data in the LookupRda object, a client would look into these values to get what it wants
                         LookupRda lookup = new LookupRda();
@@ -154,7 +151,7 @@ namespace Foldda.Automation.MiscHandler
                         
                         container.Add(lookup);
                         
-                        inputStorage.Receive(container);
+                        OutputStorage.Receive(container);
                     }
                     catch (Exception e)
                     {

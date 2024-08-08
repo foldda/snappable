@@ -1,9 +1,0 @@
-Gmail-API- G-suite user
-
-https://www.emailarchitect.net/eagetmail/ex/c/21.aspx
-
-https://github.com/smiley22/S22.Imap
-
-Slack-API-
-
-https://csmithblog.medium.com/slack-messaging-in-c-2975d68e52f3

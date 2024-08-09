@@ -1,4 +1,14 @@
-# Foldda Automation Framework
+# What Is Foldda
+
+Foldda is the breadboard for computer software. It's a simple component-based software project environment, for building fun, cheap, and instant applications.
+
+The software components, or modules, that work in a Foldda project are called "handlers". Each handler is packaged as a file system folder containing the resources and executable pointers required for performing a specific function that can have various configurable parameters, and app-building is done by dragging and dropping handler folders and forming a folder hierarchy (called a "solution") that defines the data flows between the handlers. Examples of handlers are Timer, Email-sender, File reader and writer, Dos-command executor, etc.
+
+A Foldda Runtime is an application that functions as "the breadboard", i.e. it powers up, and connects the input and the output of, the handler modules. More technically speaking, it navigates through a Foldda solution's folder hierarchy, executes the instructions in each module's folder, and provides data exchange between connected modules. An example of Foldda runtime is the Foldda Windows app.
+
+Although Foldda allows quick and easy toolless and no-code app development using prebuilt modules and runtime, it would give much greater power if people could have the power to build custom modules and even runtime, so he can leverage the benefits of the existing modules and features, while also have the ultimate flexibility and control, and that is the purpose of this repo.
+
+# Foldda Automation Framework API
 
 Foldda is a unique modular app development framework where an app is assembled with modules that are packaged as file system folders, and app-building is done by stacking such folders into a hierarchy (i.e. via drag-n-drop). Developing apps in such a way is quick and easy because it does not require using sophisticated vendor-specific tools (i.e. the "IDEs"). Not only does it save money and time, by removing vendor dependency in the app-building process, it also means Foldda allows modules from different vendors to be freely joined and collaborate in an app, without the modules being compiled or linked inside an IDE. In other words, a Foldda app has a *truly open* component-based architecture where any module can connect to any module regardless of the vendor.
 

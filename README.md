@@ -1,8 +1,8 @@
-# What Is Foldda
+# Foldda - The 'Breadboard' For Component-based Software Projects
 
-Dubbed "The breadboard for software", Foldda is a simple component-based software project environment, for building fun, cheap, and instant computer applications.
+Dubbed "The breadboard for software", Foldda is an easy-to-use component-based software development project environment, for building fun, cheap, and instant computer applications.
 
-Software components are called "handlers" in a Foldda project. Each handler is packaged as a file system folder containing the resources and executable pointers required for performing a specific function that can have various configurable parameters, and app-building is done by dragging and dropping handler folders and forming a folder hierarchy (called a "solution") that defines the data flows between the handlers. Examples of handlers are Timer, Email-sender, File reader and writer, Dos-command executor, etc.
+A software component in a Foldda project is called a "handler" that is packaged as a file system folder containing the resources and executable pointers required for performing the component's specific function. In each handler's folder content, there is a config file that has a set of configurable parameters related to the handler's function, and developing an 'app' (called a "solution") is done by dragging and dropping handler folders and forming a folder hierarchy, where the folders' parent-child relationship defines the data flows between the handlers. Examples of handlers are Timer, Email-sender, File reader and writer, Dos-command executor, etc.
 
 A Foldda Runtime is an application that functions as "the breadboard", i.e. it powers up, and connects the input and the output of, the handler modules. More technically speaking, it navigates through a Foldda solution's folder hierarchy, executes the instructions in each module's folder, and provides data exchange between connected modules. An example of Foldda runtime is the Foldda Windows app.
 

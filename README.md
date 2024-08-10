@@ -3,9 +3,9 @@
 Dubbed "The breadboard for software", Foldda is an easy-to-use component-based software development project environment, for building fun, cheap, and instant computer applications.
 
 <div align="center">
-<img src="_Resources/breadboard.webp" width="250" align="center">
+<img src="_Resources/foldda-breadboard.png" width="650" align="center">
 
-**_"Foldda connects pre-built components in a software project, like the breadboard used in hardware."_**
+**_"Foldda connects pre-built components and functions 'like a breadboard' in a software project."_**
 </div>
 
 A software component in a Foldda project is called a "handler" that is packaged as a file system folder containing the resources and executable pointers required for performing the component's specific function. In each handler's folder content, there is a config file that has a set of configurable parameters related to the handler's function, and developing an 'app' (called a "solution") is done by dragging and dropping handler folders and forming a folder hierarchy, where the folders' parent-child relationship defines the data flows between the handlers. Examples of handlers are Timer, Email-sender, File reader and writer, Dos-command executor, etc.

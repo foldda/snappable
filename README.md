@@ -6,7 +6,9 @@ Dubbed "The breadboard for software", Foldda is an easy-to-use component-based s
 <img src="_Resources/foldda-breadboard.png" width="650" align="center">
 </div>
 
-A software component in a Foldda project is called a "handler" that is packaged as a file system folder containing the resources and executable pointers required for performing the component's specific function. In each handler's folder content, there is a config file that has a set of configurable parameters related to the handler's function, and developing an 'app' (called a "solution") is done by dragging and dropping handler folders and forming a folder hierarchy, where the folders' parent-child relationship defines the data flows between the handlers. Examples of handlers are Timer, Email-sender, File reader and writer, Dos-command executor, etc.
+A software component in a Foldda project is called a "handler" that is capable of performing a specific function, and a Foldda app, called a "solution", is a selection of handler components that are connected by Foldda "the breadboard" and perform their intended functions in a certain order and collaboration. Some example handlers are available for app-building from this repo, including Timer, Email-sender, File reader and writer, Dos-command executor, etc.
+
+Physically, a Foldda handler component is packaged as a file system folder which contains the resources and executable pointers required to perform the handler's special function. A config file inside each handler's folder content allows the parameters of the handler's function to be configured. is done by dragging and dropping handler folders and forming a folder hierarchy, where the folders' parent-child relationship defines the data flows between the handlers.
 
 A Foldda Runtime is an application that functions as "the breadboard", i.e. it powers up, and connects the input and the output of, the handler modules. More technically speaking, it navigates through a Foldda solution's folder hierarchy, executes the instructions in each module's folder, and provides data exchange between connected modules. An example of Foldda runtime is the Foldda Windows app.
 

@@ -85,37 +85,6 @@ namespace Foldda.Automation.CsvHandler
                 LocalConfig.ColumnSpec = columSpec.ToArray();
             }
 
-            try
-            {
-                _targetTableSchema = QueryTargetTableColumnNames(LocalConfig);   //get Database table schema if available
-                _columnDefinitions.Clear();
-
-                //get all columns specification (CSV index to column mappings)
-                foreach (string specific in config.GetSettingValues(DbTableConnectionConfig.PARAM_COLUMN_SPEC))
-                {
-                    CsvColumnDataDefinition columnDef = CsvColumnDataDefinition.ParseSpec(specific);
-
-                    if (_targetTableSchema.Count > 0 && !_targetTableSchema.Contains(columnDef.Name))
-                    {
-                        string report = string.Join(Environment.NewLine, _targetTableSchema);
-                        string message = $"ERROR: Column '{columnDef.Name}' in config does not exist in target table '{LocalConfig.DbTableName}', valid colums are:\n {report}";
-                        //Log(message);
-                        throw new Exception(message);
-                    }
-                    else
-                    {
-                        //store the column-spec
-                        Log($"Column '{columnDef.Name}' is verified against target table '{LocalConfig.DbTableName}'.");
-                        _columnDefinitions.Add(columnDef.Name, columnDef);
-                    }
-                }
-                Log($"Local setting verified OK - ConnString={LocalConfig.DbConnectionString} Table={LocalConfig.DbTableName}");
-            }
-            catch (Exception e)
-            {
-                Log($"ERROR in checking local setting ConnString={LocalConfig.DbConnectionString} Table={LocalConfig.DbTableName}: {e.Message}");
-                Deb(e.StackTrace);
-            }
         }
 
 
@@ -152,7 +121,7 @@ namespace Foldda.Automation.CsvHandler
 
         internal Dictionary<string, CsvColumnDataDefinition> _columnDefinitions { get; set; } = new Dictionary<string, CsvColumnDataDefinition>();
 
-        protected List<string> _targetTableSchema { get; set; } = new List<string>();
+        protected List<string> _verifiedTargetTableSchema { get; set; } = new List<string>();
 
         internal int RunStoredProc(OleDbConnection connection, string dbStoredProc, string param1, string param2, string param3, string param4)
         {
@@ -178,6 +147,47 @@ namespace Foldda.Automation.CsvHandler
         }
 
         public BaseCsvDbTableHandler(ILoggingProvider logger) : base(logger) { }
+
+
+        protected void VerifyDBConfig(DbTableConnectionConfig dbConfig)
+        {
+            try
+            {
+                if(_verifiedTargetTableSchema == null || _verifiedTargetTableSchema.Count > 0) 
+                { 
+                    return; //Assume it's already verified.
+                }
+
+                _verifiedTargetTableSchema = QueryTargetTableColumnNames(dbConfig);   //get Database table schema if available
+                _columnDefinitions.Clear();
+
+                //get all columns specification (CSV index to column mappings)
+                foreach (string specific in dbConfig.ColumnSpec)
+                {
+                    CsvColumnDataDefinition columnDef = CsvColumnDataDefinition.ParseSpec(specific);
+
+                    if (_verifiedTargetTableSchema.Count > 0 && !_verifiedTargetTableSchema.Contains(columnDef.Name))
+                    {
+                        string report = string.Join(Environment.NewLine, _verifiedTargetTableSchema);
+                        string message = $"ERROR: Column '{columnDef.Name}' in config does not exist in target table '{dbConfig.DbTableName}', valid colums are:\n {report}";
+                        //Log(message);
+                        throw new Exception(message);
+                    }
+                    else
+                    {
+                        //store the column-spec
+                        Log($"Column '{columnDef.Name}' is verified against target table '{dbConfig.DbTableName}'.");
+                        _columnDefinitions.Add(columnDef.Name, columnDef);
+                    }
+                }
+                Log($"Local setting verified OK - ConnString={dbConfig.DbConnectionString} Table={dbConfig.DbTableName}");
+            }
+            catch (Exception e)
+            {
+                Log($"ERROR in checking local setting ConnString={dbConfig.DbConnectionString} Table={dbConfig.DbTableName}: {e.Message}");
+                Deb(e.StackTrace);
+            }
+        }
 
         private List<string> QueryTargetTableColumnNames(DbTableConnectionConfig config)
         {

@@ -44,21 +44,23 @@ namespace Foldda.Automation.CsvHandler
             }
         }
 
-        //part of the virtual CsvHandler's DataTransformationTask()
-        protected override void ProcessEvent(HandlerEvent event1, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        protected override Task ProcessHandlerEvent(HandlerEvent handlerEvent, CancellationToken cancellationToken)
         {
+
             try
             {
                 //testing if the trigger contains 'file-read config instructions' in its context,
-                if (!(event1.EventDetailsRda is DbTableConnectionConfig config))
+                if (!(handlerEvent.EventDetailsRda is DbTableConnectionConfig config))
                 {
                     //if not, use the handler's local settings
-                    Log($"Container has no file-download instrcution, local (FTP) config settings are used.");
+                    Log($"Container has no file-download instrcution, local (DB) config settings are used.");
                     config = LocalConfig;
                 }
 
+                VerifyDBConfig(config);
+
                 TabularRecord.MetaData metaData = new TabularRecord.MetaData() { SourceId = config.DbTableName };
-                if(_columnDefinitions.Count > 0)
+                if (_columnDefinitions.Count > 0)
                 {
                     //if query specified columns
                     metaData.ColumnNames = _columnDefinitions.Keys.ToArray();
@@ -66,8 +68,9 @@ namespace Foldda.Automation.CsvHandler
                 else
                 {
                     //if query "*"
-                    metaData.ColumnNames = _targetTableSchema.ToArray();
+                    metaData.ColumnNames = _verifiedTargetTableSchema.ToArray();
                 }
+                RecordContainer outputContainer = new RecordContainer() { MetaData = metaData };
                 outputContainer.MetaData = metaData;
 
                 int recordsRead = ReadFromDatabase(config, outputContainer, cancellationToken);
@@ -78,6 +81,8 @@ namespace Foldda.Automation.CsvHandler
                 Log(e);
                 throw e;
             }
+
+            return Task.Delay(50);
         }
 
         /// <summary>

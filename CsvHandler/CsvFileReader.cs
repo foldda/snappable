@@ -40,30 +40,30 @@ namespace Foldda.Automation.CsvHandler
             }
         }
 
-        protected override void ProcessEvent(HandlerEvent event1, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        protected override Task ProcessHandlerEvent(HandlerEvent handlerEvent, CancellationToken cancellationToken)
         {
             try
             {
                 //testing if the trigger contains 'file-read config instructions' in its context,
-                if(!(event1.EventDetailsRda is FileReaderConfig fileReaderConfig))
+                if (!(handlerEvent.EventDetailsRda is FileReaderConfig fileReaderConfig))
                 {
                     //if not, use the handler's local settings
                     Log($"Container has no file-download instrcution, local (FTP) config settings are used.");
                     fileReaderConfig = LocalConfig;
                 }
 
-                ReadFileTask(fileReaderConfig.InputFilePath, fileReaderConfig.InputFileNameOrPattern, outputContainer, cancellationToken);
-
-                Log($"Read {outputContainer.Records.Count} records.");
+                ReadFileTask(fileReaderConfig.InputFilePath, fileReaderConfig.InputFileNameOrPattern, cancellationToken);
             }
             catch (Exception e)
             {
                 Log(e);
                 throw e;
             }
+
+            return Task.Delay(50);
         }
 
-        private Task ReadFileTask(string CsvSourceFolderPath, string SourceFileNamePattern, RecordContainer outputContainer, CancellationToken cancellationToken)
+        private Task ReadFileTask(string CsvSourceFolderPath, string SourceFileNamePattern, CancellationToken cancellationToken)
         {
             try
             {
@@ -74,6 +74,7 @@ namespace Foldda.Automation.CsvHandler
                 foreach (var container in result)
                 {
                     TabularRecord.MetaData metaData = new TabularRecord.MetaData() { SourceId = container.MetaData.ToRda().ScalarValue };
+                    Log($"Read {container.Records.Count} records.");
                     if (container.Records.Count > 0)
                     {
                         if (FirstLineIsHeader == true)
@@ -83,9 +84,8 @@ namespace Foldda.Automation.CsvHandler
                             container.Records.RemoveAt(0);
                         }
 
-                        outputContainer.MetaData = metaData;
-
-                        outputContainer.Records.AddRange(container.Records);
+                        container.MetaData = metaData;
+                        OutputStorage.Receive(container);
                     }
                 }
 

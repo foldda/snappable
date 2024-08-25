@@ -28,7 +28,7 @@ namespace Foldda.Automation.EventHandler
             public const string LOGIN = "login";
             public const string PASSWORD = "password";
             public const string REMOTE_SOURCE_PATH = "remote-source-path";
-            public const string TARGET_FILE_NAME_PATTERN = "target-file-name-pattern";
+            public const string TARGET_FILE_NAME_PATTERN = "source-file-name-pattern";
             public const string LOCAL_DESTINATION_PATH = "local-destination-path";
             public const string BINARY_MODE = "binary-mode";
             public const string DELETE_SOURCE_FILE_AFTER_DOWNLOAD = "delete-source-file-after-download";
@@ -147,17 +147,25 @@ namespace Foldda.Automation.EventHandler
                 //pass down the file references to fellow readers
                 List<FileReaderConfig> downloadedFiles = RunFtpDownloadSession(downloadConfig, cancellationToken);
 
-                foreach (var fileReaderConfig in downloadedFiles)
+                if(downloadedFiles?.Count > 0)
                 {
-                    HandlerEvent event1 = new HandlerEvent(Id, DateTime.Now)
+                    foreach (var fileReaderConfig in downloadedFiles)
                     {
-                        EventDetailsRda = fileReaderConfig
-                    };
+                        HandlerEvent event1 = new HandlerEvent(Id, DateTime.Now)
+                        {
+                            EventDetailsRda = fileReaderConfig
+                        };
 
-                    OutputStorage.Receive(event1);
+                        OutputStorage.Receive(event1);
+                    }
+
+                    Log($"Downloaded {downloadedFiles.Count} files.");
+                }
+                else
+                {
+                    Log($"No matching files found to be downloaded.");
                 }
 
-                Log($"Downloaded {downloadedFiles.Count} files.");
             }
             catch (Exception e)
             {
@@ -339,22 +347,32 @@ namespace Foldda.Automation.EventHandler
             return result;
         }
 
+        int count;
+
         /// <summary>
         /// break file-listing result (a string) into trimmed tokens, before matching them to the given regex pattern.
         /// </summary>
         /// <param name="filesListing">The file listing string.</param>
         private List<string> GetRemoteFileNameList(string filesListing, string pattern)
         {
-            var input = filesListing.Split(new char[] { '\r', '\n' });
+            string[] listing = filesListing.Split(new char[] { '\r', '\n' });
             Regex regex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
 
             List<string> files = new List<string>();
-            foreach (var fileName in input)
+            foreach (string fileName in listing)
             {
-                var trim = fileName.Trim();
-                if (regex.IsMatch(trim))
+                var trimmed = fileName.Trim();
+                if(!DownloadUriExclusionList.Contains(trimmed))
                 {
-                    files.Add(trim);
+                    if (regex.IsMatch(trimmed))
+                    {
+                        files.Add(trimmed);
+                    }
+                    else if (!string.IsNullOrEmpty(trimmed))
+                    {
+                        Log($"Remote file '{trimmed}' does not match the targeted Regex pattern '{pattern}' and is not fetched.");
+                    }
+                    DownloadUriExclusionList.Add(trimmed);
                 }
             }
             return files;

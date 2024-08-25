@@ -190,7 +190,7 @@ namespace Foldda.Automation.CsvHandler
                     // and if need to chage state
                     bool qualifyingStateON = false;
                     bool escapingStateON = false;
-                    char _prev_c = '\0', c = _prev_c;
+                    char _prev_c = TabularRecordEncoding.NULL_CHAR, c = _prev_c;
                     StringBuilder cellBuffer = new StringBuilder();
                     for (int pos = 0; pos < csvRow.Length; pos++)
                     {
@@ -214,9 +214,9 @@ namespace Foldda.Automation.CsvHandler
                                 qualifyingStateON = true;
                                 continue;   //scan next char
                             }
-                            else if (c == DelimiterChar || pos == csvRow.Length - 1)
+                            else if (c == DelimiterChar) 
                             {
-                                //pack the cell if delimiter/eol is found
+                                //pack the cell if delimiter is found
                                 result.Add(cellBuffer.ToString());
                                 cellBuffer.Clear();
                             }
@@ -255,6 +255,7 @@ namespace Foldda.Automation.CsvHandler
                                 //looking for ending-qualifier + end of cell (delimiter or EOL)
                                 if (c == QualifierChar && (pos == csvRow.Length - 1 /*EOL*/ || csvRow[pos + 1] == DelimiterChar))
                                 {
+                                    qualifyingStateON = false;
                                     //pack the cell
                                     result.Add(cellBuffer.ToString());
                                     cellBuffer.Clear();
@@ -292,7 +293,7 @@ namespace Foldda.Automation.CsvHandler
 
                     }  // <-- buffer scanning finished.
 
-                    //pack the last cell outside the scanning loop
+                    //pack the last cell outside the scanning loop (EOL reached)
                     if (cellBuffer.Length > 0)
                     {
                         result.Add(cellBuffer.ToString()); //pack the last cell's data (not trigger by delimiter, but by end-of-buffer)
@@ -468,7 +469,7 @@ namespace Foldda.Automation.CsvHandler
                          * we'll only care when to "turn qualifying-off" */
 
                         //qualifying is turned off only when qualifier-char is followed by a CR/CF, or column-delimitor
-                        if (_prev_c == csvColumnQualifier)
+                        if (_prev_c == csvColumnQualifier)//BUG: need also watching for "if the qualifier was escaped.."
                         {
                             if (c == csvColumnDelimiter)
                             {

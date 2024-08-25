@@ -65,66 +65,21 @@ namespace Foldda.Automation.HL7Handler
 
         int recordCount = 0;
 
-        //create a unique file prefix with container-id (if requred) + unique index
-        Dictionary<string, int> SourceTracker = new Dictionary<string, int>();
-        string GetNextFilePrefix(string containerId)
-        {
-            if(SourceTracker.TryGetValue(containerId, out int index))
-            {
-                SourceTracker.Remove(containerId);
-                index++;
-                SourceTracker.Add(containerId, index);
-                return containerId + "-" + index;
-            }
-            else
-            {
-                SourceTracker.Add(containerId, 0);
-                return containerId;
-            }
-        }
-
-        //public override Task OutputConsumingTask(IDataStore outputStorage, CancellationToken cancellationToken)
-        //{
-        //    var outputReceiced = outputStorage.CollectReceived();
-        //    if(outputReceiced.Count > 0)
-        //    {
-        //        int recordsWritten = 0;
-        //        foreach(var container in inputReceiced)
-        //        {
-        //            recordCount = 0;
-        //            string sourceContainerId = GetNextFilePrefix(container.MetaData.ToRda().ScalarValue);
-        //            //https://stackoverflow.com/questions/6053541/regex-every-non-alphanumeric-character-except-white-space-or-colon/6053606
-        //            sourceContainerId = Regex.Replace(sourceContainerId /*OriginSourceName*/, @"[^a-zA-Z\d\.]", "_");
-        //            foreach (HL7Message hl7 in container.Records)
-        //            {
-        //                //HL7Message hl7 = new HL7Message(hl7Record);
-        //                ProcessHL7Record(hl7, sourceContainerId);
-        //                recordsWritten++;
-        //            }
-        //        }
-        //        Log($"{outputReceiced.Count} container(s) with total {recordsWritten} records processed.");
-        //    }
-
-        //    return Task.Delay(100, cancellationToken);
-        //}
-
         protected override Task ProcessInputHL7MessageRecord(HL7Message record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
-            int recordsWritten = 0;
-            //default is a pass-through
-            string sourceContainerId = GetNextFilePrefix(inputContainer.MetaData.ToRda().ScalarValue);
+            //if multiple containers from a same file gets processed, this aggregate the data to the same file
+            //TODO: if this is undesired, used inputContainer.GetHash() to keep track and differenciate the containers
+            string outputFileName = inputContainer.MetaData.ToRda().ScalarValue;
+
             //https://stackoverflow.com/questions/6053541/regex-every-non-alphanumeric-character-except-white-space-or-colon/6053606
-            sourceContainerId = Regex.Replace(sourceContainerId /*OriginSourceName*/, @"[^a-zA-Z\d\.]", "_");
-            foreach (HL7Message hl7 in inputContainer.Records)
-            {
-                //HL7Message hl7 = new HL7Message(hl7Record);
-                ProcessHL7Record(hl7, sourceContainerId);
-                recordsWritten++;
-            }
+            outputFileName = Regex.Replace(outputFileName /*OriginSourceName*/, @"[^a-zA-Z\d\.]", "_");
+            
+            ProcessHL7Record(record, outputFileName);
+
             return Task.Delay(50);
         }
 
-        protected IRda ProcessHL7Record(HL7Message record, string sourceContainerId)
+        protected IRda ProcessHL7Record(HL7Message record, string uniquePerContainerFileName)
          {
 
             string fileName;
@@ -144,13 +99,13 @@ namespace Foldda.Automation.HL7Handler
                     {
 
                         recordCount++;
-                        fileName = $@"{sourceContainerId}-{recordCount:D3}";
+                        fileName = $@"{uniquePerContainerFileName}-{recordCount:D3}";
                         break;
                     }
                 default:
                     {
                         /* Default is by-source */
-                        fileName = sourceContainerId;
+                        fileName = uniquePerContainerFileName;
                         break;
                     }
             }

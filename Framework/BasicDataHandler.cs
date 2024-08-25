@@ -169,55 +169,6 @@ namespace Foldda.Automation.Framework
         }
 
 
-        ///// <summary>
-        ///// Implements the default behavior of consuming the output that are available in the output storage.
-        ///// 
-        ///// Sub-class override this method to implement output dispatching, eg. write to a file/database/network destination.
-        ///// </summary>
-        ///// <param name="outputStorage"></param>
-        ///// <param name="cancellationToken"></param>
-        ///// <returns></returns>
-        //public virtual async Task OutputDispatchingProcess(IDataContainerStore outputStorage, CancellationToken cancellationToken)
-        //{
-        //    await Task.Run(async () =>
-        //    {
-        //        try
-        //        {
-        //            do
-        //            {
-        //                await OutputConsumingTask(outputStorage, cancellationToken);
-        //            }
-        //            while (cancellationToken.IsCancellationRequested == false);
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            if (e is OperationCanceledException)
-        //            {
-        //                Log($"Handler '{this.GetType().Name}' operation is cancelled.");
-        //            }
-        //            else
-        //            {
-        //                throw e;
-        //            }
-        //        }
-        //        finally
-        //        {
-        //            Log($"Consume-output task stopped.");
-        //        }
-
-        //    });
-        //}
-
-        //public virtual async Task OutputConsumingTask(IDataContainerStore outputStorage, CancellationToken cancellationToken)
-        //{
-        //    //the output is disregarded by default.
-        //    _ = outputStorage.CollectReceived();
-
-        //    await Task.Delay(50);   //delay is to avoid being a busy-loop
-        //}
-
-        //Concrete sub-type handler to implement type-specific record-parser from char-stream (eg from a text file).
-        //eg a HL7 message hander would provide a HL7 record parser here (see BaseHL7Handler class)
         public virtual AbstractCharStreamRecordScanner GetDefaultFileRecordScanner(ILoggingProvider loggingProvider)
         {
             //used by 'sub-class dependent' (because of the record-type) file-scanning

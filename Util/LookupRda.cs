@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Foldda.Automation.Util
 {
-    //a time object that can be store in Rda
+    //an Rda wrapper around a string-dictionary storage object
     public class LookupRda : IRda
     {
         public Dictionary<string, string> Store { get; } = new Dictionary<string, string>();

@@ -79,7 +79,7 @@ namespace Foldda.Automation.CsvHandler
                 }
                 else
                 {
-                    Log($"WARNING: Record type UNKNOWN and is ignored. Record => {record?.ToRda()}");
+                    Log($"WARNING: Record type UNKNOWN and is ignored by this CSV data handler. Record => {record?.ToRda()}");
                 }
 
             }
@@ -98,12 +98,6 @@ namespace Foldda.Automation.CsvHandler
 
             //force sub-class to implement
             //throw new NotImplementedException();
-        }
-
-        protected virtual void ProcessEvent(HandlerEvent eventDetails, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
-        {
-            //force sub-class to implement
-            throw new NotImplementedException();
         }
 
     }

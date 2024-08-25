@@ -23,23 +23,6 @@ namespace Foldda.Automation.CsvHandler
 
         public CsvDbTableWriter(ILoggingProvider logger) : base(logger) { }
 
-        public override void SetParameter(IConfigProvider config)
-        {
-            try
-            {
-                base.SetParameter(config);
-                if(_columnDefinitions.Count == 0)
-                {
-                    throw new Exception("Csv-index to table-column mapping (parameter 'column-spec') missing in the config parameters, and database-write cannot proceed..");
-                }
-            }
-            catch (Exception e)
-            {
-                Log(e.Message);
-                throw e;
-            }
-        }
-
         /**
          * Defines each of the Csv columns and their corresponding database table column's name and data-type, in the
          * following specific format - 
@@ -81,6 +64,7 @@ namespace Foldda.Automation.CsvHandler
                 {
                     if (container.MetaData is TabularRecord.MetaData metaData)
                     {
+                        VerifyDBConfig(LocalConfig);
                         recordsWritten += this.WriteToDatabase(LocalConfig /**using local DB config**/, container.Records, metaData, cancellationToken);
                     }
 
@@ -150,7 +134,15 @@ namespace Foldda.Automation.CsvHandler
                         foreach (var columnMappingDef in _columnDefinitions.Values)
                         {
                             //now we have the value, we then assign it to the target, with the correct data-type
-                            string columnValueInCsv = row.ItemValues[columnMappingDef.CsvColumnIndex - 1];  //convert to 0-based index
+                            int colIndex = columnMappingDef.CsvColumnIndex - 1; //convert to 0-based index
+                            if(colIndex < 0 || colIndex >= row.ItemValues.Count )
+                            {
+                                //string is not empty, but parsing failed
+                                string rowValues = string.Join("][", row.ItemValues);
+                                throw new Exception($"Invalid column-index {colIndex} for data row [{rowValues}]");
+                            }
+                            //else ...
+                            string columnValueInCsv = row.ItemValues[colIndex];  
                             object typedValue = columnMappingDef.ParseValueToColumnTypedObject(columnValueInCsv);
                             if (typedValue == DBNull.Value && !(string.IsNullOrEmpty(columnValueInCsv.Trim())))
                             {

@@ -45,7 +45,14 @@ namespace Foldda.Automation.Framework
             {
                 if(i < dateTimeTokens.Count)
                 {
-                    tokens[i] = int.Parse(dateTimeTokens[i]);
+                    if(int.TryParse(dateTimeTokens[i], out int result))
+                    {
+                        tokens[i] = result;
+                    }
+                    else
+                    {
+                        throw new Exception($"Date-time token {i} is not an integer - '{dateTimeTokens[i]}'.");
+                    }
                 }
                 else
                 {

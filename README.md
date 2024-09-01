@@ -26,12 +26,24 @@ When a Foldda app executes in a runtime, each module's logic (a specific data-pr
 
 << foldda app execution with runtime >>
 
-# Foldda Framework's Modeling
+# An Analogy of Foldda Framework's Design Modeling
 
-The framework is modeled as a factory processing line, where a worker (the "handler") takes items from an input bucket, processes them, and places the processed items (or other types of output) into an output bucket.
+The framework is modeled as a factory processing line, where a worker (known as a "handler") takes items from an input bucket, processes them, and places the processed items (or other types of output) into an output bucket.
 
-The Foldda "runtime" is the work environment that supplies to the worker, which includes giving the worker its input bucket, taking away the worker's output bucket, and, if applicable, passing the output to the next worker.
+The Foldda "runtime" is the work environment for the workers, which includes providing the worker its input bucket, and output bucket, and, if applicable, passing the output from a worker to the next worker.
 
+So in a Foldda handler, all it does is take data records from the provided input container, do the intended processing to these records, and then place the produced output to the provided output container. As defined by the framework, a Foldda handler would implement the IDataHandler interface - 
+
+```csharp
+  public interface IDataHandler
+  {
+      /// Setting up the data-handler "worker" with its config, and its input and output storage 
+      void Setup(IConfigProvider config, IDataStore inputStorage, IDataStore ouputStorage);
+
+      /// Typically runs a processing loop that processes the input records and saves the output records to the output storage.
+      Task ProcessData(CancellationToken cancellationToken);
+  }
+```
 
 ## Framework API Overview
 

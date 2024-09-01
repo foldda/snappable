@@ -379,9 +379,9 @@ namespace Foldda.Automation.HandlerDevKit
             if (e.Clicks == 2)
             {
                 HandlerModel handlerModel = GetHandlerController(sender).HandlerModel;
-                if (handlerModel != null && !(handlerModel is HandlerModel.Dummy) && File.Exists(handlerModel.HandlerConfig.ConfigFileURI))
+                if (handlerModel != null && !(handlerModel is HandlerModel.Dummy) && File.Exists(handlerModel.HandlerConfig.ConfigFileFullPath))
                 {
-                    Process.Start("notepad.exe", handlerModel.HandlerConfig.ConfigFileURI);
+                    Process.Start("notepad.exe", handlerModel.HandlerConfig.ConfigFileFullPath);
                 }
             }
         }

@@ -14,7 +14,6 @@ namespace Foldda.Automation.Trigger
 {
     /**
      * HttpServer serves HTML content to a web broswer client, and handles Http inputs from the client. 
-     * 
      */
     public class SimpleWebServer : BasicDataHandler
     {
@@ -37,18 +36,21 @@ namespace Foldda.Automation.Trigger
   <body>Webpage source file in config is missing or empty.</body>
 </html>";
 
-        protected SimpleWebServer(ILoggingProvider logger) : base(logger) { }
+        public SimpleWebServer(ILoggingProvider logger) : base(logger) { }
 
         public override void SetParameter(IConfigProvider config)
         {
             int port = config.GetSettingValue(LISTENING_PORT, 80);
             URI = $"http://localhost:{port}/";
 
-            PagePath = config.GetSettingValue(WEB_PAGE_SOURCE, string.Empty);
+            PagePath = Path.Combine((new FileInfo(config.ConfigFileFullPath)).DirectoryName, config.GetSettingValue(WEB_PAGE_SOURCE, string.Empty));
+            if (!File.Exists(PagePath))
+            {
+                Log($"WARNING: missing 'homepage source file' config as the [{WEB_PAGE_SOURCE}] parameter.");
+            }
         }
 
         public override Task ProcessData(CancellationToken cancellationToken) => Listen(URI, cancellationToken);
-
 
         const int MAX_CONCURRENT_CONNECTION = 10;
 
@@ -146,7 +148,7 @@ namespace Foldda.Automation.Trigger
                         LookupRda lookup = new LookupRda();
                         foreach (var key in req.QueryString.AllKeys)
                         {
-                            lookup.Store.Add(key, req.QueryString[key]);
+                            lookup.SetString(key, req.QueryString[key]);
                         }   
                         
                         container.Add(lookup);

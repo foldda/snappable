@@ -60,7 +60,7 @@ namespace Foldda.Automation.Trigger
             //in case the settings are not in order
             TimeSettings.OrderBy(x => x.DailyTime);
 
-            TimerId = config.ConfigFileURI;
+            TimerId = config.ConfigFileFullPath;
         }
 
 

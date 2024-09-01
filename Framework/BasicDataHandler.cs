@@ -375,6 +375,101 @@ namespace Foldda.Automation.Framework
         {
             Log(Logger, e.ToString());
         }
+
+        public class LookupRda : IRda
+        {
+            public Dictionary<string, Rda> Store { get; } = new Dictionary<string, Rda>();
+
+            public LookupRda() { }
+
+            public LookupRda(Rda rda)
+            {
+                FromRda(rda);
+            }
+
+            public bool TryGetString(string key, out string value)
+            {
+                bool result = TryGetRda(key, out Rda rda);
+                value = rda?.ScalarValue ?? null;
+                return result;
+            }
+
+            public bool TryGetRda(string key, out Rda output)
+            {
+                bool result = Store.TryGetValue(key, out Rda rda);
+                output = rda;
+                return result;
+            }
+
+            public void SetString(string key, string value)
+            {
+                SetRda(key, new Rda() { ScalarValue = value });
+            }
+
+            public void SetRda(string key, Rda rda)
+            {
+                if (Store.ContainsKey(key)) 
+                { 
+                    Store.Remove(key); //remove existing key otherwise Dictionary will trhow Exception
+                }
+
+                Store.Add(key, rda);
+            }
+
+            //Rda stores a (truncated) 1/1m "ticks" value of a DateTime value
+            public IRda FromRda(Rda rda)
+            {
+                //restores the original ticks value (multiplies the FACTOR), then get the actual time value
+                Store.Clear();
+                foreach (Rda item in rda.Elements)
+                {
+                    Pair pair = new Pair(item);
+                    Store.Add(pair.Name, pair.Value);
+                }
+                return this;
+            }
+
+            public Rda ToRda()
+            {
+                //divid by 1m to shorten the string length (also will reduce the time resolution)
+                Rda rda = new Rda();
+                foreach (string key in Store.Keys)
+                {
+                    rda.Elements.Add(new Pair(key, Store[key]));
+                }
+                return rda;
+            }
+
+            class Pair : Rda
+            {
+                internal Pair(Rda rda) : base()
+                {
+                    FromRda(rda);
+                }
+                internal Pair(string key, Rda value) : base()
+                {
+                    Name = key;
+                    Value = value;
+                }
+
+                internal Pair(string key, string value) : this(key, Parse(value)) { }
+
+                enum META_DATA : int { NAME, VALUE } //
+
+                public string Name   //
+                {
+                    get => this[(int)META_DATA.NAME].ScalarValue;
+                    set => this[(int)META_DATA.NAME].ScalarValue = value;
+                }
+
+                public Rda Value   // 
+                {
+                    get => this[(int)META_DATA.VALUE];
+                    set => this[(int)META_DATA.VALUE] = value;
+                }
+            }
+
+        }
     }
 }
 

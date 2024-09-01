@@ -30,7 +30,7 @@ namespace Foldda.Automation.HandlerDevKit
                     throw new Exception($"Parsing config file {configFile} unsuccessful.");
                 }
 
-                config.ConfigFileURI = configFile;
+                config.ConfigFileFullPath = configFile;
 
             }
             catch
@@ -129,7 +129,7 @@ namespace Foldda.Automation.HandlerDevKit
 
         public Parameter[] Parameters; // name-value pairs, name format is "Class-name:parameter-name"
 
-        public string ConfigFileURI { get; set; } = string.Empty;
+        public string ConfigFileFullPath { get; set; } = string.Empty;
 
         public override string ToString()
         {

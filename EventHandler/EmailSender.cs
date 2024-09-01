@@ -45,7 +45,7 @@ namespace Foldda.Automation.EventHandler
 
             //try get the default message content from the path in the config file
             string messageBody = string.Empty;
-            var path = Path.Combine((new FileInfo(config.ConfigFileURI)).DirectoryName, config.GetSettingValue(EMAIL_BODY_FILE, string.Empty));
+            var path = Path.Combine((new FileInfo(config.ConfigFileFullPath)).DirectoryName, config.GetSettingValue(EMAIL_BODY_FILE, string.Empty));
             if (File.Exists(path))
             {
                 messageBody = File.ReadAllText(path);

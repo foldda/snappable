@@ -33,14 +33,6 @@ namespace Foldda.Automation.Framework
         /// <returns></returns>        
         void Setup(IConfigProvider config, IDataStore inputStorage, IDataStore ouputStorage);
 
-        ///// <summary>
-        ///// 1) For gathering/generating input data of the data-processing chain (placing the produced data to the 'input storage')
-        ///// </summary>
-        ///// <param name="inputStorage"></param>
-        ///// <param name="cancellationToken"></param>
-        ///// <returns></returns>
-        //Task InputCollectingProcess(IDataContainerStore inputStorage, CancellationToken cancellationToken);
-
         /// <summary>
         /// Here the handler "worker" take records/events from the 'input storage', and (optionally, if there is any output) placing the result to the 'output storage'.
         /// </summary>
@@ -50,12 +42,5 @@ namespace Foldda.Automation.Framework
         /// <returns></returns>
         Task ProcessData(CancellationToken cancellationToken);
 
-        ///// <summary>
-        ///// 3) For dispatching processed data to an outside destination (eg database, file, network, etc)
-        ///// </summary>
-        ///// <param name="outputStorage">Data to be dispatched are taken from this storage</param>
-        ///// <param name="cancellationToken"></param>
-        ///// <returns></returns>
-        //Task OutputDispatchingProcess(IDataContainerStore outputStorage, CancellationToken cancellationToken);
     }
 }

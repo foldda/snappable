@@ -22,14 +22,14 @@ namespace Foldda.Automation.EventHandler
         //FULL HTTTP URL => eg. {end-point}/{auth-id}/lights/{light-id}/state
         //eg. 192.168.1.5/api/Dwpk3cYfwUw7o4IKsKDrgv35myaTM6uLb1sXk2aD/lights/2/state
 
-        private HueLight hueLight { get; set; }
+        private HueHubLink HueHub { get; set; }
 
         public HueLightDriver(ILoggingProvider logger) : base(logger)
         {
         }
 
         //sample Hue lights' IDs
-        string[] lightIds { get; set; }
+        string[] HueLightIds { get; set; }
 
         public override void SetParameter(IConfigProvider config)
         {
@@ -37,9 +37,9 @@ namespace Foldda.Automation.EventHandler
 
              */
             string hue_auth_id = config.GetSettingValue(HUE_AUTH_ID, string.Empty);
-            string hue_api_end_point = config.GetSettingValue(HUE_HUB_END_POINT, string.Empty);
+            string hue_api_end_point = config.GetSettingValue(HUE_HUB_END_POINT, string.Empty); //end-point of the hue hub device
             string hue_light_ids = config.GetSettingValue(HUE_LIGHT_IDS, string.Empty);
-            lightIds = hue_light_ids.Split(new char[] { ',', ';' });
+            HueLightIds = hue_light_ids.Split(new char[] { ',', ';' });
 
             if (string.IsNullOrEmpty(hue_auth_id) || string.IsNullOrEmpty(hue_api_end_point))
             {
@@ -47,7 +47,7 @@ namespace Foldda.Automation.EventHandler
             }
             else
             {
-                hueLight = new HueLight(hue_auth_id, hue_api_end_point, new HttpSender(Logger));
+                HueHub = new HueHubLink(hue_auth_id, hue_api_end_point, Logger);
             }
         }
 
@@ -84,13 +84,20 @@ namespace Foldda.Automation.EventHandler
                 //this a reposite of name-value pairs from upstream
                 if(record is LookupRda httpRequestResult)
                 {
-                    foreach(var lightId in lightIds)
+                    foreach(var lightId in HueLightIds)
                     {
-                        HueLight.LIGHT_STATUS lightStatus = 
-                            "true".Equals(httpRequestResult.Store[lightId]) ? HueLight.LIGHT_STATUS.ON : HueLight.LIGHT_STATUS.OFF;
+                        if(httpRequestResult.TryGetString(lightId, out string trueFalse))
+                        {
+                            HueHubLink.LIGHT_STATUS lightStatus = "true".Equals(trueFalse) ? HueHubLink.LIGHT_STATUS.ON : HueHubLink.LIGHT_STATUS.OFF;
 
-                        //2. drive the light
-                        hueLight.Switch(lightId, lightStatus, cancellationToken);
+                            //2. drive the light
+                            Log($"Sending command '{lightStatus}' to light-id {lightId}");
+                            HueHub.SwitchLight(lightId, lightStatus, cancellationToken);
+                        }
+                        else
+                        {
+                            Log($"No control instruction for light-id {lightId}");
+                        }
                     }
                 }
             }
@@ -101,7 +108,7 @@ namespace Foldda.Automation.EventHandler
         }
 
         //a record to be processed by this handler
-        public class HueLight 
+        public class HueHubLink 
         {
             string _hue_auth_id;
             string _hue_api_end_point;
@@ -109,19 +116,20 @@ namespace Foldda.Automation.EventHandler
 
             public enum LIGHT_STATUS : int { ON, OFF } // also "VALIDATION_RULES"
 
-            public HueLight(string hue_auth_id, string hue_api_end_point, HttpSender http_sender)
+            public HueHubLink(string hue_auth_id, string hue_api_end_point, ILoggingProvider logger)
             {
                 _hue_auth_id = hue_auth_id;
                 _hue_api_end_point = hue_api_end_point;
-                _http_sender = http_sender;
+                _http_sender = new HttpSender(logger);
             }
 
-            public void Switch(string light_id, LIGHT_STATUS newStatus, CancellationToken cancel)
+            public void SwitchLight(string lightId, LIGHT_STATUS newStatus, CancellationToken cancel)
             {
                 string lightOn = newStatus == LIGHT_STATUS.OFF ? "false" : "true";
                 string httpBody = $"{{\"on\":{lightOn}, \"bri\":254}}";
-                string url = $"{_hue_api_end_point}/{_hue_auth_id}/lights/{light_id}/state";
-                _http_sender.HttpPost(url, httpBody, "text/plain", cancel);
+                string url = $"{_hue_api_end_point}/{_hue_auth_id}/lights/{lightId}/state";
+                //_http_sender.HttpPost(url, httpBody, "text/plain", cancel);
+                _http_sender.HttpPut(url, httpBody, "text/plain", cancel);
             }
         }
 

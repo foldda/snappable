@@ -80,14 +80,11 @@ namespace Foldda.Automation.HandlerDevKit
             });
         }
 
-
         internal const string FOLDDA_LOG_FOLDER_NAME = "[log]";
-
 
         public DevKitForm()
         {
             string assemblyName = typeof(Program).Assembly.GetName().Name;
-
 
             //setup logging ...
             string logFolder = Path.Combine(AssemblyPath, FOLDDA_LOG_FOLDER_NAME);
@@ -283,19 +280,25 @@ namespace Foldda.Automation.HandlerDevKit
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            //3 handler controllers, each has its associated views
+            int store_id = 0;
+            DataStore Store_0 = new DataStore(store_id++);  //first inbound (not used)
+            DataStore Store_1 = new DataStore(store_id++);
+            DataStore Store_2 = new DataStore(store_id++);
+            DataStore Store_3 = new DataStore(store_id);  //last outbound (not used)
+
+            //3 handler controllers, each gets assigned with input/output data stores and front-end views
             Controllers = new List<HandlerController>()
             {
-                new HandlerController(this, LiveLogBox_1, NodeSettingsListView_1),
-                new HandlerController(this, LiveLogBox_2, NodeSettingsListView_2),
-                new HandlerController(this, LiveLogBox_3, NodeSettingsListView_3)
+                new HandlerController(this, Store_0, Store_1, LiveLogBox_1, NodeSettingsListView_1),
+                new HandlerController(this, Store_1, Store_2, LiveLogBox_2, NodeSettingsListView_2),
+                new HandlerController(this, Store_2, Store_3, LiveLogBox_3, NodeSettingsListView_3)
             };
 
             //set the order for passing data along the handlers
-            Controllers[0].SetNextController(Controllers[1]);
-            Controllers[1].SetNextController(Controllers[2]);
-            Controllers[1].SetLastController(Controllers[0]);
-            Controllers[2].SetLastController(Controllers[1]);
+            //Controllers[0].SetNextController(Controllers[1]);
+            //Controllers[1].SetNextController(Controllers[2]);
+            //Controllers[1].SetPrevController(Controllers[0]);
+            //Controllers[2].SetPrevController(Controllers[1]);
 
             ControllerTask = RefreshModelsView(AppShutdownCancellationSource.Token);
         }

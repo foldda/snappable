@@ -113,7 +113,6 @@ namespace Foldda.Automation.Trigger
 
         }
 
-        static int i = 0;
         public async Task ProcessRequestAsync(HttpListenerContext ctx, CancellationToken token)
         {
             //bool runServer = true;

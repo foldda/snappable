@@ -95,11 +95,12 @@ namespace Foldda.Automation.HandlerDevKit
             Touch();
         }
 
-        public static Dictionary<ENTITY_STATE, string> STATES = new Dictionary<ENTITY_STATE, string>()
-                    {
-                        {ENTITY_STATE.NODE_STARTED, "Started" },
-                        {ENTITY_STATE.NODE_STOPPED, "Stopped" }
-                    };
+        public static Dictionary<ENTITY_STATE, string> STATES = 
+            new Dictionary<ENTITY_STATE, string>()
+            {
+                {ENTITY_STATE.NODE_STARTED, "Started" },
+                {ENTITY_STATE.NODE_STOPPED, "Stopped" }
+            };
 
         ///FSM implement
         ///
@@ -142,6 +143,7 @@ namespace Foldda.Automation.HandlerDevKit
                 { new EntityStateTransition(ENTITY_STATE.NODE_STOPPED, COMMAND_TYPE.NODE_CMD_RESTART), ENTITY_STATE.NODE_STARTED },
                 { new EntityStateTransition(ENTITY_STATE.NODE_STOPPED, COMMAND_TYPE.NODE_CMD_STOP), ENTITY_STATE.NODE_STOPPED },
                 ////
+                { new EntityStateTransition(ENTITY_STATE.NODE_STARTED, COMMAND_TYPE.NODE_CMD_START), ENTITY_STATE.NODE_STARTED },
                 { new EntityStateTransition(ENTITY_STATE.NODE_STARTED, COMMAND_TYPE.NODE_CMD_RESTART), ENTITY_STATE.NODE_STARTED },
                 { new EntityStateTransition(ENTITY_STATE.NODE_STARTED, COMMAND_TYPE.NODE_CMD_STOP), ENTITY_STATE.NODE_STOPPED },
             };
@@ -255,7 +257,7 @@ namespace Foldda.Automation.HandlerDevKit
         public string HomePath { get; set; } = string.Empty;
 
         public string ImageKey => HandlerStateString;
-        public string HandlerStateString { get { return STATES[CurrentState]; } }
+        public string HandlerStateString => STATES[CurrentState];
 
     }
 }

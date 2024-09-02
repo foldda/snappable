@@ -47,79 +47,14 @@ namespace Foldda.Automation.HandlerDevKit
             }
         }
 
-        internal class BufferredDataReceiver : IDataStore
-        {
-            protected HandlerController HandlerManager { get; }
-            internal BufferredDataReceiver(HandlerController handlerManager)
-            {
-                HandlerManager = handlerManager;
-            }
-
-            //DateTime _lastRecordReceiveTime = DateTime.Now;
-            const string format = "yyMMddHHmmss";
-            //const int LOOSE_RECORDS_PACKING_DELAY_SEC = 2;
-
-            public virtual List<IRda> CollectReceived()
-            {
-                List<IRda> result = new List<IRda>();
-                if (ContainersAndEvents.Count > 0)
-                {
-                    result = ContainersAndEvents.Snap(true);
-                }
-
-                //if (LooseRecords.Count > 0 && (DateTime.Now - _lastRecordReceiveTime).TotalSeconds > LOOSE_RECORDS_PACKING_DELAY_SEC)
-                //{
-                    RecordContainer temp = new RecordContainer()
-                    {
-                        MetaData = new Rda()
-                        {
-                            ScalarValue = $"{Id}-{DateTime.Now.ToString(format)}"
-                        }
-                    };
-
-                    foreach (var record in LooseRecords.Snap(true))
-                    {
-                        temp.Add(record);
-                    }
-                    result.Add(temp);
-                //}
-
-                return result;
-            }
-
-            //container-level buffer
-            internal BlockingCollection<IRda> ContainersAndEvents { get; } = new BlockingCollection<IRda>(200);
-
-            //record-level buffer "loose records" - to be packed into a store-created container when they are collected.
-            internal BlockingCollection<IRda> LooseRecords { get; } = new BlockingCollection<IRda>(200);
-
-            public string Id => HandlerManager.Handler.Id;
-
-            public void Receive(IRda item)
-            {
-                ContainersAndEvents.Add(item);
-            }
-
-            public void Receive(IRda data, string senderId)
-            {
-                //_lastRecordReceiveTime = DateTime.Now;
-                LooseRecords.Add(data);
-            }
-
-            public void Receive(HandlerEvent event1)
-            {
-                ContainersAndEvents.Add(event1);
-            }
-        }
-
-        internal void MakeHandler(string handler, string handlerAssembly)
-        {
-            Handler = (BasicDataHandler)CreateHandlerInstance(handler, handlerAssembly);
-        }
+        //internal void MakeHandler(string handler, string handlerAssembly)
+        //{
+        //    Handler = (BasicDataHandler)CreateHandlerInstance(handler, handlerAssembly);
+        //}
 
         private static readonly Dictionary<string, Assembly> AssemblyCache = new Dictionary<string, Assembly>();
 
-        public IDataHandler CreateHandlerInstance(string fullTypeName, string handlerAssemblyName)
+        public BasicDataHandler CreateHandlerInstance(string fullTypeName, string handlerAssemblyName)
         {
             //, ILoggingProvider logger
             IDataHandler handler;
@@ -180,7 +115,7 @@ namespace Foldda.Automation.HandlerDevKit
             //#if DEBUG
             //            Debug.Assert(result != null);
             //#endif
-            return handler;
+            return (BasicDataHandler)handler;
         }
 
         private void Log(string v)
@@ -231,7 +166,7 @@ namespace Foldda.Automation.HandlerDevKit
 
         public IDataStore InboundDataBuffer { get; } //used by folder-scanning processor, plus Inbound processors
 
-        public HandlerOutputReceiver OutboundDataBuffer { get; } //used for collecting DataProcessingTask's output (which in-turn will be passed to the Output-consuming task.
+        public IDataStore OutboundDataBuffer { get; } //used for collecting DataProcessingTask's output (which in-turn will be passed to the Output-consuming task.
 
         internal DevKitForm DevKitForm { get; }
         internal RichTextBox HandlerLoggingPanel { get; }
@@ -239,53 +174,53 @@ namespace Foldda.Automation.HandlerDevKit
 
         // It overrides the CollectReceived() method which intercepts and copies the received
         // containers to the next (following) Handler (via its manager)
-        internal class HandlerOutputReceiver : BufferredDataReceiver
-        {
-            internal HandlerOutputReceiver(HandlerController manager) : base(manager) { }
+        //internal class HandlerOutputReceiver : BufferredDataReceiver
+        //{
+        //    internal HandlerOutputReceiver(HandlerController manager) : base(manager) { }
 
-            public override List<IRda> CollectReceived()
-            {
-                //intercepts the result
-                List<IRda> result = base.CollectReceived();
+        //    public override List<IRda> CollectReceived()
+        //    {
+        //        //intercepts the result
+        //        List<IRda> result = base.CollectReceived();
 
-                //copies to its consumers
-                if(result.Count > 0 && HandlerManager.NextHandlerManager != null &&
-                    !(HandlerManager.NextHandlerManager.HandlerModel is HandlerModel.Dummy))
-                {
-                    //pass a copy to the next handler
-                    foreach(RecordContainer container in result)
-                    {
-                        HandlerManager.NextHandlerManager.InboundDataBuffer.Receive(container);
-                    }
-                }
+        //        //copies to its consumers
+        //        if(result.Count > 0 && HandlerManager.NextHandlerManager != null &&
+        //            !(HandlerManager.NextHandlerManager.HandlerModel is HandlerModel.Dummy))
+        //        {
+        //            //pass a copy to the next handler
+        //            foreach(RecordContainer container in result)
+        //            {
+        //                HandlerManager.NextHandlerManager.InboundDataBuffer.Receive(container);
+        //            }
+        //        }
 
-                //return the result to calling client
-                return result;
-            }
-        }
+        //        //return the result to calling client
+        //        return result;
+        //    }
+        //}
 
-        internal HandlerController LastHandlerManager { get; private set; }
-        internal HandlerController NextHandlerManager { get; private set; }
+        //internal HandlerController LastHandlerManager { get; private set; }
+        //internal HandlerController NextHandlerManager { get; private set; }
 
-        public HandlerController(DevKitForm devKitForm, RichTextBox loggingPanel, ListView settingsPanel) //: base(form.Logger)
+        public HandlerController(DevKitForm devKitForm, IDataStore inputStore, IDataStore outputStore, RichTextBox loggingPanel, ListView settingsPanel) //: base(form.Logger)
         {
             DevKitForm = devKitForm;
             HandlerLoggingPanel = loggingPanel;
             HandlerSettingsPanel = settingsPanel;
 
-            InboundDataBuffer = new BufferredDataReceiver(this);
-            OutboundDataBuffer = new HandlerOutputReceiver(this);
+            InboundDataBuffer = inputStore;
+            OutboundDataBuffer = outputStore;
         }
 
-        internal void SetLastController(HandlerController lastManager)
-        {
-            LastHandlerManager = lastManager;
-        }
+        //internal void SetPrevController(HandlerController lastManager)
+        //{
+        //    LastHandlerManager = lastManager;
+        //}
 
-        internal void SetNextController(HandlerController nextManager)
-        {
-            NextHandlerManager = nextManager;
-        }
+        //internal void SetNextController(HandlerController nextManager)
+        //{
+        //    NextHandlerManager = nextManager;
+        //}
 
         internal BasicDataHandler Handler { get; private set; }  //the handler it manages
 
@@ -297,19 +232,16 @@ namespace Foldda.Automation.HandlerDevKit
             {
                 try
                 {
+                    HandlerModel.SetStateForCommand(HandlerModel.COMMAND_TYPE.NODE_CMD_START);   //setter will send node-state-change notification
                     //initialise the custom handler eg. with current parameters
                     Handler.Setup(HandlerModel.HandlerConfig, InboundDataBuffer, OutboundDataBuffer);
 
-                    //concrete data-processor would override one or more of these 3 virtual (dummy) methods
-                    //Task inputProducingTask = Handler.InputCollectingProcess(InboundDataBuffer, cancellationToken);
-                    Task inputToOutputProcessingTask = Handler.ProcessData(cancellationToken);
-                    //Task outputConsumingTask = Handler.OutputDispatchingProcess(OutboundDataBuffer, cancellationToken);
+                    //handler moves data from inbound buffer to outbound buffer
+                    Task dataHandlingTask = Handler.ProcessData(cancellationToken);
 
                     Log($"Handler '{this.Handler.GetType().Name}' tasks started.");
-                    Task.WaitAll(inputToOutputProcessingTask);
-                    //Task.WaitAll(inputProducingTask, inputToOutputProcessingTask, outputConsumingTask);
+                    Task.WaitAll(dataHandlingTask);
 
-                    HandlerModel.SetStateForCommand(HandlerModel.COMMAND_TYPE.NODE_CMD_START);   //setter will send node-state-change notification
                 }
                 catch (Exception e)
                 {
@@ -332,6 +264,7 @@ namespace Foldda.Automation.HandlerDevKit
             try
             {
                 Log($"Execute STOP command");
+                HandlerModel.SetStateForCommand(HandlerModel.COMMAND_TYPE.NODE_CMD_STOP);   //setter will send node-state-change notification
 
                 HandlerStopCommandCancelSource.Cancel(); //stop local issued "handler tasks"
 
@@ -355,7 +288,6 @@ namespace Foldda.Automation.HandlerDevKit
             finally
             {
                 HandlerStopCommandCancelSource.Dispose();  //we have to dispose the cts once it's cancelled.
-                HandlerModel.SetStateForCommand(HandlerModel.COMMAND_TYPE.NODE_CMD_STOP);   //setter will send node-state-change notification
 
                 if (HandlerTask != null && HandlerTask?.Status != TaskStatus.RanToCompletion)
                 {
@@ -368,7 +300,7 @@ namespace Foldda.Automation.HandlerDevKit
         {
             HandlerModel = new HandlerModel(new FileInfo(fileName)); ;
 
-            MakeHandler(_handlerModel.HandlerConfig.Handler, _handlerModel.HandlerConfig.HandlerAssembly);
+            Handler = CreateHandlerInstance(HandlerModel.HandlerConfig.Handler, HandlerModel.HandlerConfig.HandlerAssembly);
 
             HandlerModel.Touch();
         }

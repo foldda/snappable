@@ -4,62 +4,80 @@ using Foldda.Automation.HL7Handler;
 
 using System;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyCompany.MyApp.MyCustomHandler
 {
     /// <summary>
-    /// MyHL7Handler is an exact copy of the HL7FileReader handler, so if compiled as it is, it will be your "own (file-reader) handler" that does the same function, except it will reside in a different DLL
-    /// which under your control. In other words, from here you can change this handler to do whatever you want, and embed this whatever feature to the DLL to be used in your own handler.
-    /// For example, you can make this handler to read input files simutanously from multiple locations, or to do something entirely irrelavent to file-reading.
+    /// Class MyCompany.MyApp.MyCustomHandler.MyHL7Handler illustrates how you can make your own custom Foldda runtime compatible hanlder.
+    /// 
+    /// As the starting point, MyHL7Handler is an exact copy of the HL7FileReader handler, so if compiled as it is, it will be your "own (file-reader) handler" that does 
+    /// the same function, except it will reside in a different DLL which is separate from the official Foldda distribution and will be under your control.
+    /// In other words, from here you can change this handler in this Dll to have any custom feature you want, without interferring with the other Foldda handlers.
+    /// 
+    /// For example, you can make this handler to read input multiple files simutanously from several locations, or to do something entirely irrelavent to file-reading.
     /// </summary>
-    public class HL7FileReader : BaseHL7Handler
+    public class MyHL7FileReader : BaseHL7Handler
     {
-        public HL7FileReader(ILoggingProvider logger) : base(logger) { }
+        public MyHL7FileReader(ILoggingProvider logger) : base(logger) { }
 
         const string FILE_NAME_PATTERN = "file-name-pattern";
         const string SOURCE_PATH = "source-path";
 
-        protected string TargetFileNamePattern { get; private set; }
-        protected string SourcePath { get; private set; }
+        protected FileReaderConfig DefaultFileReaderConfig { get; private set; }
 
-        public override void SetParameters(IConfigProvider config)
+        public override void SetParameter(IConfigProvider config)
         {
-            var paramSourcePath = config.GetSettingValue(SOURCE_PATH, string.Empty);
-            if (string.IsNullOrEmpty(paramSourcePath))
+            string SourcePath = config.GetSettingValue(SOURCE_PATH, string.Empty);
+            if (string.IsNullOrEmpty(SourcePath) || !Directory.Exists(SourcePath))
             {
-                throw new Exception($"ERROR - parameter '{SOURCE_PATH}' is mandatory and it's not supplied.");
-            }
-            else if (!Directory.Exists(paramSourcePath))
-            {
-                throw new Exception($"ERROR - supplied path '{paramSourcePath}' does not exist.");
-            }
-            else
-            {
-                SourcePath = paramSourcePath;
+                Log($"ERROR - supplied path '{SourcePath}' does not exist.");
             }
 
-            var paramFileName = config.GetSettingValue(FILE_NAME_PATTERN, string.Empty);
-            if (string.IsNullOrEmpty(paramFileName))
+            var paramFileNamePattern = config.GetSettingValue(FILE_NAME_PATTERN, string.Empty);
+            if (string.IsNullOrEmpty(paramFileNamePattern))
             {
-                throw new Exception($"ERROR - parameter '{FILE_NAME_PATTERN}' is mandatory and it's not supplied.");
+                Log($"ERROR - parameter '{FILE_NAME_PATTERN}' is mandatory and it's not supplied.");
             }
-            
+
+            string TargetFileNamePattern = paramFileNamePattern;
+
             //parameters checked OK
-            TargetFileNamePattern = paramFileName;        
+            DefaultFileReaderConfig = new FileReaderConfig()
+            {
+                InputFilePath = SourcePath,
+                InputFileNameOrPattern = TargetFileNamePattern
+            };
         }
 
-        public override Task InputProducingTask(IDataContainerStore inputStorage, CancellationToken cancellationToken)
+        protected override async Task ProcessHandlerEvent(HandlerEvent handlerEvent, CancellationToken cancellationToken)
         {
-            DirectoryInfo targetDirectory = new DirectoryInfo(SourcePath);
-
-            var result = ScanDirectory(targetDirectory, TargetFileNamePattern, SkippedFileList, GetDefaultFileRecordScanner(Logger), Logger, cancellationToken).Result;
-            foreach (var container in result)
+            //ATM, any event would trigger a read action.
+            if (!(handlerEvent.EventDetailsRda is FileReaderConfig readConfig))
             {
-                inputStorage.Receive(container);
+                readConfig = DefaultFileReaderConfig;
+            }
+
+            await ScanHL7Data(readConfig, cancellationToken);
+        }
+
+        private Task ScanHL7Data(FileReaderConfig readConfig, CancellationToken cancellationToken)
+        {
+            try
+            {
+                DirectoryInfo targetDirectory = new DirectoryInfo(readConfig.InputFilePath);
+
+                var result = ScanDirectory(targetDirectory, readConfig.InputFileNameOrPattern, GetDefaultFileRecordScanner(Logger), Logger, cancellationToken).Result;
+                foreach (var container in result)
+                {
+                    OutputStorage.Receive(container);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log(ex.Message);
+                Task.Delay(5000).Wait();
             }
             return Task.CompletedTask;
         }

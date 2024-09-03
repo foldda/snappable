@@ -1,10 +1,22 @@
 # Foldda - The 'Breadboard' For Component-based Software Projects
 
-Dubbed "The breadboard for software", Foldda is an easy-to-use component-based software development project environment, for building fun, cheap, and instant computer applications.
+Dubbed "the breadboard for software", Foldda is an easy-to-use component-based software development platform - for fun, cheap, and instant software application projects.
 
 <div align="center">
 <img src="_Resources/foldda-breadboard.png" width="650" align="center">
 </div>
+
+## Foldda Concept: "Solution", "Handler", and "Runtime"
+
+Conceptually similar to its hardware counterpart, a Foldda "breadboard project" (called a "solution") has a collection of some components (called "handlers") and follows a design for delivering a software feature i.e. an app. What's special about Foldda handler components is that they are physically packaged as file system folders, and they can be flexibly arranged on and connected through a provided "breadboard-like" environment called a "runtime". This short video illustrates these concepts using an example of building a Foldda component-based app of an ETP pipeline.
+
+video demo here
+
+As shown in the video, by packaging components as folders, Foldda allows components to be physically moved around and be freely connected (or disconnected). This contrasts with the other "no-code" app-dev frameworks where the components must exist within a vendor-specific IDE environment. Foldda's unique component packaging is a key to vendor-neutral software component development.
+
+## Foldda Runtime: the "Breadboard"
+
+The other problem that needs to be solved is defining and implementing the interface between the components - as they are potentially independently developed and have no assumed knowledge of one other.
 
 A software component in a Foldda project is called a "handler" that is capable of performing a specific function, and a Foldda app, called a "solution", is a selection of handler components that are connected by Foldda "the breadboard" and perform their intended functions in a certain order and collaboration. Some example handlers are available for app-building from this repo, including Timer, Email-sender, File reader and writer, Dos-command executor, etc.
 

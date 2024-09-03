@@ -1,18 +1,26 @@
 # Foldda - The 'Breadboard' For Component-based Software Projects
 
-Dubbed "The breadboard for software", Foldda is an easy-to-use component-based software development project environment, for building fun, cheap, and instant computer applications.
+Dubbed "the breadboard for software", Foldda is an easy-to-use component-based software development platform - for fun, cheap, and instant software application projects.
 
 <div align="center">
 <img src="_Resources/foldda-breadboard.png" width="650" align="center">
 </div>
 
-A software component in a Foldda project is called a "handler" that is capable of performing a specific function, and a Foldda app, called a "solution", is a selection of handler components that are connected by Foldda "the breadboard" and perform their intended functions in a certain order and collaboration. Some example handlers are available for app-building from this repo, including Timer, Email-sender, File reader and writer, Dos-command executor, etc.
+## Foldda Concept: "Solution", "Handler", and "Runtime"
 
-Physically, a Foldda handler component is packaged as a file system folder which contains the resources and executable pointers required to perform the handler's special function. A config file inside each handler's folder content allows the parameters of the handler's function to be configured. is done by dragging and dropping handler folders and forming a folder hierarchy, where the folders' parent-child relationship defines the data flows between the handlers.
+Conceptually similar to its hardware counterpart, a Foldda "breadboard project" (called a "solution") has a collection of some components (called "handlers") and follows a design for delivering a software feature i.e. an app. What's special about Foldda handler components is that they are physically packaged as file system folders, and they can be flexibly arranged on and connected through a provided "breadboard-like" environment called a "runtime". This short video illustrates these concepts using an example of building a Foldda component-based app of an ETP pipeline.
 
-A Foldda Runtime is an application that functions as "the breadboard", i.e. it powers up, and connects the input and the output of, the handler modules. More technically speaking, it navigates through a Foldda solution's folder hierarchy, executes the instructions in each module's folder, and provides data exchange between connected modules. An example of Foldda runtime is the Foldda Windows app.
+video demo here
 
-Although Foldda allows quick and easy toolless and no-code app development using prebuilt handlers and runtime, the real power is that it allows plug-n-play of third-party developed handlers that would work with existing handlers without having to recompile the app. It means you can have a handler built to your specific requirements while taking advantage of the existing prebuilt handlers, which means ultimate flexibility and control. And when a newly developed handler combines with the existing handlers, it multiplies the number of possible apps that can be built.
+As shown in the video, by packaging components as folders, Foldda allows components to be physically moved around and be freely connected (or disconnected). This contrasts with the other "no-code" app-dev frameworks where the components must exist within a vendor-specific IDE environment. Foldda's unique component packaging is a key to vendor-neutral software component development.
+
+## Foldda Runtime: the "Breadboard"
+
+The other problem that needs to be solved is defining and implementing the interface between the components - as they are potentially independently developed and have no assumed knowledge of one other. And that is another key piece of tech from Foldda - the Charian object serialization API.
+
+With Charian, Foldda runtime has this real power which is that it allows plug-n-play of third-party developed handlers that would work with existing handlers without having to recompile the app. It means you can have a handler built to your specific requirements while taking advantage of the existing prebuilt handlers, which means ultimate flexibility and control. And when a newly developed handler combines with the existing handlers, it multiplies the number of possible apps that can be built.
+
+This allows Foldda Runtime to function as "the breadboard", i.e. it powers up, and connects the input and the output of, the handler modules. More technically speaking, it navigates through a Foldda solution's folder hierarchy, executes the instructions in each module's folder, and provides data exchange between connected modules. An example of Foldda runtime is the Foldda Windows app.
 
 This repo hosts the open-sourced Foldda Automation Framework API, the reference for building Foldda handlers and runtimes. It also hosts the source code of many open-source licensed handlers, that can be used in your projects as they are, but also serve as boilerplate for your further custom development. The "Developer Kit" project included in this repo is a simple runtime for the convenience of your custom handler development.
 

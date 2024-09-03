@@ -294,12 +294,6 @@ namespace Foldda.Automation.HandlerDevKit
                 new HandlerController(this, Store_2, Store_3, LiveLogBox_3, NodeSettingsListView_3)
             };
 
-            //set the order for passing data along the handlers
-            //Controllers[0].SetNextController(Controllers[1]);
-            //Controllers[1].SetNextController(Controllers[2]);
-            //Controllers[1].SetPrevController(Controllers[0]);
-            //Controllers[2].SetPrevController(Controllers[1]);
-
             ControllerTask = RefreshModelsView(AppShutdownCancellationSource.Token);
         }
 

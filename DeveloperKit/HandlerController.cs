@@ -172,36 +172,6 @@ namespace Foldda.Automation.HandlerDevKit
         internal RichTextBox HandlerLoggingPanel { get; }
         internal ListView HandlerSettingsPanel { get; }
 
-        // It overrides the CollectReceived() method which intercepts and copies the received
-        // containers to the next (following) Handler (via its manager)
-        //internal class HandlerOutputReceiver : BufferredDataReceiver
-        //{
-        //    internal HandlerOutputReceiver(HandlerController manager) : base(manager) { }
-
-        //    public override List<IRda> CollectReceived()
-        //    {
-        //        //intercepts the result
-        //        List<IRda> result = base.CollectReceived();
-
-        //        //copies to its consumers
-        //        if(result.Count > 0 && HandlerManager.NextHandlerManager != null &&
-        //            !(HandlerManager.NextHandlerManager.HandlerModel is HandlerModel.Dummy))
-        //        {
-        //            //pass a copy to the next handler
-        //            foreach(RecordContainer container in result)
-        //            {
-        //                HandlerManager.NextHandlerManager.InboundDataBuffer.Receive(container);
-        //            }
-        //        }
-
-        //        //return the result to calling client
-        //        return result;
-        //    }
-        //}
-
-        //internal HandlerController LastHandlerManager { get; private set; }
-        //internal HandlerController NextHandlerManager { get; private set; }
-
         public HandlerController(DevKitForm devKitForm, IDataStore inputStore, IDataStore outputStore, RichTextBox loggingPanel, ListView settingsPanel) //: base(form.Logger)
         {
             DevKitForm = devKitForm;
@@ -211,16 +181,6 @@ namespace Foldda.Automation.HandlerDevKit
             InboundDataBuffer = inputStore;
             OutboundDataBuffer = outputStore;
         }
-
-        //internal void SetPrevController(HandlerController lastManager)
-        //{
-        //    LastHandlerManager = lastManager;
-        //}
-
-        //internal void SetNextController(HandlerController nextManager)
-        //{
-        //    NextHandlerManager = nextManager;
-        //}
 
         internal BasicDataHandler Handler { get; private set; }  //the handler it manages
 

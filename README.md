@@ -14,13 +14,13 @@ video demo here
 
 As in the video, by packaging software components as folders, Foldda's component-based app-building can be done without using any specialised tools. You can design and build apps by arranging and connecting software components using only native OS operationssuch as dragging-and-dropping folders. This contrasts with the other "no-code" app-dev frameworks where the components must exist within a vendor-specific IDE environment. 
 
-# Promoting A Truely Open Software Component Marketplace 
+## Promoting A Truely Open Software Component Marketplace 
 
 Component-based computing encourges code reuse and modular design. 
 
 Foldda Automation Framework from this repo is the foundation of an open component-based computing eco-system, that has vendor-neutral software component and runtime development in its design. Such visionary design requires two pieces of technology: the first is a universal, vendor independent packaging of software components like we've just discussed and demostrated; the second technology required is a standard interfcae that allow software components to freely and meaningful exchange data, think a "universal plug" for components like the pins and pin-holes on a physical breadboard ...
 
-## Charian - A Universal Data Exchange API
+## Charian - Universal Data Exchange
 
 A Foldda runtime `needs to address the problem of defining and implementing the interface between the components - which can be potentially independently developed and have no assumed knowledge of one other. And that is another key piece of tech from Foldda - the Charian object serialization API.
 
@@ -32,7 +32,7 @@ This allows Foldda Runtime to function as "the (software) breadboard", i.e. it p
 
 The purpose of this repo is to assist developers to understand and develop Foldda compatible software components (or runtimes). In addition to the open-sourced Foldda Automation Framework API source code, it also hosts the source code of many open-source licensed handlers, that can be used in your projects as they are, but also serve as boilerplate for your further custom development. The "Developer Kit" project included in this repo is a simple reference runtime which can be used for the convenience of custom handler development.
 
-# Foldda's Architecture - An Analogy
+# Foldda's Technical Architecture 
 
 In a Foldda app, each folder encapsulates a specific function of a data-processing step, the parent-children relationship of the stacked folders defines the data flow of the processing.
 
@@ -42,7 +42,7 @@ When a Foldda app executes in a runtime, each module's logic (a specific data-pr
 
 << foldda app execution with runtime >>
 
-# An Analogy of Foldda Framework's Design Modeling
+# Foldda Handler Explained - A Design Analogy
 
 The framework is modeled as a factory processing line, where a worker (known as a "handler") takes items from an input bucket, processes them, and places the processed items (or other types of output) into an output bucket.
 

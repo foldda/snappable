@@ -8,11 +8,11 @@ Dubbed "the breadboard for software", Foldda is an easy-to-use component-based s
 
 ## Foldda Concept: "Solution", "Handler", and "Runtime"
 
-Conceptually similar to its hardware counterpart, a Foldda "breadboard project" (called a "solution") has a collection of some components (called "handlers") and follows a design for delivering a software feature i.e. an app. What's special about Foldda handler components is that they are physically packaged as file system folders, and they can be flexibly arranged on and connected through a provided "breadboard-like" environment called a "runtime". This short video illustrates these concepts using an example of building a Foldda component-based app of an ETP pipeline.
+Conceptually similar to a hardware breadboard project, in the software space, a Foldda project (called a "solution") consists of a selection of components (called "handlers") which collectively follow a design and deliver a feature - i.e. an app. What's special about Foldda is that these handler components are physically packaged as file system folders, which can be flexibly arranged on and connected through a provided environment (called a "runtime"). This short video illustrates Foldda's "breadboard-like" operations through an example of building a component-based ETP pipeline.
 
 video demo here
 
-As shown in the video, by packaging components as folders, Foldda allows components to be physically moved around and be freely connected (or disconnected). This contrasts with the other "no-code" app-dev frameworks where the components must exist within a vendor-specific IDE environment. Foldda's unique component packaging is a key to vendor-neutral software component development.
+As in the video, a Foldda runtime allows physically arranging and connecting softeware components without using any specialised tools. This contrasts with the other "no-code" app-dev frameworks where the components must exist within a vendor-specific IDE environment. A major design goal of Foldda is to enable vendor-neutral software component development, and such goal requires two pieces of technology: the first is a universal, vendor independent packaging of software components like we've just discussed and demostrated; the second technology required is a standard interfcae that allow software components to freely and meaningful exchange data, think a "universal plug" for components like the pins and pin-holes on a physical breadboard ...
 
 ## Foldda Runtime: the "Breadboard"
 

@@ -1,14 +1,14 @@
-# Foldda - The 'Breadboard' For Component-based Software Projects
+# Foldda - A 'Breadboard' For Software Projects
 
-Dubbed "the breadboard for software", Foldda is an easy-to-use component-based software development platform - for fun, cheap, and instant software application projects.
+Dubbed "breadboard for software", Foldda is a simple, easy-to-use component-based computing framework - for fun, cheap, and instant software application projects.
 
 <div align="center">
-<img src="_Resources/foldda-breadboard.png" width="650" align="center">
+<img src="_Resources/foldda-breadboard.png" width="450" align="center">
 </div>
 
 ## "Breadboard-Like" App-Building Operations 
 
-Conceptually similar to a hardware breadboard project, in the software space, a Foldda project (called a "solution") consists of a selection of components (called "handlers") which collectively follow a design and deliver a feature - i.e. an app. What's special about Foldda is that these handler components are physically packaged as file system folders, which can be flexibly arranged on and connected through a provided environment (called a "runtime"). This short video illustrates  an example of building and running a component-based ETP pipeline using Foldda.
+A Foldda project (called a "solution") consists of a selection of components (called "handlers") that collectively follow a design and deliver a feature - i.e. an app. What's special about Foldda is that these handler components are physically packaged as file system folders, which can be flexibly arranged on and connected through a provided environment (called a "runtime"), so building a Foldda app is somewhat like a breadboard project except it's in the software space.  This short video illustrates  an example of building and running a component-based ETP pipeline using Foldda.
 
 video demo here
 
@@ -18,7 +18,7 @@ As in the video, by packaging software components as folders, Foldda's component
 
 Component-based computing encourges code reuse and modular design. 
 
-Foldda Automation Framework from this repo is the foundation of an open component-based computing eco-system, that has vendor-neutral software component and runtime development in its design. Such visionary design requires two pieces of technology: the first is a universal, vendor independent packaging of software components like we've just discussed and demostrated; the second technology required is a standard interfcae that allow software components to freely and meaningful exchange data, think a "universal plug" for components like the pins and pin-holes on a physical breadboard ...
+Foldda Automation Framework from this repo is the foundation of an open component-based computing eco-system, that has vendor-neutral software component and runtime development in its design. Such visionary design requires two pieces of technology: the first is a universal, vendor independent packaging of software components like we've just discussed and demonstrated; the second technology required is a standard interfcae that allow software components to freely and meaningful exchange data, think a "universal plug" for components like the pins and pin-holes on a physical breadboard ...
 
 ## Charian - Universal Data Exchange
 

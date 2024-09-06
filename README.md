@@ -1,6 +1,6 @@
-# Foldda - A 'Breadboard' For Software Projects
+# Foldda - A 'Breadboard' System For Software Projects
 
-Dubbed "breadboard for software", Foldda is a simple, easy-to-use component-based computing framework - for fun, cheap, and instant software application projects.
+Dubbed "breadboard for software", Foldda is a simple, easy-to-use component-based computing framework for building fun, cheap, and instant applications.
 
 <div align="center">
 <img src="_Resources/foldda-breadboard.png" width="450" align="center">
@@ -14,11 +14,11 @@ video demo here
 
 As in the video, by packaging software components as folders, Foldda's component-based app-building can be done without using any specialised tools. You can design and build apps by arranging and connecting software components using only native OS operationssuch as dragging-and-dropping folders. This contrasts with the other "no-code" app-dev frameworks where the components must exist within a vendor-specific IDE environment. 
 
-## Promoting A Truely Open Software Component Marketplace 
+## Promoting An Open Software Component Marketplace 
 
-Component-based computing encourges code reuse and modular design. 
+Component-based computing encourages code reuse and modular design. 
 
-Foldda Automation Framework from this repo is the foundation of an open component-based computing eco-system, that has vendor-neutral software component and runtime development in its design. Such visionary design requires two pieces of technology: the first is a universal, vendor independent packaging of software components like we've just discussed and demonstrated; the second technology required is a standard interfcae that allow software components to freely and meaningful exchange data, think a "universal plug" for components like the pins and pin-holes on a physical breadboard ...
+Foldda Automation Framework from this repo is the foundation of an open component-based computing eco-system that is designed for vendor-neutral software components and runtime development. To realize this vision requires two pieces of technology: the first is a universal, vendor-independent packaging of software components as we've just discussed and demonstrated; the second is a standard interface that allows software components to freely and meaningful exchange data - think a "universal plug" for components like the pins and pin-holes on a physical breadboard ...
 
 ## Charian - Universal Data Exchange
 

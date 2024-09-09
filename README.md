@@ -8,14 +8,22 @@ Dubbed "breadboard for software", Foldda is a simple, easy-to-use component-base
 
 ## "Breadboard-Like" App-Building Operations 
 
-A Foldda project (called a "solution") consists of a selection of components (called "handlers") that collectively follow a design and perform an application. In Foldda these components are physically packaged as file system folders, which can be flexibly arranged and connected using common OS operations such as drag-and-drop, so building a Foldda app is somewhat like a breadboard project except it's in the software space. This short video illustrates  an example of building and running a component-based ETP pipeline using Foldda.
+A Foldda project (called a "solution") consists of a selection of components (called "handlers") that collectively follow a design and perform an application. In Foldda these components are physically packaged as file system folders, which can be flexibly arranged and connected using common OS operations such as drag-and-drop, so building a Foldda app is somewhat like a breadboard project except it's in the software space. This short video illustrates building and running an ETP pipeline with Foldda components.
 
 video demo here
 
-As in the video, Foldda's component-based app-building can be done without specialized tools, so you can freely make changes to a Foldda "app" on any computer. This contrasts with the other "no-code" app-dev frameworks where the components must exist within a vendor-specific IDE environment. 
+As seen in the video, app-building with Foldda software components does not reuire a vendor-specific tool such as an IDE, which means you can build or change a "Foldda app" from any _bare_ Windows computer. Foldda components and the component-hosting runtime are implemented based on the API hosted in this repo. 
 
 ## An Open Software Component Marketplace 
 
+The ultimate goal of Foldda Automation API is to become the base of an open software component marketplace, where free and premiumn components are made available by different vendors for people to use for assembling into an app without much effort. 
+
+One key issue needs to be addressed for achieving such goal, that is, how to define the "boundry" of a component, so 1) it can be delivered in the market in a vendor-neutral way, and 2) it can co-exist and collabrate with the other components when it's assmabled in an app.
+
+
+
+
+can be done without specialized tools, so you can freely make changes to a Foldda "app" on any computer. This contrasts with the other "no-code" app-dev frameworks where the components must exist within a vendor-specific IDE environment
 An open software component computing eco-system requires two pieces of technology: the first is a universal, vendor-independent packaging of software components as we've just discussed and demonstrated; the second is a standard interface that allows software components to freely and meaningful exchange data - think a "universal plug" for components like the pins and pin-holes on a physical breadboard.
 
 The Foldda Automation Framework defines such a "plug", that is, the interface based on which components would work and exchange data, and the rest of the repo is the reference implementation of vendor-neutral software components and runtime development based on the defined framework. 

@@ -1,6 +1,6 @@
-# Foldda - A 'Breadboard' System For Software Projects
+# A 'Breadboard' System For Software Projects
 
-Dubbed "breadboard for software", Foldda is a simple, easy-to-use component-based software framework for building fun, cheap, and instant applications.
+Dubbed "breadboard for software", Foldda Automation is a simple, easy-to-use component-based software framework for building fun, cheap, and instant applications.
 
 <div align="center">
 <img src="_Resources/foldda-breadboard.png" width="450" align="center">
@@ -12,13 +12,13 @@ A Foldda project (called a "solution") consists of a selection of components (ca
 
 video demo here
 
-As seen in the video, app-building with Foldda software components does not reuire a vendor-specific tool such as an IDE, which means you can build or change a "Foldda app" from any _bare_ Windows computer. Foldda components and the component-hosting runtime are implemented based on the API hosted in this repo. 
+As seen in the video, app-building with Foldda software components does not require a vendor-specific tool such as an IDE, which means you can build or change a "Foldda app" from any _bare_ Windows computer. Foldda components and the component-hosting runtime are implemented based on the API hosted in this repo. 
 
 ## An Open Software Component Marketplace 
 
-The ultimate goal of Foldda Automation API is to become the base of an open software component marketplace, where free and premiumn components are made available by different vendors for people to use for assembling into an app without much effort. 
+The ultimate goal of Foldda Automation API is to become the base of an open software component marketplace, where free and premium components from different vendors are made available for people to assemble apps without much effort. 
 
-One key issue needs to be addressed for achieving such goal, that is, how to define the "boundry" of a component, so 1) it can be delivered in the market in a vendor-neutral way, and 2) it can co-exist and collabrate with the other components when it's assmabled in an app.
+One key issue that needs to be addressed is defining "the boundary" of a component in a vendor-neutral way, so 1) it can be obtained in an open market, and 2) it can co-exist and collabrate with the other components in an app.
 
 
 

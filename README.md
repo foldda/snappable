@@ -18,15 +18,9 @@ As seen in the video, app-building with Foldda software components does not requ
 
 The ultimate goal of Foldda Automation API is to become the base of an open software component marketplace, where free and premium components from different vendors are made available for people to assemble apps without much effort. 
 
-One key issue that needs to be addressed is defining "the boundary" of a component in a vendor-neutral way, so 1) it can be obtained in an open market, and 2) it can co-exist and collabrate with the other components in an app.
+One challenge to this initiative is defining "the boundary" of a component so it can co-exist and collabrate with the other components in an app, that is, we need a standard interface that allows software components to freely and meaningful exchange data - think a "universal plug" for components like the pins and pin-holes on a physical breadboard.
 
-
-
-
-can be done without specialized tools, so you can freely make changes to a Foldda "app" on any computer. This contrasts with the other "no-code" app-dev frameworks where the components must exist within a vendor-specific IDE environment
-An open software component computing eco-system requires two pieces of technology: the first is a universal, vendor-independent packaging of software components as we've just discussed and demonstrated; the second is a standard interface that allows software components to freely and meaningful exchange data - think a "universal plug" for components like the pins and pin-holes on a physical breadboard.
-
-The Foldda Automation Framework defines such a "plug", that is, the interface based on which components would work and exchange data, and the rest of the repo is the reference implementation of vendor-neutral software components and runtime development based on the defined framework. 
+The Foldda Automation Framework from this repo defines such an interface (based on Charian, see below) for components to work and exchange data. The other parts of the repo contain the reference implementation of vendor-neutral software components and runtime development based on the defined framework. 
 
 ## Charian - Universal Data Exchange
 

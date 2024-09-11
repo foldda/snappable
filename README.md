@@ -10,7 +10,7 @@ Dubbed "breadboard for software", Foldda Automation is a simple, easy-to-use com
 
 A Foldda project (called a "solution") consists of a selection of components (called "handlers") that collectively follow a design and perform an application. In Foldda these components are physically packaged as file system folders, which can be flexibly arranged and connected using common OS operations such as drag-and-drop, so building a Foldda app is somewhat like a breadboard project except it's in the software space. This short video illustrates building and running an ETP pipeline with Foldda components.
 
-video demo here
+[![Foldda Demo](https://img.youtube.com/vi/l0DjAjVoESo/0.jpg)](https://www.youtube.com/watch?v=l0DjAjVoESo)
 
 As seen in the video, app-building with Foldda software components does not require a vendor-specific tool such as an IDE, which means you can build or change a "Foldda app" from any _bare_ Windows computer. Foldda components and the component-hosting runtime are implemented based on the API hosted in this repo. 
 

@@ -12,25 +12,20 @@ A Foldda project (called a "solution") consists of a selection of components (ca
 
 [![Foldda Demo](https://img.youtube.com/vi/l0DjAjVoESo/0.jpg)](https://www.youtube.com/watch?v=l0DjAjVoESo)
 
-As seen in the video, app-building with Foldda software components does not require a vendor-specific tool such as an IDE, which means you can build or change a "Foldda app" from any _bare_ Windows computer. Foldda components and the component-hosting runtime are implemented based on the API hosted in this repo. 
+As seen in the video, app-building with Foldda software components does not require a vendor-specific tool such as an IDE, which means you can build or change a "Foldda app" from any _bare_ Windows computer. 
 
 ## An Open Software Component Marketplace 
 
-The ultimate goal of Foldda Automation API is to become the base of an open software component marketplace, where free and premium components from different vendors are made available for people to assemble apps without much effort. 
+The ultimate goal of Foldda Automation API is to become the base of an open-sourced software component marketplace, where free and premium components from different vendors are made available for people to assemble apps without much effort. 
 
-One challenge to this initiative is defining "the boundary" of a component so it can co-exist and collabrate with the other components in an app, that is, we need a standard interface that allows software components to freely and meaningful exchange data - think a "universal plug" for components like the pins and pin-holes on a physical breadboard.
+One challenge to this initiative is defining "the boundary" of a component so it can co-exist and collaborate with the other components in an app, that is, we need a standard interface that allows software components to freely and meaningful exchange data - think a defining "universal plug" for software components that works like the pins and pin-holes in a physical breadboard project. This is an important context for understanding the Foldda Automation Framework, which is to define such an interface for software components to exchange data and work together - even if they are developed by different vendors and have little or no pre-established knowledge of each other[^1]. 
 
-The Foldda Automation Framework from this repo defines such an interface (based on Charian, see below) for components to work and exchange data. The other parts of the repo contain the reference implementation of vendor-neutral software components and runtime development based on the defined framework. 
+[^1]: In software engineering, this feature Foldda has implemented is called "late binding".
 
-## Charian - Universal Data Exchange
 
-A Foldda runtime `needs to address the problem of defining and implementing the interface between the components - which can be potentially independently developed and have no assumed knowledge of one other. And that is another key piece of tech from Foldda - the Charian object serialization API.
+## About This Repo
 
-With Charian, Foldda runtime has this real power which is that it allows plug-n-play of third-party developed handlers that would work with existing handlers without having to recompile the app. It means you can have a handler built to your specific requirements while taking advantage of the existing prebuilt handlers, which means ultimate flexibility and control. And when a newly developed handler combines with the existing handlers, it multiplies the number of possible apps that can be built.
-
-This allows Foldda Runtime to function as "the (software) breadboard", i.e. it powers up, and connects the input and the output of, the handler modules. More technically speaking, it navigates through a Foldda solution's folder hierarchy, executes the instructions in each module's folder, and provides data exchange between connected modules. An example of Foldda runtime is the Foldda Windows app.
-
-## Foldda Automation Framework API
+This repo hosts the source code of the API, called Foldda Automation, on which the components and the component-hosting runtime you saw in the video are based. It also hosts the source code of many quality components and a reference runtime, which can be used as they are, or to be further customized to suit your specific requirements.
 
 The purpose of this repo is to assist developers to understand and develop Foldda compatible software components (or runtimes). In addition to the open-sourced Foldda Automation Framework API source code, it also hosts the source code of many open-source licensed handlers, that can be used in your projects as they are, but also serve as boilerplate for your further custom development. The "Developer Kit" project included in this repo is a simple reference runtime which can be used for the convenience of custom handler development.
 
@@ -64,6 +59,15 @@ So in a Foldda handler, all it does is take data records from the provided input
 ```
 
 ## Framework API Overview
+
+## Charian - Universal Data Exchange
+
+A Foldda runtime needs to address the problem of defining and implementing the interface between the components - which can be potentially independently developed and have no assumed knowledge of one other. And that is another key piece of tech from Foldda - the Charian object serialization API.
+
+With Charian, Foldda runtime has this real power which is that it allows plug-n-play of third-party developed handlers that would work with existing handlers without having to recompile the app. It means you can have a handler built to your specific requirements while taking advantage of the existing prebuilt handlers, which means ultimate flexibility and control. And when a newly developed handler combines with the existing handlers, it multiplies the number of possible apps that can be built.
+
+This allows Foldda Runtime to function as "the (software) breadboard", i.e. it powers up, and connects the input and the output of, the handler modules. More technically speaking, it navigates through a Foldda solution's folder hierarchy, executes the instructions in each module's folder, and provides data exchange between connected modules. An example of Foldda runtime is the Foldda Windows app.
+
 
 ## Handlers
 

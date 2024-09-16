@@ -1,6 +1,6 @@
 # A 'Breadboard' System For Software Projects
 
-Dubbed "breadboard for software", Foldda Automation is a simple, easy-to-use component-based software framework for building fun, cheap, and instant applications.
+Dubbed "breadboard for software", Foldda Automation is a simple, easy-to-use component-based software development framework for building fun, cheap, and instant software applications.
 
 <div align="center">
 <img src="_Resources/foldda-breadboard.png" width="450" align="center">
@@ -8,26 +8,27 @@ Dubbed "breadboard for software", Foldda Automation is a simple, easy-to-use com
 
 ## "Breadboard-Like" App-Building Operations 
 
-A Foldda project (called a "solution") consists of a selection of components (called "handlers") that collectively follow a design and perform an application. In Foldda these components are physically packaged as file system folders, which can be flexibly arranged and connected using common OS operations such as drag-and-drop, so building a Foldda app is somewhat like a breadboard project except it's in the software space. This short video illustrates building and running an ETP pipeline with Foldda components.
+A Foldda project (called a "solution") consists of a selection of components (called "handlers") that collectively follow a design and perform an application. Unlike the other modular software development framework, where software modules are virtually presented as icons in an IDE environment, Foldda components are packaged as file system folders, which can be physically arranged and connected in a plain Windows environment, using operations such as drag-and-drop. That is why building a Foldda app is more like a breadboard project except the outcome is a software application. This short video illustrates building and running an ETP pipeline with Foldda components.
 
 [![Foldda Demo](https://img.youtube.com/vi/l0DjAjVoESo/0.jpg)](https://www.youtube.com/watch?v=l0DjAjVoESo)
 
 As seen in the video, app-building with Foldda software components does not require a vendor-specific tool such as an IDE, which means you can build or change a "Foldda app" from any _bare_ Windows computer. 
 
-## An Open Software Component Marketplace 
+## The Quest of An Open Software Component Marketplace 
 
-The ultimate goal of Foldda Automation API is to become the base of an open-sourced software component marketplace, where free and premium components from different vendors are made available for people to assemble apps without much effort. 
+The ultimate goal of Foldda Automation API is to become the base of an open-sourced software component marketplace, where free and premium components from different vendors are made available for people to assemble apps without much effort. Such a market has a huge potential because, not only does building software become much easier and more productive but also, unlike using hardware electronic components, making extra software component copies has no additional cost. 
 
-One challenge to this initiative is defining "the boundary" of a component so it can co-exist and collaborate with the other components in an app, that is, we need a standard interface that allows software components to freely and meaningful exchange data - think a defining "universal plug" for software components that works like the pins and pin-holes in a physical breadboard project. This is an important context for understanding the Foldda Automation Framework, which is to define such an interface for software components to exchange data and work together - even if they are developed by different vendors and have little or no pre-established knowledge of each other[^1]. 
+However, despite the attractive benefits, a long-time challenge to achieve component-based computing is to define "the boundary" of a component so it can co-exist and collaborate with the other components in an app, that is, we need a standard interface that allows software components to freely and meaningful exchange data - think a defining "universal plug" for software components that works like the pins and pin-holes in a physical breadboard project. So the problem the Foldda Automation Framework tries to solve is the definition and implementation of such a "universal interface", for software components to exchange data while working together - even if the components are from different vendors at different times, and have little or no pre-established knowledge of each other[^1]. 
 
 [^1]: In software engineering, this feature Foldda has implemented is called "late binding".
 
-
 ## About This Repo
 
-This repo hosts the source code of the API, called Foldda Automation, on which the components and the component-hosting runtime you saw in the video are based. It also hosts the source code of many quality components and a reference runtime, which can be used as they are, or to be further customized to suit your specific requirements.
+This repo hosts the source code of the Foldda Automation API, which is the base of the components and the component-hosting runtime you saw in the video. It also hosts the source code of many quality components and a reference runtime, which can be used as they are, or to be further customized to suit your specific requirements.
 
-The purpose of this repo is to assist developers to understand and develop Foldda compatible software components (or runtimes). In addition to the open-sourced Foldda Automation Framework API source code, it also hosts the source code of many open-source licensed handlers, that can be used in your projects as they are, but also serve as boilerplate for your further custom development. The "Developer Kit" project included in this repo is a simple reference runtime which can be used for the convenience of custom handler development.
+By making the API's source code publically available, this repo would assist developers in understanding and developing compatible software components (or runtimes). Also, many components like the ones you saw in the demo video are open-sourced here, which can be used in your projects as they are, but also serve as boilerplate for your further custom development. Being able to modify a component according to your specific requirement is also key because everyone's requirements are different, and it encourages you to make changes and take ownership of the development of a custom component that caters to your requirements.
+
+The "Developer Kit" project included in this repo is a simple reference runtime that can be used for the convenience of custom handler development as you'll be able to debug your code between components following a data processing flow.
 
 # Foldda's Technical Architecture 
 

@@ -401,6 +401,16 @@ namespace Foldda.Automation.Framework
                 return result;
             }
 
+            public string GetString(string key)
+            {
+                return TryGetString(key, out string result) ? result : null;
+            }
+
+            public Rda GetRda(string key)
+            {
+                return TryGetRda(key, out Rda result) ? result : null;
+            }
+
             public void SetString(string key, string value)
             {
                 SetRda(key, new Rda() { ScalarValue = value });

@@ -26,6 +26,7 @@ namespace Foldda.Automation.EventHandler
             //addition arguments that can be optionally provided
             public const string PARAM_ARGUMENTS_2 = "arguments_2";
             public const string PARAM_ARGUMENTS_3 = "arguments_3";
+            public const string PARAM_TIMEOUT_SEC = "timeout-sec";
 
             public InputRecord(Rda originalRda) : base(originalRda)
             {
@@ -35,7 +36,7 @@ namespace Foldda.Automation.EventHandler
             {
             }
 
-            public enum RDA_INDEX : int { CMD_EXECUTABLE, ARGUMENTS, ARGUMENTS_2, ARGUMENTS_3 }
+            public enum RDA_INDEX : int { CMD_EXECUTABLE, ARGUMENTS, ARGUMENTS_2, ARGUMENTS_3, TIMEOUT_SEC }
 
             public string CMD_EXECUTABLE 
             {
@@ -59,6 +60,12 @@ namespace Foldda.Automation.EventHandler
                 get => this[(int)RDA_INDEX.ARGUMENTS_3].ScalarValue;
                 set => this[(int)RDA_INDEX.ARGUMENTS_3].ScalarValue = value;
             }
+
+            public int TIMEOUT_SEC
+            {
+                get => int.TryParse(this[(int)RDA_INDEX.TIMEOUT_SEC].ScalarValue, out int timeoutSec) ? timeoutSec : DEFAULT_TIMEOUT;
+                set => this[(int)RDA_INDEX.TIMEOUT_SEC].ScalarValue = value.ToString();
+            }
         }
 
         //this data record tells the downstream handler (eg a Csv-Reader where to pick up the resulted data)
@@ -79,11 +86,11 @@ namespace Foldda.Automation.EventHandler
         protected override Task ProcessRecord(IRda containerRecord, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             
-            Log($"Handler processing triggered by {containerRecord}");
+            Log($"Handler processing triggered by container record {containerRecord}");
 
             //InputRecord commandConfig;
             //testing if the trigger contains 'download instructions' in its context,
-            if(!(containerRecord is HandlerEvent evn) || !(evn.EventDetailsRda is InputRecord commandConfig) || string.IsNullOrEmpty(commandConfig.CMD_EXECUTABLE))
+            if(!(containerRecord is InputRecord commandConfig) || string.IsNullOrEmpty(commandConfig.CMD_EXECUTABLE))
             {
                 Log($"Trigger event has no command-exectution instrcution in input record, local config settings are used.");
                 commandConfig = LocalConfig;
@@ -94,7 +101,7 @@ namespace Foldda.Automation.EventHandler
 
         protected override Task ProcessHandlerEvent(HandlerEvent evn, CancellationToken cancellationToken)
         {
-            Log($"Handler processing triggered by {evn}");
+            Log($"Handler processing triggered by event {evn}");
 
             //InputRecord commandConfig;
             //testing if the trigger contains 'download instructions' in its context,
@@ -107,10 +114,11 @@ namespace Foldda.Automation.EventHandler
             return RunCommand(commandConfig);            //force sub-class to implement
         }
 
+        public const int DEFAULT_TIMEOUT = 1; //1 sec
+
         private async Task RunCommand(InputRecord commandConfig)
         {
-            await Task.Run(async () =>
-            {
+            await Task.Run(() => {
                 try
                 {
                     using (Process process = new Process())
@@ -137,18 +145,33 @@ namespace Foldda.Automation.EventHandler
                             {
                                 if (e.Data == null)
                                 {
-                                    outputWaitHandle.Set();
+                                    try
+                                    {
+                                        outputWaitHandle.Set();
+                                    }
+                                    catch(ObjectDisposedException)
+                                    {
+                                        Deb("outputWaitHandle disposed");
+                                    }
                                 }
                                 else
                                 {
                                     output.AppendLine(e.Data);
                                 }
                             };
+
                             process.ErrorDataReceived += (sender, e) =>
                             {
                                 if (e.Data == null)
                                 {
-                                    errorWaitHandle.Set();
+                                    try
+                                    {
+                                        errorWaitHandle.Set();
+                                    }
+                                    catch(ObjectDisposedException)
+                                    {
+                                        return;
+                                    }                                 
                                 }
                                 else
                                 {
@@ -156,19 +179,24 @@ namespace Foldda.Automation.EventHandler
                                 }
                             };
 
+                            Task.Delay(50).Wait(); //have a small delay waiting for the above threads to set the wait handles
+
+                            //execute the command
                             process.Start();
 
+                            //capture ouputs
                             process.BeginOutputReadLine();
                             process.BeginErrorReadLine();
 
+                            int timeOutMiliSec = commandConfig.TIMEOUT_SEC * 1000;
+
                             //WaitForExit WITH TIMEOUT
-                            int TIMEOUT = 1000; //1 sec
-                            if (process.WaitForExit(TIMEOUT) &&
-                                outputWaitHandle.WaitOne(TIMEOUT) &&
-                                errorWaitHandle.WaitOne(TIMEOUT))
+                            if (process.WaitForExit(timeOutMiliSec) &&
+                                outputWaitHandle.WaitOne(timeOutMiliSec) &&
+                                errorWaitHandle.WaitOne(timeOutMiliSec))
                             {
                                 // Process completed. Check process.ExitCode here.
-                                if(process.ExitCode == 0)
+                                if (process.ExitCode == 0)
                                 {
                                     Log($"INFO: Executing command '{fullCommand}' successed. Output = {output}");
                                     OutputStorage.Receive(new OutputRecord(this.GetType().Name, DateTime.Now) { ExecutionOutput = output.ToString() });
@@ -191,14 +219,9 @@ namespace Foldda.Automation.EventHandler
                     Log(e);
                     throw e;
                 }
+
+                return Task.CompletedTask;
             });
-
-
-
-
-
-
-
 
         }
 
@@ -211,7 +234,8 @@ namespace Foldda.Automation.EventHandler
                 CMD_EXECUTABLE = config.GetSettingValue(InputRecord.PARAM_CMD_EXECUTABLE, string.Empty).Trim(),
                 ARGUMENTS = config.GetSettingValue(InputRecord.PARAM_ARGUMENTS, string.Empty).Trim(),
                 ARGUMENTS_2 = config.GetSettingValue(InputRecord.PARAM_ARGUMENTS_2, string.Empty).Trim(),
-                ARGUMENTS_3 = config.GetSettingValue(InputRecord.PARAM_ARGUMENTS_3, string.Empty).Trim()
+                ARGUMENTS_3 = config.GetSettingValue(InputRecord.PARAM_ARGUMENTS_3, string.Empty).Trim(),
+                TIMEOUT_SEC = config.GetSettingValue(InputRecord.PARAM_TIMEOUT_SEC, DEFAULT_TIMEOUT)
             };
         }
     }

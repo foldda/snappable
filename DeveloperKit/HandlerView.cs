@@ -40,7 +40,7 @@ namespace Foldda.Automation.HandlerDevKit
                 }
             }
 
-            internal List<string> LogTextHighlightPatterns => HandlerModel.AlertPatterns;
+            internal List<string> LogTextHighlightPatterns => HandlerModel.LogHighlightPatterns;
         }
 
         public class HandlerConfigPanel : HandlerView
@@ -72,7 +72,7 @@ namespace Foldda.Automation.HandlerDevKit
                     {
                         result.Add(MakeListViewItem(HandlerInfoGroup, IMAGE_CONFIG, ".NET Class", HandlerModel.Handler));
                         result.Add(MakeListViewItem(HandlerInfoGroup, IMAGE_CONFIG, ".NET Assembly", HandlerModel.Assembly));
-                        result.Add(MakeListViewItem(HandlerInfoGroup, IMAGE_CONFIG, "Highlight Patterns", string.Join(",", HandlerModel.AlertPatterns)));
+                        result.Add(MakeListViewItem(HandlerInfoGroup, IMAGE_CONFIG, "Highlight Patterns", string.Join(",", HandlerModel.LogHighlightPatterns)));
                     }
 
                     return result;

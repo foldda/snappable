@@ -41,7 +41,7 @@ namespace Foldda.Automation.Util
 
         protected void Info(string v)
         {
-            LoggingProvider?.Log(v, LoggingLevel.Info);
+            LoggingProvider?.Log(v, LoggingLevel.Brief);
         }
 
         protected void Warn(string v)

@@ -127,6 +127,9 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -229,6 +232,6 @@
     <Error Condition="!Exists('..\packages\Obfuscar.2.2.25\build\obfuscar.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Obfuscar.2.2.25\build\obfuscar.props'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>Powershell.exe -file "$(SolutionDir)_Scripts\runtime-host-post-build.ps1" $(TargetDir) CsvHandler;HL7Handler;EventHandler;Trigger $(ProjectName)</PostBuildEvent>
+    <PostBuildEvent>Powershell.exe -file "$(SolutionDir)_Scripts\runtime-host-post-build.ps1" $(TargetDir) CsvHandler;HL7Handler;EventHandler;Trigger;CustomHandler $(ProjectName)</PostBuildEvent>
   </PropertyGroup>
 </Project>

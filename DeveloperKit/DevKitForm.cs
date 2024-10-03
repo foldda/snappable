@@ -81,6 +81,7 @@ namespace Foldda.Automation.HandlerDevKit
         }
 
         internal const string FOLDDA_LOG_FOLDER_NAME = "[log]";
+        internal static readonly string[] CONFIG_PATHS = new string[] { "N1_CONFIG_PATH", "N2_CONFIG_PATH", "N3_CONFIG_PATH" };
 
         public DevKitForm()
         {
@@ -289,9 +290,9 @@ namespace Foldda.Automation.HandlerDevKit
             //3 handler controllers, each gets assigned with input/output data stores and front-end views
             Controllers = new List<HandlerController>()
             {
-                new HandlerController(this, Store_0, Store_1, LiveLogBox_1, NodeSettingsListView_1),
-                new HandlerController(this, Store_1, Store_2, LiveLogBox_2, NodeSettingsListView_2),
-                new HandlerController(this, Store_2, Store_3, LiveLogBox_3, NodeSettingsListView_3)
+                new HandlerController(this, Store_0, Store_1, LiveLogBox_1, NodeSettingsListView_1, 0),
+                new HandlerController(this, Store_1, Store_2, LiveLogBox_2, NodeSettingsListView_2, 1),
+                new HandlerController(this, Store_2, Store_3, LiveLogBox_3, NodeSettingsListView_3, 2)
             };
 
             ControllerTask = RefreshModelsView(AppShutdownCancellationSource.Token);

@@ -84,8 +84,11 @@ namespace Foldda.Automation.HandlerDevKit
             Description = HandlerConfig.Description;
             Handler = HandlerConfig.Handler;
             Assembly = HandlerConfig.HandlerAssembly;
-            AlertPatterns = new List<string>(DEFAULT_ALERT_PATTERN);
-            AlertPatterns.AddRange(HandlerConfig.CustomAlertPatterns.Split(new char[] { ';', ','}));
+            LogHighlightPatterns = new List<string>(DEFAULT_HIGHLIGHT_PATTERN);
+            if(!string.IsNullOrEmpty(HandlerConfig.CustomAlertPatterns))
+            {
+                LogHighlightPatterns.AddRange(HandlerConfig.CustomAlertPatterns.Split(new char[] { ';', ','}));
+            }
             Parameters = new Parameter[HandlerConfig.Parameters.Length];
             for (int i = 0; i < HandlerConfig.Parameters.Length; i++)
             {
@@ -244,9 +247,9 @@ namespace Foldda.Automation.HandlerDevKit
 
         public string Assembly { get; private set; }
 
-        public List<string> AlertPatterns { get; private set; } = new List<string>();
+        public List<string> LogHighlightPatterns { get; private set; } = new List<string>();
 
-        static List<string> DEFAULT_ALERT_PATTERN = new List<string> { "ERROR", "WARNING" };
+        static List<string> DEFAULT_HIGHLIGHT_PATTERN = new List<string> { "ERROR", "WARNING" };
 
         public Parameter[] Parameters { get; private set; } = new Parameter[0];
 

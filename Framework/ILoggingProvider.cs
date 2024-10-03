@@ -2,7 +2,7 @@
 namespace Foldda.Automation.Framework
 {
     //from most brief to most detailed
-    public enum LoggingLevel : int { Info = 0, Detailed = 1, Verbose = 2, Debug = 3 };
+    public enum LoggingLevel : int { Brief = 0, Detailed = 1, Verbose = 2, Debug = 3 };
 
     public interface ILoggingProvider 
     {

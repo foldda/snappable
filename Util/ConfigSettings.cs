@@ -27,7 +27,7 @@ namespace Foldda.Automation.Util
             <!-- old style  
             <!-- assembly settings -->
             <add key="ROOT_NODES_PATH" value="D:\_DATA\Nodes"/>
-            <add key="EMAIL_RECIPIENTS" value="mr.michael.chen@gmail.com"/>
+            <add key="EMAIL_RECIPIENTS" value="someone@gmail.com"/>
             -->
 
             <!-- new style, can have multi values per key (id), and can filter on value attr -->

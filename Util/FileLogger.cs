@@ -59,6 +59,11 @@ namespace Foldda.Automation.Util
 
         public virtual void Log(string msg)
         {
+            _Log(msg);
+        }
+
+        protected void _Log(string msg)
+        {
             //cached_lines_count++;
             _logFile.CachedLines.Enqueue(msg);
 
@@ -90,11 +95,11 @@ namespace Foldda.Automation.Util
             FlushLogFile(_logFile);
         }
 
-        public void Log(string message, LoggingLevel messageLoggingLevel)
+        public virtual void Log(string message, LoggingLevel messageLoggingLevel)
         {
             if (messageLoggingLevel <= LoggingThreshold)
             {
-                Log(message);
+                _Log(message);
             }
         }
 
@@ -121,10 +126,10 @@ namespace Foldda.Automation.Util
             System.Diagnostics.Trace.WriteLine("source line number: " + sourceLineNumber);
 
             //to logger-specific media
-            Log("message: " + message);
-            Log("member name: " + memberName);
-            Log("source file path: " + sourceFilePath);
-            Log("source line number: " + sourceLineNumber);
+            _Log("message: " + message);
+            _Log("member name: " + memberName);
+            _Log("source file path: " + sourceFilePath);
+            _Log("source line number: " + sourceLineNumber);
         }
 
 

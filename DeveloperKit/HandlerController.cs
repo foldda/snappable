@@ -171,8 +171,9 @@ namespace Foldda.Automation.HandlerDevKit
         internal DevKitForm DevKitForm { get; }
         internal RichTextBox HandlerLoggingPanel { get; }
         internal ListView HandlerSettingsPanel { get; }
+        internal int Index0 { get; }    //0-based index
 
-        public HandlerController(DevKitForm devKitForm, IDataStore inputStore, IDataStore outputStore, RichTextBox loggingPanel, ListView settingsPanel) //: base(form.Logger)
+        public HandlerController(DevKitForm devKitForm, IDataStore inputStore, IDataStore outputStore, RichTextBox loggingPanel, ListView settingsPanel, int index0) //: base(form.Logger)
         {
             DevKitForm = devKitForm;
             HandlerLoggingPanel = loggingPanel;
@@ -180,6 +181,13 @@ namespace Foldda.Automation.HandlerDevKit
 
             InboundDataBuffer = inputStore;
             OutboundDataBuffer = outputStore;
+            Index0 = index0;
+
+            var savedConfig = ConfigSettings.Get(DevKitForm.CONFIG_PATHS[index0]);
+            if(!string.IsNullOrEmpty(savedConfig))
+            {
+                UpdateCurrentNode(savedConfig);
+            }
         }
 
         internal BasicDataHandler Handler { get; private set; }  //the handler it manages
@@ -258,11 +266,27 @@ namespace Foldda.Automation.HandlerDevKit
 
         internal void UpdateCurrentNode(string fileName)
         {
-            HandlerModel = new HandlerModel(new FileInfo(fileName)); ;
+            try
+            {
+                if(!File.Exists(fileName))
+                {
+                    throw new Exception($"Config file '{fileName}' not exist.");
+                }
 
-            Handler = CreateHandlerInstance(HandlerModel.HandlerConfig.Handler, HandlerModel.HandlerConfig.HandlerAssembly);
+                HandlerModel = new HandlerModel(new FileInfo(fileName)); ;
 
-            HandlerModel.Touch();
+                Handler = CreateHandlerInstance(HandlerModel.HandlerConfig.Handler, HandlerModel.HandlerConfig.HandlerAssembly);
+
+                HandlerModel.Touch();
+
+                ConfigSettings.Save(DevKitForm.CONFIG_PATHS[Index0], null, fileName, 1);
+            }
+            catch(Exception e)
+            {
+                Log(e.Message);
+                ConfigSettings.Remove(DevKitForm.CONFIG_PATHS[Index0], fileName);
+            }
+
         }
 
         internal void RePaint(DevKitForm form)

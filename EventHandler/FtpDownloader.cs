@@ -140,7 +140,7 @@ namespace Foldda.Automation.EventHandler
             {
                 if (!(handlerEvent.EventDetailsRda is FtpDownloadConfig downloadConfig) || string.IsNullOrEmpty(downloadConfig.FtpServer))
                 {
-                    Log($"Trigger event has no download instrcution in input record, local config settings are used.");
+                    Log($"Trigger event has no download instruction in input record, local config settings are used.");
                     downloadConfig = LocalConfig;
                 }
 

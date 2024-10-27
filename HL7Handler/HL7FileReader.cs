@@ -46,9 +46,11 @@ namespace Foldda.Automation.HL7Handler
 
         protected override async Task ProcessHandlerEvent(HandlerEvent handlerEvent, CancellationToken cancellationToken)
         {
-            //ATM, any event would trigger a read action.
+            //If the input handler-event does not contain file-reading config instructions, 
+            //use the settings from the local config file.
             if (!(handlerEvent.EventDetailsRda is FileReaderConfig readConfig))
             {
+                Log($"Input event has no file-reading instruction, local config settings are used.");
                 readConfig = DefaultFileReaderConfig;
             }
 

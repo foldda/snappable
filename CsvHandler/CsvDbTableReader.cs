@@ -49,11 +49,12 @@ namespace Foldda.Automation.CsvHandler
 
             try
             {
-                //testing if the trigger contains 'file-read config instructions' in its context,
+                //testing if the trigger event contains 'database-read config instructions' in its context,
+                //if not, use the database access settings from the local config file.
                 if (!(handlerEvent.EventDetailsRda is DbTableConnectionConfig config))
                 {
                     //if not, use the handler's local settings
-                    Log($"Container has no file-download instrcution, local (DB) config settings are used.");
+                    Log($"Container has no database-read instrcution, local (DB) config settings are used.");
                     config = LocalConfig;
                 }
 

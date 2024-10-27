@@ -48,7 +48,7 @@ namespace Foldda.Automation.CsvHandler
                 if (!(handlerEvent.EventDetailsRda is FileReaderConfig fileReaderConfig))
                 {
                     //if not, use the handler's local settings
-                    Log($"Container has no file-download instrcution, local (FTP) config settings are used.");
+                    Log($"Input event has no file-reading instruction, local config settings are used.");
                     fileReaderConfig = LocalConfig;
                 }
 

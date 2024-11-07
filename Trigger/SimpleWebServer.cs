@@ -156,11 +156,13 @@ namespace Foldda.Automation.Trigger
                 }
                 else if (req.HttpMethod.Equals("POST"))
                 {
-                    //get the HTTP raw content 
-                    //byte[] requestInputData = responseHandle.RequestInputResult.SelectMany(byteArr => byteArr).ToArray();
+                    //get the HTTP post raw content 
+                    byte[] requestInputData = responseHandle.RequestInputResult.SelectMany(byteArr => byteArr).ToArray();
+                    string message = $"Received posted data as below\n{System.Text.UTF8Encoding.Default.GetString(requestInputData)}";
 
                     //... and parse and handle form elements and values
-                    Log();
+                    Log(message);
+                    return message;
                 }
                 else
                 {

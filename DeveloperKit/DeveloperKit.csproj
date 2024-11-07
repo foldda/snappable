@@ -147,9 +147,29 @@
       <Project>{2b0a45b6-15f2-4106-b93e-fd82f7b08fb3}</Project>
       <Name>Charian</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CsvHandler\CsvHandler.csproj">
+      <Project>{d4be144b-3120-4bc0-bc6f-c1ffce018a4a}</Project>
+      <Name>CsvHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CustomHandler\CustomHandler.csproj">
+      <Project>{73662ad7-8c2e-477c-890c-fa6991d0a890}</Project>
+      <Name>CustomHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EventHandler\EventHandler.csproj">
+      <Project>{77826c9f-a5b3-467e-b147-4a1adb122f0f}</Project>
+      <Name>EventHandler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Framework\Framework.csproj">
       <Project>{db7562ce-1795-4d59-bd52-b167fd5bca56}</Project>
       <Name>Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HL7Handler\HL7Handler.csproj">
+      <Project>{712b8035-0c37-4a08-a0e9-b85cfc332ade}</Project>
+      <Name>HL7Handler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Trigger\Trigger.csproj">
+      <Project>{a1402c53-b1d8-4b42-b1ad-b8170473b5c4}</Project>
+      <Name>Trigger</Name>
     </ProjectReference>
     <ProjectReference Include="..\Util\Util.csproj">
       <Project>{e4773a15-8006-4456-9162-00d8ab2a54f5}</Project>

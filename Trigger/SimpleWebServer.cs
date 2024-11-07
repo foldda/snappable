@@ -9,6 +9,7 @@ using System;
 using System.Text;
 using System.IO;
 using Foldda.Automation.Util;
+using System.Linq;
 
 namespace Foldda.Automation.Trigger
 {
@@ -36,6 +37,16 @@ namespace Foldda.Automation.Trigger
   <body>Webpage source file in config is missing or empty.</body>
 </html>";
 
+        static readonly string FORM_COMPLETE_PAGE = @"
+<html>
+  <head>
+    <title>Submitted</title>
+  </head>
+  <body>
+    Submitted data is captured.<br> <button onclick=""history.back()"">Go Back</button>
+  </body>
+</html>";
+
         public SimpleWebServer(ILoggingProvider logger) : base(logger) { }
 
         public override void SetParameter(IConfigProvider config)
@@ -52,144 +63,144 @@ namespace Foldda.Automation.Trigger
 
         public override Task ProcessData(CancellationToken cancellationToken) => Listen(URI, cancellationToken);
 
-        const int MAX_CONCURRENT_CONNECTION = 10;
+        private const int ChunkSize = 1024;
 
-        public async Task Listen(string prefix, CancellationToken token)
+        public Task Listen(string prefix, CancellationToken token)
         {
             HttpListener listener = new HttpListener();
-            var requests = new HashSet<Task>();
-            try
+
+            return Task.Run(async () =>
             {
                 listener.Prefixes.Add(prefix);
                 listener.Start();
+                listener.BeginGetContext(ListenerRequestReceivedCallback, listener);
 
-                for (int i = 0; i < MAX_CONCURRENT_CONNECTION; i++)
+                //task loop
+                while (!token.IsCancellationRequested)
                 {
-                    var t = listener.GetContextAsync(); //creating concurrent-handling threads pool
-                    requests.Add(t);
+                    await Task.Delay(100);
                 }
 
-                int timeout = 100;
-                while (true)
+                //task is cancelled
+                if (listener.IsListening)
                 {
-                    requests.Add(Task.Delay(timeout));  //adding a timeout task, so we can check the token-cancellation
+                    listener.Stop();
+                }                        
 
-                    Task t = await Task.WhenAny(requests);  //wait for having received a client-request (or time-out)
-                    requests.Remove(t); //this thread is completed with result
-
-                    if (t is Task<HttpListenerContext>)
-                    {
-                        //get the context from request completed listening-thread's result
-                        var context = (t as Task<HttpListenerContext>).Result;
-                        //create a thread for responding to the request 
-                        requests.Add(ProcessRequestAsync(context, token));
-
-                        //add a new request-listening thread back to the pool
-                        requests.Add(listener.GetContextAsync());
-                    }
-                    else
-                    {   //task is the timeout 
-                        token.ThrowIfCancellationRequested();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                //if Token was canceled - swap the exception
-                if (token.IsCancellationRequested && ex is ObjectDisposedException)
-                {
-                    throw new OperationCanceledException("Listening cancelled.");
-                };
-                throw ex;
-            }
-            finally
-            {
-                listener.Stop();
-                //then wait for all connection to stop..
-                await Task.WhenAll(requests);
-                Log("ListenAsync task stopped.");
-            }
-
+            }, token);
 
         }
 
-        public async Task ProcessRequestAsync(HttpListenerContext ctx, CancellationToken token)
+        public class RequestHandle
         {
-            //bool runServer = true;
+            public HttpListenerContext HttpListenerContext { get; set; }
+            public Stream RequestInputStream => HttpListenerContext.Request.InputStream;
+            public byte[] Buffer { get; set; }
+            public readonly List<byte[]> RequestInputResult = new List<byte[]>();
+            public HttpListenerResponse Response => HttpListenerContext.Response;
+        }
 
-            // keep on handling requests
-            while (!token.IsCancellationRequested)
+        private void InputStreamReadingCallback(IAsyncResult ar)
+        {
+            var handle = (RequestHandle)ar.AsyncState;
+
+            var bytesRead = handle.RequestInputStream.EndRead(ar);
+            if (bytesRead > 0)
             {
-                // Will wait here until we hear from a connection
-                //HttpListenerContext ctx = await listener.GetContextAsync();
+                var buffer = new byte[bytesRead];
+                Buffer.BlockCopy(handle.Buffer, 0, buffer, 0, bytesRead);
+                handle.RequestInputResult.Add(buffer);
+                handle.RequestInputStream.BeginRead(handle.Buffer, 0, handle.Buffer.Length, InputStreamReadingCallback, handle);
+            }
+            else
+            {
+                handle.RequestInputStream.Dispose();
 
-                // Peel out the requests and response objects
-                HttpListenerRequest req = ctx.Request;
+                /** your http repsonse-handling logic **/
+                string responseValue = ProcessResponse(handle); 
 
-                // Print out some info about the request
-                //check box and radio https://stackoverflow.com/questions/11424037/do-checkbox-inputs-only-post-data-if-theyre-checked
-                Log($"Request #: {++requestCount}");
-                Log(req.Url.ToString());
-                Log(req.HttpMethod);
-                Log(req.UserHostName);
-                Log(req.UserAgent);
+                //write the response back to client
+                var responseBytes = Encoding.UTF8.GetBytes(responseValue);
+                handle.Response.ContentType = "text/html";
+                handle.Response.StatusCode = (int)HttpStatusCode.OK;
+                handle.Response.ContentLength64 = responseBytes.Length;
+                handle.Response.OutputStream.Write(responseBytes, 0, responseBytes.Length);
+                handle.Response.OutputStream.Close();
+                return;
+            }
+        }
 
-                //var postParams = GetRequestPostData(req);
-
-                //this Webserver dump all received data into a Lookup collection, and send to down stream.
-                if (req.QueryString.Keys.Count > 0)
+        //dummy, override this
+        protected string ProcessResponse(RequestHandle responseHandle)
+        {
+            try
+            {
+                var req = responseHandle.HttpListenerContext.Request;
+                if (req.HttpMethod.Equals("GET") && req.QueryString.Keys.Count > 0)
                 {
-                    try
+                    RecordContainer container = new RecordContainer();
+
+                    //store all the query data into a LookupRda object, a client would look into these values to get what it wants
+                    LookupRda lookup = new LookupRda();
+                    foreach (var key in req.QueryString.AllKeys)
                     {
-                        RecordContainer container = new RecordContainer();
-
-                        //store all the query data in the LookupRda object, a client would look into these values to get what it wants
-                        LookupRda lookup = new LookupRda();
-                        foreach (var key in req.QueryString.AllKeys)
-                        {
-                            lookup.SetString(key, req.QueryString[key]);
-                        }   
-                        
-                        container.Add(lookup);
-                        
-                        OutputStorage.Receive(container);
+                        lookup.SetString(key, req.QueryString[key]);
                     }
-                    catch (Exception e)
-                    {
-                        Log($"No container constructed - error - {e.Message}");
-                    }
+
+                    container.Add(lookup);
+
+                    //send to down-stream handlers
+                    OutputStorage.Receive(container);
+
+                    return FORM_COMPLETE_PAGE;
                 }
-
-                // Make sure we don't increment the page views counter if `favicon.ico` is requested
-                if (req.Url.AbsolutePath != "/favicon.ico")
-                    pageViews += 1;
-
-                string pageSource = null;
-                try
+                else if (req.HttpMethod.Equals("POST"))
                 {
-                    pageSource = File.ReadAllText(PagePath);
+                    //get the HTTP raw content 
+                    //byte[] requestInputData = responseHandle.RequestInputResult.SelectMany(byteArr => byteArr).ToArray();
+
+                    //... and parse and handle form elements and values
+                    Log();
                 }
-                catch
+                else
                 {
-                    Log($"Error reading web page source file: {PagePath}");
+                    return File.ReadAllText(PagePath);      //dummy              
                 }
+            }
+            catch (Exception e)
+            {
+                Log($"Request-handling error - {e.Message}");
+                return ERROR_PAGE;
+            }
+        }
 
-                if (string.IsNullOrEmpty(pageSource))
-                {
-                    pageSource = ERROR_PAGE;
-                }
+        //this is the HttpListener's callback 
+        private void ListenerRequestReceivedCallback(IAsyncResult result)
+        {
+            HttpListener listener = (HttpListener)result.AsyncState;
 
-                // Write the response info
-                HttpListenerResponse resp = ctx.Response;
+            try
+            {
+                //If we are not listening this line throws a ObjectDisposedException.
+                HttpListenerContext context = listener.EndGetContext(result);
 
-                resp.ContentType = "text/html";
-                resp.ContentEncoding = Encoding.UTF8;
-                byte[] data = Encoding.UTF8.GetBytes(String.Format(pageSource, pageViews, string.Empty));
-                resp.ContentLength64 = data.LongLength;
+                listener.BeginGetContext(ListenerRequestReceivedCallback, listener);
 
-                // Write out to the response stream (asynchronously), then close it
-                await resp.OutputStream.WriteAsync(data, 0, data.Length, token);
-                resp.Close();
+                //start reading (and processing) the input content..
+                var responseHandle = new RequestHandle { HttpListenerContext = context, Buffer = new byte[ChunkSize] };
+                context.Request.InputStream.BeginRead(responseHandle.Buffer, 0, responseHandle.Buffer.Length, InputStreamReadingCallback, responseHandle);
+            }
+            catch (ObjectDisposedException)
+            {
+                //Intentionally not doing anything with the exception.
+            }
+            catch (InvalidOperationException)
+            {
+                //??
+            }
+            catch (HttpListenerException)
+            {
+                listener.Stop();
             }
         }
     }

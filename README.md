@@ -1,4 +1,4 @@
-# A Simple and Practical Component-Based Software Development Framework
+# Component-Based Software Development Made Simple
 
 Foldda Open Components is a simple and practical component-based computing framework where off-the-shelf software components can be made from any third-parties, and be used for assembling versatile data-processing and automation pipelines. Dubbed "breadboard for software", it is for building fun, cheap, and instant software applications.
 

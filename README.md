@@ -1,6 +1,8 @@
 # Component-Based Software Development Made Simple
 
-Foldda Open Components is a simple and practical component-based computing framework where off-the-shelf software components can be made from any third-parties, and be used for assembling versatile data-processing and automation pipelines. Dubbed "breadboard for software", it is for building fun, cheap, and instant software applications.
+Foldda Open Components is an API and reference implementation of software components for constructing software by simply connecting the components. As the components can be made "off-the-shelf" by any third party, you can create applications, such as custom data processing and automation pipelines, with unlimited choices. And of course, you can also create your own components without depending on a vendor. 
+
+Essentially Open Components enables simple and practical vendor-neutral component-based computing, which is a new and fun way to build instant software applications much like "the breadboard for software".
 
 <div align="center">
 <img src="_Resources/foldda-breadboard.png" width="450" align="center">
@@ -8,7 +10,7 @@ Foldda Open Components is a simple and practical component-based computing frame
 
 ## "Breadboard-Like" App-Building Operations 
 
-A Foldda project (called a "solution") consists of a selection of components (called "handlers") that collectively follow a design and perform an application. Unlike the other modular software development framework, where software modules are virtually presented as icons in an IDE environment, Foldda components are packaged as file system folders, which can be physically arranged and connected in a plain Windows environment, using operations such as drag-and-drop. That is why building a Foldda app is more like a breadboard project except the outcome is a software application. This [short video below](https://www.youtube.com/watch?v=l0DjAjVoESo) is a demo of building and running an ETP pipeline with Foldda components.
+A Foldda project (called a "solution") consists of a selection of components (called "handlers") that collectively follow a design and perform an application. Unlike the other modular software development frameworks, where software modules are virtually presented as icons in an IDE environment, Foldda components are packaged as file system folders, which can be physically arranged and connected in a plain Windows environment, using operations such as drag-and-drop. That is why building a Foldda app is more like a breadboard project except the outcome is a software application. This [short video below](https://www.youtube.com/watch?v=l0DjAjVoESo) is a demo of building and running an ETP pipeline with Foldda components.
 
 [![Foldda Demo](https://img.youtube.com/vi/l0DjAjVoESo/0.jpg)](https://www.youtube.com/watch?v=l0DjAjVoESo)
 

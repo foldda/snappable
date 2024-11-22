@@ -1,6 +1,6 @@
-# A 'Breadboard' System For Software Projects
+# A Simple and Practical Component-Based Software Development Framework
 
-Dubbed "breadboard for software", Foldda Automation is a simple, easy-to-use component-based software development framework for building fun, cheap, and instant software applications.
+Foldda Open Components is a simple and practical component-based computing framework where off-the-shelf software components can be made from any third-parties, and be used for assembling versatile data-processing and automation pipelines. Dubbed "breadboard for software", it is for building fun, cheap, and instant software applications.
 
 <div align="center">
 <img src="_Resources/foldda-breadboard.png" width="450" align="center">

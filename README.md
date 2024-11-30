@@ -1,4 +1,8 @@
-# Component-Based Software Development Made Simple
+# Enflow Components
+
+Enflow is Foldda's innovative no-code integration and data automation tool that assembles data-processing pipelines using vendor-neutral, standardized components. This repo contains Enflow components's atsnadarized API, as well as all Foldda published components which you can use and enhance upon.
+
+##cComponent-Based Software Development Made Simple
 
 Foldda Open Components is an API and reference implementation of software components for constructing software by simply connecting the components. As the components can be made "off-the-shelf" by any third party, you can create applications, such as custom data processing and automation pipelines, with unlimited choices. And of course, you can also create your own components without depending on a vendor. 
 

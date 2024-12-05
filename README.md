@@ -1,6 +1,10 @@
 # Enflow Components
 
-Foldda Enflow is an innovative no-code integration and data automation tool that assembles data-processing pipelines using vendor-neutral, standardized components. This repo contains the standardized API based on which a third party can make its Enflow-compatible components that, in theory, can have any arbitrary features. It also contains all Foldda's official Emflow components' source codes which you can inspect, test, and enhance. You can also use these components as functional modules in your project to save time and money in the development.
+Foldda Enflow is an innovative no-code integration and data automation tool that assembles data-processing pipelines using vendor-neutral, standardized components. This repo contains -
+
+1. The API of the component standard, based on which a third party can make Enflow-compatible components with arbitrary features and collaborate and interact with components made by the other vendors in Empflow.
+2. The source code of all Emflow components from Foldda, which serves as a comprehensive collection of reference components implementations of various tasks and demonstrates those simple yet effective programming techniques employed in the implementations.
+3. An easy-to-use development tool allows you to debug and trace the code of your custom-developed components.
 
 ## Component-Based Computing Made Simple
 

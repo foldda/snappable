@@ -142,7 +142,8 @@ namespace Foldda.Automation.Framework
         /// <returns>A container of output/produced records</returns>
         protected virtual RecordContainer ProcessContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
         {
-            RecordContainer outputContainer = new RecordContainer() { MetaData = inputContainer.MetaData };
+            //By default, output container is the same type as the input container
+            RecordContainer outputContainer = new RecordContainer() { MetaData = inputContainer.MetaData, RecordEncoding = inputContainer.RecordEncoding };
             //label the processed container .. default just keeping it as the input
 
             //process each record
@@ -150,6 +151,8 @@ namespace Foldda.Automation.Framework
             {
                 ProcessRecord(record, inputContainer, outputContainer, cancellationToken);
             }
+
+            //... override this method if output container would have meta-data, encoding changes
 
             return outputContainer;
         }
@@ -233,13 +236,14 @@ namespace Foldda.Automation.Framework
             {
                 if (scanner.SkippedFileList.Contains(file.FullName))
                 {
+                    logger?.Log($@"File [{file.Name}] in the target directory is listed to be skipped.");
                     await Task.Delay(100);
                     continue;
                 }
                 else if (!Match(file.Name, regexPattern) && !file.Name.EndsWith(tempFileNameSuffix))
                 {
                     scanner.SkippedFileList.Add(file.FullName);
-                    logger.Log($@"File [{file.Name}] in the target directory doesn't match the name-filter '{regexPattern}' and is skipped.");
+                    logger?.Log($@"Skipped [{file.Name}] in the source directory '{targetDirectory.Name}' as it doesn't match the targeted name pattern '{regexPattern}'.");
                     continue;
                 }
 
@@ -250,12 +254,12 @@ namespace Foldda.Automation.Framework
                     newTempFileName = $"{file.FullName}{tempFileNameSuffix}";
                     try
                     {
-                        logger.Log($"Moving {file.FullName} to {newTempFileName} before scanning.");
+                        logger?.Log($"Moving {file.FullName} to {newTempFileName} before scanning.");
                         File.Move(file.FullName, newTempFileName);
                     }
                     catch (Exception e)
                     {
-                        logger.Log($@"File [{file.Name}] is locked and cannot be processed. {e.Message}");
+                        logger?.Log($@"File [{file.Name}] is locked and cannot be processed. {e.Message}");
                         continue;   //to next file
                     }
                 }
@@ -281,7 +285,7 @@ namespace Foldda.Automation.Framework
                     Task consumer = Task.Run(async () =>
                     {
                         //this task harvests the scanner-produced records
-                        RecordContainer container = new RecordContainer() { MetaData = new Rda() { ScalarValue = file.Name } };
+                        RecordContainer container = new RecordContainer() { MetaData = new Rda() { ScalarValue = file.Name }, RecordEncoding = scanner.RecordEncoding };
 
                         while (!cancellationToken.IsCancellationRequested)
                         {
@@ -306,7 +310,7 @@ namespace Foldda.Automation.Framework
 
                     }, cancellationToken);
 
-                    logger.Log($"waiting for scanner tasks to complete ...");
+                    logger?.Log($"waiting for scanner tasks to complete ...");
 
                     await Task.WhenAll(consumer, producer);
 
@@ -315,18 +319,18 @@ namespace Foldda.Automation.Framework
                     if (count == 0)
                     {
                         File.Move(newTempFileName, file.FullName);
-                        logger.Log($"Restored {newTempFileName} to {file.FullName} and will not attempt to process it until next restart.");
+                        logger?.Log($"Restored {newTempFileName} to {file.FullName} and will not attempt to process it until next restart.");
                         //if no records found, exclude this file (but don't delete) in the future scanning 
                         scanner.SkippedFileList.Add(file.FullName);
                     }
                     else
                     {
                         File.Delete(newTempFileName);
-                        logger.Log($@"File [{newTempFileName}] is deleted after {count} records being retrieved.");
+                        logger?.Log($@"File [{newTempFileName}] is deleted after {count} records being retrieved.");
                     }
 
                     //end of scanning the folder
-                    logger.Log($"file scanner producer/consumer tasks completed");
+                    logger?.Log($"file scanner producer/consumer tasks completed");
                     total_count += count;
                 }
                 catch (OperationCanceledException)
@@ -335,7 +339,7 @@ namespace Foldda.Automation.Framework
                 }
                 catch (Exception e)
                 {
-                    logger.Log(e.ToString());
+                    logger?.Log(e.ToString());
                 }
 
 
@@ -344,7 +348,7 @@ namespace Foldda.Automation.Framework
 
             if(scanned_files_count > 0)
             {
-                logger.Log($"Folder '{targetDirectory.Name}' scanning task completed with total {scanned_files_count} files scanned and {total_count} records collected");
+                logger?.Log($"Folder '{targetDirectory.Name}' scanning task completed with total {scanned_files_count} files scanned and {total_count} records collected");
                 scanned_files_count = 0;
                 total_count = 0;
             }

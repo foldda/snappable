@@ -49,12 +49,11 @@ namespace Foldda.Automation.CsvHandler
 
             try
             {
-                //testing if the trigger event contains 'database-read config instructions' in its context,
-                //if not, use the database access settings from the local config file.
+                //testing if the trigger contains 'file-read config instructions' in its context,
                 if (!(handlerEvent.EventDetailsRda is DbTableConnectionConfig config))
                 {
                     //if not, use the handler's local settings
-                    Log($"Container has no database-read instrcution, local (DB) config settings are used.");
+                    Log($"Container has no file-download instrcution, local (DB) config settings are used.");
                     config = LocalConfig;
                 }
 
@@ -71,7 +70,8 @@ namespace Foldda.Automation.CsvHandler
                     //if query "*"
                     metaData.ColumnNames = _verifiedTargetTableSchema.ToArray();
                 }
-                RecordContainer outputContainer = new RecordContainer() { MetaData = metaData };
+                RecordContainer outputContainer = 
+                    new RecordContainer() { MetaData = metaData, RecordEncoding = TabularRecord.TabularRecordEncoding.Default };
                 outputContainer.MetaData = metaData;
 
                 int recordsRead = ReadFromDatabase(config, outputContainer, cancellationToken);

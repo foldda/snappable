@@ -85,7 +85,7 @@ namespace Foldda.Automation.Trigger
                 if (listener.IsListening)
                 {
                     listener.Stop();
-                }                        
+                }
 
             }, token);
 
@@ -117,7 +117,7 @@ namespace Foldda.Automation.Trigger
                 handle.RequestInputStream.Dispose();
 
                 /** your http repsonse-handling logic **/
-                string responseValue = ProcessResponse(handle); 
+                string responseValue = ProcessResponse(handle);
 
                 //write the response back to client
                 var responseBytes = Encoding.UTF8.GetBytes(responseValue);

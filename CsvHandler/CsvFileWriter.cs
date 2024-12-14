@@ -144,7 +144,7 @@ namespace Foldda.Automation.CsvHandler
         {
             try
             {
-                char[] data = csvRow.ToString(RecordEncoding).ToCharArray();
+                char[] data = csvRow.ToString(CsvRecordEncoding).ToCharArray();
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Append))
                 {
                     if (overwriteIfExists) { fileStream.SetLength(0); }

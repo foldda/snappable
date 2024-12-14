@@ -23,5 +23,24 @@ namespace Foldda.Automation.Framework
         /// <param name="record"></param>
         /// <returns></returns>
         char[] Encode(IRda record);
+
+        /// <summary>
+        /// Encode the Rda record container's header, if applicable, eg the "columns" frist row of a CSV container
+        /// </summary>
+        /// <param name="containerMetaData">The container's meta data</param>
+        /// <returns>the char[] to be attached to the beginning of the encoded container records string, NULL if N/A</returns>
+        char[] EncodeContainerHeader(Rda containerMetaData);
+
+        /// <summary>
+        /// Encode the Rda record container's trailer, if applicable, eg an XML file's document-ending tag
+        /// </summary>
+        /// <param name="containerMetaData">The container's meta data</param>
+        /// <returns>the char[] to be appended at the end to the encoded container records string, NULL if N/A</returns>
+        char[] EncodeContainerTrailer(Rda containerMetaData);
+
+        /// <summary>
+        /// The separator char(s) used for separating encoded records in a continous string.
+        /// </summary>
+        char[] RecordSeparator { get; set; }
     }
 }

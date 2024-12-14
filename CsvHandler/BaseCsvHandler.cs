@@ -19,14 +19,14 @@ namespace Foldda.Automation.CsvHandler
 
         protected bool FirstLineIsHeader { get; private set; }
 
-        internal TabularRecord.TabularRecordEncoding RecordEncoding { get; set; } = TabularRecord.DEFAULT_RECORD_ENCODING;
+        internal TabularRecord.TabularRecordEncoding CsvRecordEncoding { get; set; } = TabularRecord.DEFAULT_RECORD_ENCODING;
 
 
         public BaseCsvHandler(ILoggingProvider logger) : base(logger) { }
 
         public override AbstractCharStreamRecordScanner GetDefaultFileRecordScanner(ILoggingProvider loggingProvider)
         {
-            return new TabularRecord.TabularRecordStreamScanner(loggingProvider, RecordEncoding);
+            return new TabularRecord.TabularRecordStreamScanner(loggingProvider, CsvRecordEncoding);
         }
 
         public override void SetParameter(IConfigProvider config)
@@ -48,14 +48,14 @@ namespace Foldda.Automation.CsvHandler
                     }
                 }
 
-                RecordEncoding = new TabularRecord.TabularRecordEncoding(lengths);
+                CsvRecordEncoding = new TabularRecord.TabularRecordEncoding(lengths);
             }
             else
             {
                 char csvColumnDelimiter = config.GetSettingValue(CSV_COLUMN_DELIMITER, TabularRecord.TabularRecordEncoding.COMMA);
                 char csvColumnQualifier = config.GetSettingValue(CSV_COLUMN_QUALIFIER, TabularRecord.TabularRecordEncoding.DOUBLE_QUOTE);    //default qualifier is double-quote
 
-                RecordEncoding = new TabularRecord.TabularRecordEncoding(csvColumnDelimiter, csvColumnQualifier, csvColumnQualifier);
+                CsvRecordEncoding = new TabularRecord.TabularRecordEncoding(csvColumnDelimiter, csvColumnQualifier, csvColumnQualifier);
             }
 
             FirstLineIsHeader = config.GetSettingValue(CSV_FIRST_LINE_IS_HEADER, YES_STRING, true);

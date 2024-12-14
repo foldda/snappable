@@ -154,5 +154,7 @@ namespace Foldda.Automation.Framework
         }
 
         public int Count { get; private set; }
+
+        public IContainerRecordEncoding RecordEncoding { get; set; }
     }
 }

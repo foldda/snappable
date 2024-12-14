@@ -386,14 +386,44 @@ namespace Foldda.Automation.CsvHandler
                 }
             }
 
+            /// <summary>
+            /// Encode the Rda record container's header, if applicable, eg the "columns" frist row of a CSV container
+            /// </summary>
+            /// <param name="containerMetaData">The container's meta data</param>
+            /// <returns>the char[] to be attached to the beginning of the encoded container records string, NULL if N/A</returns>
+            public char[] EncodeContainerHeader(Rda containerMetaData)
+            {
+                //Csv container label would carry the meta-data such as the source-file-id, also columns name, data-types etc.
+                TabularRecord.MetaData csvContainerMetaData = TabularRecord.GetMetaData(containerMetaData);
+                TabularRecord csvHeaderRow = new TabularRecord(csvContainerMetaData.ColumnNames.ToList());
+                char[] headerLineChars = csvHeaderRow.ToString(this).ToCharArray();
+                return headerLineChars;
+            }
+
+            /// <summary>
+            /// The separator char(s) used for separating encoded records in a continous string.
+            /// </summary>
+            public char[] RecordSeparator { get; set; } = new char[] { '\r', '\n' };
+
+            /// <summary>
+            /// Encode the Rda record container's trailer, if applicable, eg an XML file's document-ending tag
+            /// </summary>
+            /// <param name="containerMetaData">The container's meta data</param>
+            /// <returns>the char[] to be appended at the end to the encoded container records string, NULL if N/A</returns>
+            public char[] EncodeContainerTrailer(Rda containerMetaData)
+            {
+                return null;
+            }
+
+
             public Encoding TextEncoding { get; set; } = Encoding.Default;
         }
 
         public class TabularRecordStreamScanner : AbstractCharStreamRecordScanner
         {
 
-            private char csvColumnDelimiter => RecordEncoding.DelimiterChar;
-            private char csvColumnQualifier => RecordEncoding.QualifierChar;
+            private char csvColumnDelimiter => CsvRecordEncoding.DelimiterChar;
+            private char csvColumnQualifier => CsvRecordEncoding.QualifierChar;
 
             private bool convertInCellLfCrToSpace = false;
             private StringBuilder LastRoundScannedChars { get; set; } = new StringBuilder();
@@ -414,14 +444,15 @@ namespace Foldda.Automation.CsvHandler
             const char CR = '\r';
             const char LF = '\n';
 
-            public TabularRecordStreamScanner(ILoggingProvider logger, TabularRecord.TabularRecordEncoding recordEncoding) : base(logger)
+            public TabularRecordStreamScanner(ILoggingProvider logger, TabularRecordEncoding csvEncoding) : base(logger)
             {
                 //check nullness and set default values
-                RecordEncoding = recordEncoding;
                 this.convertInCellLfCrToSpace = true;
+                RecordEncoding = csvEncoding;
             }
 
-            TabularRecord.TabularRecordEncoding RecordEncoding { get; }
+            private TabularRecordEncoding CsvRecordEncoding => (TabularRecord.TabularRecordEncoding) RecordEncoding;
+
 
             enum QUALIFYING_STATE
             {
@@ -579,7 +610,7 @@ namespace Foldda.Automation.CsvHandler
 
             public override IRda Parse(char[] csvRecordChars, Encoding default1)
             {
-                return RecordEncoding.ParseRecord(csvRecordChars);
+                return CsvRecordEncoding.ParseRecord(csvRecordChars);
             }
         }
 

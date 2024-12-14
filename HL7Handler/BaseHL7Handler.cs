@@ -26,7 +26,7 @@ namespace Foldda.Automation.HL7Handler
 
         public override AbstractCharStreamRecordScanner GetDefaultFileRecordScanner(ILoggingProvider loggingProvider)
         {
-            return new HL7Message.HL7MessageScanner(loggingProvider);
+            return new HL7Message.HL7MessageScanner(loggingProvider, HL7Message.HL7MessageEncoding.Default);
         }
 
         /// <summary>

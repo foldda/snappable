@@ -27,7 +27,7 @@ namespace Foldda.Automation.Util
         }
 
         //append the char to buffer, and match the marker pattern in the buffer
-        //if matched pattern is found, return the data before the marker as "the record"
+        //if matched pattern is found, return the data (before the marker) as "the record"
         //if pattern not found, return null;
         public char[] AppendAndFetch(char c)
         {
@@ -44,14 +44,9 @@ namespace Foldda.Automation.Util
         //return as char[] from the data in buffer;
         public char[] FetchCurrentlyBufferred()
         {
-            return Buffer.ToString().ToCharArray();
-        }
-
-
-        //return as char[] from the data in buffer;
-        public void ClearCurrentlyBufferred()
-        {
+            var result = Buffer.ToString().ToCharArray();
             Buffer.Clear();
+            return result;
         }
 
         //returns the matched header[] if it's found after stuffing the char

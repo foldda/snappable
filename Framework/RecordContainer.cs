@@ -1,6 +1,6 @@
 ﻿using Charian;
 using System.Collections.Generic;
-
+using System.Text;
 
 namespace Foldda.Automation.Framework
 {
@@ -27,6 +27,43 @@ namespace Foldda.Automation.Framework
         /// The meta-data applicable to all records in this container
         /// </summary>
         public IRda MetaData{ get; set; }
+
+        /// <summary>
+        /// The 'native' string-encoding for the container's records 
+        /// </summary>
+        public IContainerRecordEncoding RecordEncoding { get; set; } = new RdaRecordEncoding();
+
+
+        //https://stackoverflow.com/questions/8695118/what-are-the-file-group-record-unit-separator-control-characters-and-their-usage
+        public const char ASCII_RS = (char)30;
+
+        public class RdaRecordEncoding : IContainerRecordEncoding
+        {
+            public Encoding TextEncoding => System.Text.Encoding.Default;
+
+            public char[] RecordSeparator { get; set; } = new char[] { ASCII_RS };
+
+            public char[] Encode(IRda record)
+            {
+                return record.ToRda().ToString().ToCharArray();
+            }
+
+            public char[] EncodeContainerHeader(Rda containerMetaData)
+            {
+                return null;
+            }
+
+            public char[] EncodeContainerTrailer(Rda containerMetaData)
+            {
+                return null;
+            }
+
+            public IRda Parse(char[] charArray)
+            {
+                return Rda.Parse(new string(charArray));
+            }
+        }
+
 
         /// <summary>
         /// Container payload

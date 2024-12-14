@@ -105,7 +105,6 @@ namespace Foldda.Automation.HL7Handler
                 allChars.Append(segment.Value).Append(SEGMENT_SEPARATOR_CHAR);
             }
             //NB, we keep the last \r
-            //if(allChars.Length > 0){allChars.Remove(allChars.Length - 1, 1);}
             char[] result = new char[allChars.Length];
             allChars.CopyTo(0, result, 0, result.Length);
             return result;
@@ -113,7 +112,7 @@ namespace Foldda.Automation.HL7Handler
 
         public override string ToString()
         {
-            return new string(ToChars()).Replace("\n\r","\r").Replace("\r","\n");
+            return new string(ToChars());
         }
 
         public byte[] ToBytes()
@@ -121,6 +120,7 @@ namespace Foldda.Automation.HL7Handler
             return TextEncoding.GetBytes(ToChars());
         }
 
+        //enclosing the HL7 message content in MLLP starting and ending bytes
         public byte[] ToMllpBytes()
         {
             char[] hl7 = this.ToChars();
@@ -267,6 +267,7 @@ namespace Foldda.Automation.HL7Handler
                 }
             }
 
+            //Used in Rda transporting for re-construct HL7MessageEncoding
             public override string ToString()
             {
                 char[] s = new char[4];
@@ -280,6 +281,31 @@ namespace Foldda.Automation.HL7Handler
                 return (new HL7Message(record.ToRda())).ToString().ToCharArray();
             }
 
+            /// <summary>
+            /// Encode the Rda record container's header, if applicable, eg a HL7 "batch header that at the start of multiple HL& messages
+            /// </summary>
+            /// <param name="containerMetaData">The container's meta data</param>
+            /// <returns>the char[] to be attached to the beginning of the encoded container records string, NULL if N/A</returns>
+            public char[] EncodeContainerHeader(Rda containerMetaData)
+            {
+                return null;
+            }
+
+            /// <summary>
+            /// Encode the Rda record container's trailer, if applicable, eg an XML file's document-ending tag
+            /// </summary>
+            /// <param name="containerMetaData">The container's meta data</param>
+            /// <returns>the char[] to be appended at the end to the encoded container records string, NULL if N/A</returns>
+            public char[] EncodeContainerTrailer(Rda containerMetaData)
+            {
+                return null;
+            }
+
+            /// <summary>
+            /// The separator char(s) used for separating encoded records in a continous string.
+            /// </summary>
+            public char[] RecordSeparator { get; set; } = new char[] {'\r', '\n' };
+
             public char FieldSeparator => GetSeparator(Level0.Field);
             public char ComponentSeparator => GetSeparator(Level0.Component);
             public char RepeatSeparator => GetSeparator(Level0.Repeat);
@@ -288,6 +314,8 @@ namespace Foldda.Automation.HL7Handler
             public Encoding TextEncoding { get; set; } = Encoding.Default;
         }
 
+
+
         public class HL7MessageScanner : AbstractCharStreamRecordScanner
         {
             static readonly char[] MSH_DEFAULT = new char[] { 'M', 'S', 'H', '|', '^', '~', '\\', '&', '|' };
@@ -295,9 +323,12 @@ namespace Foldda.Automation.HL7Handler
              * Matcher matches the given pattern in the stream, if found, it notify the caller
              * by returning the matched pattern (char[])
              */
-            CharsArrayRecordMatcher matcher;
+            CharsArrayRecordMatcher _matcher;
 
-            public HL7MessageScanner(ILoggingProvider logger) : this(logger, MSH_DEFAULT) { }
+            public HL7MessageScanner(ILoggingProvider logger, HL7MessageEncoding hl7Encoding) : this(logger, MSH_DEFAULT) 
+            {
+                RecordEncoding = hl7Encoding;
+            }
             public HL7MessageScanner() : this(null, MSH_DEFAULT) { }
 
             public HL7MessageScanner(ILoggingProvider logger, char[] customMSH) : base(logger)
@@ -306,7 +337,7 @@ namespace Foldda.Automation.HL7Handler
                 {
                     throw new Exception($"Unexpected message header supplied. Correct format must start with MSH followed by separator-chars, eg - \"MSH|^~\\&|\" or \"MSH;,-+$;\"");
                 }
-                matcher = new CharsArrayRecordMatcher(customMSH);
+                _matcher = new CharsArrayRecordMatcher(customMSH);
             }
 
 
@@ -334,7 +365,7 @@ namespace Foldda.Automation.HL7Handler
                 for (int pos = 0; pos < dataLengthInBuffer; pos++)
                 {
                     char c = readBuffer[pos];
-                    char[] record = matcher.AppendAndFetch(c);
+                    char[] record = _matcher.AppendAndFetch(c);
                     if (record != null)
                     {
                         await ValidateCleansAndSave(record);
@@ -346,7 +377,7 @@ namespace Foldda.Automation.HL7Handler
             //return any "unused chars", so the matcher can choose "to put it back to buffer" or "to disgard"
             private async Task ValidateCleansAndSave(char[] record)
             {
-                int matchHeaderLength = matcher.RecordMarkerChars.Length;
+                int matchHeaderLength = _matcher.RecordMarkerChars.Length;
                 //record must at least has [MSH|....]
                 if (record.Length < matchHeaderLength)
                 {
@@ -361,7 +392,7 @@ namespace Foldda.Automation.HL7Handler
 
                 //MSH header is assumed present..
                 char fieldSeparatorChar = record[3];   //MSH separator char position
-                StringBuilder cleansingBuffer = new StringBuilder(new string(matcher.RecordMarkerChars));
+                StringBuilder cleansingBuffer = new StringBuilder(new string(_matcher.RecordMarkerChars));
                 int i = matchHeaderLength;
                 while (i < record.Length)
                 {
@@ -425,7 +456,7 @@ namespace Foldda.Automation.HL7Handler
 
             protected override async Task HarvestBufferedRecords()
             {
-                await ValidateCleansAndSave(matcher.FetchCurrentlyBufferred());
+                await ValidateCleansAndSave(_matcher.FetchCurrentlyBufferred());
             }
 
             public override IRda Parse(char[] hl7RecordChars, Encoding encoding)

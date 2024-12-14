@@ -165,7 +165,8 @@ namespace Foldda.Automation.HL7Handler
                         {
                             clientContainer = new RecordContainer()
                             {
-                                MetaData = new HandlerEvent(clientId, DateTime.Now)
+                                MetaData = new HandlerEvent(clientId, DateTime.Now),
+                                RecordEncoding = HL7Message.HL7MessageEncoding.Default
                             };
                             TempPerClientContainers.TryAdd(clientId, clientContainer);
                         }

@@ -151,10 +151,6 @@
       <Project>{d4be144b-3120-4bc0-bc6f-c1ffce018a4a}</Project>
       <Name>CsvHandler</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CustomHandler\CustomHandler.csproj">
-      <Project>{73662ad7-8c2e-477c-890c-fa6991d0a890}</Project>
-      <Name>CustomHandler</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EventHandler\EventHandler.csproj">
       <Project>{77826c9f-a5b3-467e-b147-4a1adb122f0f}</Project>
       <Name>EventHandler</Name>

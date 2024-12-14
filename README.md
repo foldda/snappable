@@ -1,34 +1,44 @@
-# A 'Breadboard' System For Software Projects
+# Enflow Components
 
-Dubbed "breadboard for software", Foldda Automation is a simple, easy-to-use component-based software development framework for building fun, cheap, and instant software applications.
+Foldda Enflow is an innovative no-code integration and data automation tool that assembles data-processing pipelines using vendor-neutral, standardized components. This repo contains files and resources for Enflow component development, including -
+
+1. The API of the component standard, based on which a third party can make Enflow-compatible components with arbitrary features and collaborate and interact with components made by the other vendors in Empflow.
+2. The source code of all Emflow components from Foldda, which serves as a comprehensive collection of reference implementations of various modularized tasks and demonstrates many simple yet effective programming techniques that can be used in your component development.
+3. An easy-to-use tool called the "Developer Kit" that allows you to debug and trace the code of your custom-developed components in Visual Studio.
+
+## Background: Component-Based Computing and An Open Software Component Marketplace 
+
+The ultimate goal of Enflow Component API is to become the base of an open-sourced software component marketplace, where free and premium components from different vendors are made available for people to assemble apps without much effort. Not only component-based software development is much more productive and easier to maintain as you see in the demo, but a market of software components also has great economic value because it encourages a very high degree of software reuse. Theoretically, when a new component is developed and added to the market's collection, the number of possible apps from these components would multiply and grow exponentially, and, unlike using hardware electronic components, software components can be easily copied and reused in an app without much effort or additional cost. 
+
+In the past, despite these attractive benefits, one thing that stopped realizing component-based computing was how to define "a component's boundary" so it could co-exist and collaborate with the other components in an app. We need a standard interface that allows software components to freely and meaningfully exchange data.
+
+Foldda Enflow is an attempt to solve the above problem, that is, it defines and implements such a "universal interface", for software components to exchange data while working together - even if the components are from different vendors, or developed at various times, and have little or no pre-established knowledge of each other[^1]. 
+
+[^1]: This feature is called "late binding" in software engineering.
+
+## Enflow: Defining A Simple Component-Based Computing Framework
+
+In an analogy, Enflow Components works much like "the breadboard for software" which essentially is a framework for simple and practical component-based computing. That is, like a breadboard defining the intended electric signals between electrical components and how they are connected, the API defines a generic data package standard for exchanging between software components and defines the interface of how each component can be connected and collaboratively function together in a runtime environment like Enflow. Think of a defining "universal plug" for software components that works like the pins and pin-holes in a physical breadboard project. Also, for a software component operatable like a physical electrical component, it has to be data-model-neutral, meaning the data exchange cannot be bound to a specific data model controlled by a vendor - think "the pin" and "pin-hole" for the breadboard have to be neutral and generic. 
 
 <div align="center">
 <img src="_Resources/foldda-breadboard.png" width="450" align="center">
 </div>
 
+Based on the "pins" and "plugs" defined by the API. "Off-the-shelf" Enflow components can be made by any third party, giving you unrestricted choices of vendors for software components which you can use to create custom data processing and automation pipelines. And of course, you can also create components yourself without depending on a vendor. 
+
 ## "Breadboard-Like" App-Building Operations 
 
-A Foldda project (called a "solution") consists of a selection of components (called "handlers") that collectively follow a design and perform an application. Unlike the other modular software development framework, where software modules are virtually presented as icons in an IDE environment, Foldda components are packaged as file system folders, which can be physically arranged and connected in a plain Windows environment, using operations such as drag-and-drop. That is why building a Foldda app is more like a breadboard project except the outcome is a software application. This [short video below](https://www.youtube.com/watch?v=l0DjAjVoESo) is a demo of building and running an ETP pipeline with Foldda components.
+An Enflow project (called a "solution") consists of a selection of components (called "handlers") that collectively work together to perform an application. Unlike the other modular software development frameworks, where software modules only exist in a proprietary IDE environment, Enflow components are packaged as file system folders, which can be physically carried in a USB, and be built into an app using plain Windows desktop operations such as drag-and-drop - i.e. without the need of an IDE. That is why building a Foldda app is more like a breadboard project except the outcome is a software application. This [short video below](https://www.youtube.com/watch?v=l0DjAjVoESo) is a demo of building and running an ETP pipeline with Foldda components.
 
 [![Foldda Demo](https://img.youtube.com/vi/l0DjAjVoESo/0.jpg)](https://www.youtube.com/watch?v=l0DjAjVoESo)
 
-As seen in the video, app-building with Foldda software components does not require a vendor-specific tool such as an IDE, which means you can build or change a "Foldda app" from any _bare_ Windows computer. 
+As seen in the video, app-building with Enflow components does not require any vendor-specific tool, which means you can build or change an "Enflow app" from any _bare_ Windows computer. 
 
-## The Quest of Component-Based Software Engineering 
+## Using This Repo
 
-The ultimate goal of Foldda Automation API is to become the base of an open-sourced software component marketplace, where free and premium components from different vendors are made available for people to assemble apps without much effort. Not only component-based software development is much more productive and easier to maintain as you see in the demo, but a market of software components also has great economic value because it encourages a very high degree of software reuse. Theoretically, when a new component is developed and added to the market's collection, the number of possible apps from these components would multiply and grow exponentially, and, unlike using hardware electronic components, software components can be easily copied and reused in an app without much effort or additional cost. 
+To achieve organic growth for the intended software component market, Enflow Framework must allow a user to modify a component, or to create new components, according to his/her specific requirement, rather than trying to provide a large number of components and try to satisfy all users' needs. So the API is designed to be (extremely) simple, flexible, and non-restrictive.
 
-However, despite these attractive benefits, one thing that has been stopping component-based computing from being realized is how to define "the boundary" of a component so it can co-exist and collaborate with the other components in an app. We need a standard interface that allows software components to freely and meaningfully exchange data - think of a defining "universal plug" for software components that works like the pins and pin-holes in a physical breadboard project. Also, for a software component operatable like a physical electrical component, it has to be data-model-neutral, meaning the data exchange cannot be bound to a specific data model controlled by a vendor - think "the pin" and "pin-hole" for the breadboard have to be neutral and generic. 
-
-Foldda Automation Framework is an attempt to solve the above problem, that is, it defines and implements such a "universal interface", for software components to exchange data while working together - even if the components are from different vendors, or developed at various times, and have little or no pre-established knowledge of each other[^1]. 
-
-[^1]: This feature Foldda has implemented, in software engineering, is called "late binding".
-
-## About This Repo
-
-To achieve organic growth for the intended software component market, Foldda Automation Framework must allow a user to modify a component, or to create new components, according to his/her specific requirement, rather than trying to provide a large number of components and try to satisfy all users' needs. So the API is designed to be (extremely) simple, flexible, and non-restrictive.
-
-This repo hosts the open-sourced Foldda Automation API as well as the source code of many quality components developp by Foldda according to the API. These components can be used as they are, as you saw in the video, or serve as a boilerplate for you to customize or to start a brand-new component development, to suit your specific requirements. It is hoped these source codes will assist developers in understanding and developing their compatible software components.
+This repo hosts the open-sourced Foldda Automation API as well as the source code of many quality components developed by Foldda according to the API. These components can be used as they are, as you saw in the video, or serve as a boilerplate for you to customize or to start a brand-new component development, to suit your specific requirements. It is hoped these source codes will assist developers in understanding and developing their compatible software components.
 
 The "Developer Kit" project included in this repo is a simple reference runtime. It is also designed to be used for the convenience of custom handler development as you can use it to debug your components' code by following a data processing flow across components.
 

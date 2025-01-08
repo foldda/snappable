@@ -7,7 +7,7 @@ using Charian;
 using Foldda.Automation.Util;
 using System.Threading.Tasks;
 
-namespace Foldda.Automation.EventHandler
+namespace Company.Custom.Handler
 {
     /**
      * HueLightDriver converts targetted values from a Lookup reposite to a HttpSenderInput parcel 

@@ -171,13 +171,15 @@ namespace Foldda.Automation.HandlerDevKit
         internal DevKitForm DevKitForm { get; }
         internal RichTextBox HandlerLoggingPanel { get; }
         internal ListView HandlerSettingsPanel { get; }
+        internal Button[] HandlerButtons { get; }
         internal int Index0 { get; }    //0-based index
 
-        public HandlerController(DevKitForm devKitForm, IDataStore inputStore, IDataStore outputStore, RichTextBox loggingPanel, ListView settingsPanel, int index0) //: base(form.Logger)
+        public HandlerController(DevKitForm devKitForm, IDataStore inputStore, IDataStore outputStore, RichTextBox loggingPanel, ListView settingsPanel, Button[] buttons, int index0) //: base(form.Logger)
         {
             DevKitForm = devKitForm;
             HandlerLoggingPanel = loggingPanel;
             HandlerSettingsPanel = settingsPanel;
+            HandlerButtons = buttons;
 
             InboundDataBuffer = inputStore;
             OutboundDataBuffer = outputStore;
@@ -293,8 +295,10 @@ namespace Foldda.Automation.HandlerDevKit
         {
             if(HandlerModel.Dirty)
             {
+                HandlerModel.Clean();
                 form.DrawHandlerLogView(this.HandlerLoggingPanel, new HandlerView.LoggingPanel(HandlerModel));
                 form.DrawHandlerSettingsListView(this.HandlerSettingsPanel, new HandlerView.HandlerConfigPanel(HandlerModel));
+                form.DrawHandlerButtons(HandlerButtons[(int)HandlerView.HandlerButtonsPanel.INDEX.START], HandlerButtons[(int)HandlerView.HandlerButtonsPanel.INDEX.STOP], new HandlerView.HandlerButtonsPanel(HandlerModel));
             }
         }
 

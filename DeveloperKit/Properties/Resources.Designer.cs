@@ -19,7 +19,7 @@ namespace Foldda.Automation.HandlerDevKit.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -173,6 +173,16 @@ namespace Foldda.Automation.HandlerDevKit.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap play_button {
+            get {
+                object obj = ResourceManager.GetObject("play-button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap sol_local {
             get {
                 object obj = ResourceManager.GetObject("sol_local", resourceCulture);
@@ -186,6 +196,16 @@ namespace Foldda.Automation.HandlerDevKit.Properties {
         internal static System.Drawing.Bitmap sol_network {
             get {
                 object obj = ResourceManager.GetObject("sol_network", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap stop_button {
+            get {
+                object obj = ResourceManager.GetObject("stop-button", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -31,6 +31,7 @@ namespace Foldda.Automation.Util
         {
             _logger = logger;
         }
+
         public void HttpPost(string url, string content, string mimeType, CancellationToken cancellationToken)
         {
             SendHttp(url, content, true, mimeType, cancellationToken);
@@ -41,13 +42,13 @@ namespace Foldda.Automation.Util
             SendHttp(url, content, false, mimeType, cancellationToken);
         }
 
-        private async void SendHttp(string url, string jsonContent, bool methodIsPost, string mimeType, CancellationToken cancellationToken)
+        private async void SendHttp(string url, string httpPayload, bool methodIsPost, string mimeType, CancellationToken cancellationToken)
         {
             try
             {
-                _logger?.Log($"Sending Json '{jsonContent}' to {url} ...");
+                _logger?.Log($"Sending HTTP data '{httpPayload}' to {url} ...");
 
-                using (var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, mimeType))
+                using (var content = new StringContent(httpPayload, System.Text.Encoding.UTF8, mimeType))
                 {
                     HttpResponseMessage result = null;
                     if (methodIsPost)

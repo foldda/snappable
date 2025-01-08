@@ -19,7 +19,14 @@ namespace Foldda.Automation.CsvHandler
 
         public TabularRecord(List<string> csvRow)
         {
-            ItemValues = csvRow.ToList();
+            ItemValues.Clear();
+            ItemValues.AddRange(csvRow);
+        }
+
+        public TabularRecord(string[] csvRow)
+        {
+            ItemValues.Clear();
+            ItemValues.AddRange(csvRow);
         }
 
         public TabularRecord(Rda rda)

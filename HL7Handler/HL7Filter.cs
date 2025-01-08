@@ -62,11 +62,11 @@ namespace Foldda.Automation.HL7Handler
         }
 
         /* 
- * A 'path' is a list of segments (add their associated selections) that qualifies the given segment-group definition.
- * Used for holding valid elements from the given HL7 record. then apply each selector ("Filtering") to segments in the path
- * Disqualified (non-matching) elements are placed in the path's exclusion list.
- * Then a 'qualified-path' serves as 'for retriving final selected values', and 2) as a "context" for further selections.
- */
+         * A 'path' is a list of segments (add their associated selections) that qualifies the given segment-group definition.
+         * Used for holding valid elements from the given HL7 record. then apply each selector ("Filtering") to segments in the path
+         * Disqualified (non-matching) elements are placed in the path's exclusion list.
+         * Then a 'qualified-path' serves as 1) 'for retriving final selected values', and 2) as a "context" for further selections.
+         */
         public class QualifiedSelectionPath
         {
             //SelectionPathDefilition PathDefilition { get; }

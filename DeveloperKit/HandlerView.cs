@@ -14,11 +14,6 @@ namespace Foldda.Automation.HandlerDevKit
             HandlerModel = model;
         }
 
-        internal void RePaintCompleted()
-        {
-            HandlerModel.Clean();   //no dirty
-        }
-
         internal HandlerModel HandlerModel { get; }
 
         public class LoggingPanel : HandlerView
@@ -31,7 +26,7 @@ namespace Foldda.Automation.HandlerDevKit
                 {
                     if (HandlerModel is HandlerModel.Dummy == false)
                     {
-                        return HandlerModel.BufferredLogLines.Count > 0 ? string.Join("\n", HandlerModel.BufferredLogLines) : string.Empty;
+                        return HandlerModel.DisplayedLogLines.Count > 0 ? string.Join("\n", HandlerModel.DisplayedLogLines) : string.Empty;
                     }
                     else
                     {
@@ -41,6 +36,14 @@ namespace Foldda.Automation.HandlerDevKit
             }
 
             internal List<string> LogTextHighlightPatterns => HandlerModel.LogHighlightPatterns;
+        }
+
+        public class HandlerButtonsPanel : HandlerView
+        {
+            internal enum INDEX : int { LOAD=0, START=1, STOP=2, CLEAR=3 }
+            internal HandlerButtonsPanel(HandlerModel model) : base(model) { }
+
+            internal Button[] Buttons=> HandlerModel.Buttons;
         }
 
         public class HandlerConfigPanel : HandlerView

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using Foldda.Automation.Util;
 using Foldda.Automation.Framework;
+using System.Windows.Forms;
 
 namespace Foldda.Automation.HandlerDevKit
 {
@@ -223,13 +224,15 @@ namespace Foldda.Automation.HandlerDevKit
 
         public void Log(string v, LoggingLevel loggingLevel)
         {
-            Logger?.Log(v, loggingLevel);
-            while (BufferredLogLines.Count > LOG_BUFFER_LENGTH)
+            Logger?.Log(v, loggingLevel);   //physical logging
+
+            //clear displayed lines if there are too many
+            while (DisplayedLogLines.Count > LOG_BUFFER_LENGTH)
             {
-                BufferredLogLines.TryDequeue(out _);
+                DisplayedLogLines.TryDequeue(out _);
             }
 
-            BufferredLogLines.Enqueue($"[{DateTime.Now:T}] {v}");
+            DisplayedLogLines.Enqueue($"[{DateTime.Now:T}] {v}");
             Touch();
         }
 
@@ -255,13 +258,14 @@ namespace Foldda.Automation.HandlerDevKit
 
         const int LOG_BUFFER_LENGTH = 100;
 
-        public ConcurrentQueue<string> BufferredLogLines { get; internal set; } = new ConcurrentQueue<string>();
+        public ConcurrentQueue<string> DisplayedLogLines { get; internal set; } = new ConcurrentQueue<string>();
 
         public string HomePath { get; set; } = string.Empty;
 
         public string ImageKey => HandlerStateString;
         public string HandlerStateString => STATES[CurrentState];
 
+        public Button[] Buttons { get; internal set; }
     }
 }
 

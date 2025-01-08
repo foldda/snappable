@@ -73,11 +73,14 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.MainToolBar = new System.Windows.Forms.ToolStrip();
+            this.StatusStrip = new System.Windows.Forms.StatusStrip();
+            this.FillerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.LinkButton1 = new System.Windows.Forms.ToolStripButton();
             this.LinkButton2 = new System.Windows.Forms.ToolStripButton();
-            this.StatusStrip = new System.Windows.Forms.StatusStrip();
+            this.startAllButton = new System.Windows.Forms.ToolStripButton();
+            this.stopAllButton = new System.Windows.Forms.ToolStripButton();
             this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.FillerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.BackPanelForOuterContainer.SuspendLayout();
             this.MainBackPanel.SuspendLayout();
             this.TableLayoutPanel.SuspendLayout();
@@ -486,13 +489,38 @@
             // 
             this.MainToolBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.LinkButton1,
-            this.LinkButton2});
+            this.LinkButton2,
+            this.toolStripSeparator1,
+            this.startAllButton,
+            this.stopAllButton});
             this.MainToolBar.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.MainToolBar.Location = new System.Drawing.Point(5, 0);
             this.MainToolBar.Name = "MainToolBar";
             this.MainToolBar.Size = new System.Drawing.Size(1320, 25);
             this.MainToolBar.TabIndex = 0;
             this.MainToolBar.Text = "toolStrip1";
+            // 
+            // StatusStrip
+            // 
+            this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MessageStatusLabel,
+            this.FillerStatusLabel});
+            this.StatusStrip.Location = new System.Drawing.Point(0, 752);
+            this.StatusStrip.Name = "StatusStrip";
+            this.StatusStrip.Size = new System.Drawing.Size(1330, 22);
+            this.StatusStrip.TabIndex = 5;
+            this.StatusStrip.Text = "statusStrip1";
+            // 
+            // FillerStatusLabel
+            // 
+            this.FillerStatusLabel.Name = "FillerStatusLabel";
+            this.FillerStatusLabel.Size = new System.Drawing.Size(1242, 17);
+            this.FillerStatusLabel.Spring = true;
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // LinkButton1
             // 
@@ -515,29 +543,30 @@
             this.LinkButton2.ToolTipText = "Visit SmartHL7.com";
             this.LinkButton2.Click += new System.EventHandler(this.LinkButton2_Click);
             // 
-            // StatusStrip
+            // startAllButton
             // 
-            this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MessageStatusLabel,
-            this.FillerStatusLabel});
-            this.StatusStrip.Location = new System.Drawing.Point(0, 752);
-            this.StatusStrip.Name = "StatusStrip";
-            this.StatusStrip.Size = new System.Drawing.Size(1330, 22);
-            this.StatusStrip.TabIndex = 5;
-            this.StatusStrip.Text = "statusStrip1";
+            this.startAllButton.Image = global::Foldda.Automation.HandlerDevKit.Properties.Resources.play_button;
+            this.startAllButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.startAllButton.Name = "startAllButton";
+            this.startAllButton.Size = new System.Drawing.Size(68, 22);
+            this.startAllButton.Text = "Start All";
+            this.startAllButton.Click += new System.EventHandler(this.startAllButton_Click);
+            // 
+            // stopAllButton
+            // 
+            this.stopAllButton.Image = global::Foldda.Automation.HandlerDevKit.Properties.Resources.stop_button;
+            this.stopAllButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stopAllButton.Name = "stopAllButton";
+            this.stopAllButton.Size = new System.Drawing.Size(68, 22);
+            this.stopAllButton.Text = "Stop All";
+            this.stopAllButton.Click += new System.EventHandler(this.stopAllButton_Click);
             // 
             // MessageStatusLabel
             // 
             this.MessageStatusLabel.Image = global::Foldda.Automation.HandlerDevKit.Properties.Resources.lightbulb;
             this.MessageStatusLabel.Name = "MessageStatusLabel";
-            this.MessageStatusLabel.Size = new System.Drawing.Size(73, 17);
+            this.MessageStatusLabel.Size = new System.Drawing.Size(73, 16);
             this.MessageStatusLabel.Text = "Welcome";
-            // 
-            // FillerStatusLabel
-            // 
-            this.FillerStatusLabel.Name = "FillerStatusLabel";
-            this.FillerStatusLabel.Size = new System.Drawing.Size(1242, 17);
-            this.FillerStatusLabel.Spring = true;
             // 
             // DevKitForm
             // 
@@ -627,6 +656,9 @@
         private System.Windows.Forms.ListView NodeSettingsListView_3;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton startAllButton;
+        private System.Windows.Forms.ToolStripButton stopAllButton;
     }
 }
 

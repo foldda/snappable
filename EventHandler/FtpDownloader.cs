@@ -347,7 +347,6 @@ namespace Foldda.Automation.EventHandler
             return result;
         }
 
-        int count;
 
         /// <summary>
         /// break file-listing result (a string) into trimmed tokens, before matching them to the given regex pattern.

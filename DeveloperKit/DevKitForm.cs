@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -174,7 +175,6 @@ namespace Foldda.Automation.HandlerDevKit
                     // scroll it automatically
                     handlerLoggingTextBox.ScrollToCaret();
 
-                    logPainter.RePaintCompleted();
                 });
             }
         }
@@ -236,10 +236,44 @@ namespace Foldda.Automation.HandlerDevKit
 
                 handlerSettingsListView.EndUpdate();
                 handlerSettingsListView.Invalidate();
-
-                configPainter.RePaintCompleted();
             });
         }
+
+        internal void DrawHandlerButtons(Button startButton, Button stopButton, HandlerView.HandlerButtonsPanel handlerButtonsPanel)
+        {
+            var handlerModel = handlerButtonsPanel.HandlerModel;
+            if (handlerModel.CurrentState == HandlerModel.ENTITY_STATE.NODE_STOPPED)
+            {
+                startButton.InvokeIfRequired(() =>
+                {
+                    startButton.Enabled = true;
+                    startButton.Text = "Start";
+                });
+
+                stopButton.InvokeIfRequired(() =>
+                {
+                    stopButton.Enabled = false;
+                    stopButton.Text = "STOPPED";
+                    stopButton.Focus();  
+                });
+            }
+            else if (handlerModel.CurrentState == HandlerModel.ENTITY_STATE.NODE_STARTED)
+            {
+                startButton.InvokeIfRequired(() =>
+                {
+                    startButton.Enabled = false;
+                    startButton.Text = "STARTED";
+                    startButton.Focus();  
+                });
+
+                stopButton.InvokeIfRequired(() =>
+                {
+                    stopButton.Enabled = true;
+                    stopButton.Text = "Stop";
+                });
+            }
+        }
+
 
         //IDebug
         public void Log(Exception e)
@@ -290,9 +324,9 @@ namespace Foldda.Automation.HandlerDevKit
             //3 handler controllers, each gets assigned with input/output data stores and front-end views
             Controllers = new List<HandlerController>()
             {
-                new HandlerController(this, Store_0, Store_1, LiveLogBox_1, NodeSettingsListView_1, 0),
-                new HandlerController(this, Store_1, Store_2, LiveLogBox_2, NodeSettingsListView_2, 1),
-                new HandlerController(this, Store_2, Store_3, LiveLogBox_3, NodeSettingsListView_3, 2)
+                new HandlerController(this, Store_0, Store_1, LiveLogBox_1, NodeSettingsListView_1, new Button[] { LoadButton_1, StartButton_1, StopButton_1, ClearButton_1 }, 0),
+                new HandlerController(this, Store_1, Store_2, LiveLogBox_2, NodeSettingsListView_2, new Button[] { LoadButton_2, StartButton_2, StopButton_2, ClearButton_2 }, 1),
+                new HandlerController(this, Store_2, Store_3, LiveLogBox_3, NodeSettingsListView_3, new Button[] { LoadButton_3, StartButton_3, StopButton_3, ClearButton_3 }, 2)
             };
 
             ControllerTask = RefreshModelsView(AppShutdownCancellationSource.Token);
@@ -380,6 +414,36 @@ namespace Foldda.Automation.HandlerDevKit
                 if (handlerModel != null && !(handlerModel is HandlerModel.Dummy) && File.Exists(handlerModel.HandlerConfig.ConfigFileFullPath))
                 {
                     Process.Start("notepad.exe", handlerModel.HandlerConfig.ConfigFileFullPath);
+                }
+            }
+        }
+
+        private void startAllButton_Click(object sender, EventArgs e)
+        {
+            foreach(var controller in Controllers)
+            {
+                try
+                {
+                    controller.Start(AppShutdownCancellationSource.Token);
+                }
+                catch(Exception ex) 
+                {
+                    Log($"Handler [{controller.Handler.Id}] failed starting - {ex.Message}");
+                }
+            }
+        }
+
+        private async void stopAllButton_Click(object sender, EventArgs e)
+        {
+            foreach (var controller in Controllers)
+            {
+                try
+                {
+                    await controller.Stop();
+                }
+                catch (Exception ex)
+                {
+                    Log($"Handler [{controller.Handler.Id}] failed stopping - {ex.Message}");
                 }
             }
         }

@@ -211,6 +211,8 @@
   <ItemGroup>
     <Content Include="foldda-1126-32.256.ico" />
     <Content Include="Resources\baseline_green.png" />
+    <None Include="Resources\stop-button.png" />
+    <None Include="Resources\play-button.png" />
     <None Include="Resources\time.png" />
     <None Include="Resources\calendar.png" />
     <None Include="Resources\lightbulb.png" />

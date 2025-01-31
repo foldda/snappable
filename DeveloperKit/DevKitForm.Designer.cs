@@ -50,19 +50,19 @@
             this.LiveLogGroupBox_1 = new System.Windows.Forms.GroupBox();
             this.LiveLogBox_1 = new System.Windows.Forms.RichTextBox();
             this.ButtonsPanel_1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.LoadButton_1 = new System.Windows.Forms.Button();
             this.StartButton_1 = new System.Windows.Forms.Button();
             this.StopButton_1 = new System.Windows.Forms.Button();
+            this.LoadButton_1 = new System.Windows.Forms.Button();
             this.ClearButton_1 = new System.Windows.Forms.Button();
             this.ButtonsPanel_2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.LoadButton_2 = new System.Windows.Forms.Button();
             this.StartButton_2 = new System.Windows.Forms.Button();
             this.StopButton_2 = new System.Windows.Forms.Button();
+            this.LoadButton_2 = new System.Windows.Forms.Button();
             this.ClearButton_2 = new System.Windows.Forms.Button();
             this.ButtonsPanel_3 = new System.Windows.Forms.FlowLayoutPanel();
-            this.LoadButton_3 = new System.Windows.Forms.Button();
             this.StartButton_3 = new System.Windows.Forms.Button();
             this.StopButton_3 = new System.Windows.Forms.Button();
+            this.LoadButton_3 = new System.Windows.Forms.Button();
             this.ClearButton_3 = new System.Windows.Forms.Button();
             this.NodeSettingsGroupBox_1 = new System.Windows.Forms.GroupBox();
             this.NodeSettingsListView_1 = new System.Windows.Forms.ListView();
@@ -73,14 +73,14 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.MainToolBar = new System.Windows.Forms.ToolStrip();
-            this.StatusStrip = new System.Windows.Forms.StatusStrip();
-            this.FillerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.LinkButton1 = new System.Windows.Forms.ToolStripButton();
             this.LinkButton2 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.startAllButton = new System.Windows.Forms.ToolStripButton();
             this.stopAllButton = new System.Windows.Forms.ToolStripButton();
+            this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.FillerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.BackPanelForOuterContainer.SuspendLayout();
             this.MainBackPanel.SuspendLayout();
             this.TableLayoutPanel.SuspendLayout();
@@ -161,7 +161,7 @@
             // TableLayoutPanel
             // 
             this.TableLayoutPanel.ColumnCount = 3;
-            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 350F));
+            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 420F));
             this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.TableLayoutPanel.Controls.Add(this.LiveLogGroupBox_3, 2, 2);
@@ -188,7 +188,7 @@
             this.LiveLogGroupBox_3.BackColor = System.Drawing.SystemColors.Control;
             this.LiveLogGroupBox_3.Controls.Add(this.LiveLogBox_3);
             this.LiveLogGroupBox_3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LiveLogGroupBox_3.Location = new System.Drawing.Point(453, 483);
+            this.LiveLogGroupBox_3.Location = new System.Drawing.Point(523, 483);
             this.LiveLogGroupBox_3.Name = "LiveLogGroupBox_3";
             this.LiveLogGroupBox_3.Size = new System.Drawing.Size(864, 236);
             this.LiveLogGroupBox_3.TabIndex = 16;
@@ -209,7 +209,7 @@
             this.LiveLogGroupBox_2.BackColor = System.Drawing.SystemColors.Control;
             this.LiveLogGroupBox_2.Controls.Add(this.LiveLogBox_2);
             this.LiveLogGroupBox_2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LiveLogGroupBox_2.Location = new System.Drawing.Point(453, 243);
+            this.LiveLogGroupBox_2.Location = new System.Drawing.Point(523, 243);
             this.LiveLogGroupBox_2.Name = "LiveLogGroupBox_2";
             this.LiveLogGroupBox_2.Size = new System.Drawing.Size(864, 234);
             this.LiveLogGroupBox_2.TabIndex = 15;
@@ -231,7 +231,7 @@
             this.NodeSettingsGroupBox_2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.NodeSettingsGroupBox_2.Location = new System.Drawing.Point(3, 243);
             this.NodeSettingsGroupBox_2.Name = "NodeSettingsGroupBox_2";
-            this.NodeSettingsGroupBox_2.Size = new System.Drawing.Size(344, 234);
+            this.NodeSettingsGroupBox_2.Size = new System.Drawing.Size(414, 234);
             this.NodeSettingsGroupBox_2.TabIndex = 13;
             this.NodeSettingsGroupBox_2.TabStop = false;
             this.NodeSettingsGroupBox_2.Text = "Handler #2";
@@ -245,7 +245,7 @@
             this.NodeSettingsListView_2.HideSelection = false;
             this.NodeSettingsListView_2.Location = new System.Drawing.Point(3, 16);
             this.NodeSettingsListView_2.Name = "NodeSettingsListView_2";
-            this.NodeSettingsListView_2.Size = new System.Drawing.Size(338, 215);
+            this.NodeSettingsListView_2.Size = new System.Drawing.Size(408, 215);
             this.NodeSettingsListView_2.TabIndex = 9;
             this.NodeSettingsListView_2.UseCompatibleStateImageBehavior = false;
             this.NodeSettingsListView_2.View = System.Windows.Forms.View.List;
@@ -256,7 +256,7 @@
             this.LiveLogGroupBox_1.BackColor = System.Drawing.SystemColors.Control;
             this.LiveLogGroupBox_1.Controls.Add(this.LiveLogBox_1);
             this.LiveLogGroupBox_1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LiveLogGroupBox_1.Location = new System.Drawing.Point(453, 3);
+            this.LiveLogGroupBox_1.Location = new System.Drawing.Point(523, 3);
             this.LiveLogGroupBox_1.Name = "LiveLogGroupBox_1";
             this.LiveLogGroupBox_1.Size = new System.Drawing.Size(864, 234);
             this.LiveLogGroupBox_1.TabIndex = 5;
@@ -275,30 +275,20 @@
             // 
             // ButtonsPanel_1
             // 
-            this.ButtonsPanel_1.Controls.Add(this.LoadButton_1);
             this.ButtonsPanel_1.Controls.Add(this.StartButton_1);
             this.ButtonsPanel_1.Controls.Add(this.StopButton_1);
+            this.ButtonsPanel_1.Controls.Add(this.LoadButton_1);
             this.ButtonsPanel_1.Controls.Add(this.ClearButton_1);
             this.ButtonsPanel_1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ButtonsPanel_1.Location = new System.Drawing.Point(353, 3);
+            this.ButtonsPanel_1.Location = new System.Drawing.Point(423, 3);
             this.ButtonsPanel_1.Name = "ButtonsPanel_1";
             this.ButtonsPanel_1.Padding = new System.Windows.Forms.Padding(6, 15, 0, 0);
             this.ButtonsPanel_1.Size = new System.Drawing.Size(94, 234);
             this.ButtonsPanel_1.TabIndex = 8;
             // 
-            // LoadButton_1
-            // 
-            this.LoadButton_1.Location = new System.Drawing.Point(9, 18);
-            this.LoadButton_1.Name = "LoadButton_1";
-            this.LoadButton_1.Size = new System.Drawing.Size(75, 23);
-            this.LoadButton_1.TabIndex = 6;
-            this.LoadButton_1.Text = "Load";
-            this.LoadButton_1.UseVisualStyleBackColor = true;
-            this.LoadButton_1.Click += new System.EventHandler(this.LoadButton_Click);
-            // 
             // StartButton_1
             // 
-            this.StartButton_1.Location = new System.Drawing.Point(9, 47);
+            this.StartButton_1.Location = new System.Drawing.Point(9, 18);
             this.StartButton_1.Name = "StartButton_1";
             this.StartButton_1.Size = new System.Drawing.Size(75, 22);
             this.StartButton_1.TabIndex = 7;
@@ -308,7 +298,7 @@
             // 
             // StopButton_1
             // 
-            this.StopButton_1.Location = new System.Drawing.Point(9, 75);
+            this.StopButton_1.Location = new System.Drawing.Point(9, 46);
             this.StopButton_1.Name = "StopButton_1";
             this.StopButton_1.Size = new System.Drawing.Size(75, 23);
             this.StopButton_1.TabIndex = 8;
@@ -316,42 +306,42 @@
             this.StopButton_1.UseVisualStyleBackColor = true;
             this.StopButton_1.Click += new System.EventHandler(this.StopButton_Click);
             // 
+            // LoadButton_1
+            // 
+            this.LoadButton_1.Location = new System.Drawing.Point(9, 75);
+            this.LoadButton_1.Name = "LoadButton_1";
+            this.LoadButton_1.Size = new System.Drawing.Size(75, 23);
+            this.LoadButton_1.TabIndex = 6;
+            this.LoadButton_1.Text = "Load";
+            this.LoadButton_1.UseVisualStyleBackColor = true;
+            this.LoadButton_1.Click += new System.EventHandler(this.LoadButton_Click);
+            // 
             // ClearButton_1
             // 
             this.ClearButton_1.Location = new System.Drawing.Point(9, 104);
             this.ClearButton_1.Name = "ClearButton_1";
             this.ClearButton_1.Size = new System.Drawing.Size(75, 23);
             this.ClearButton_1.TabIndex = 9;
-            this.ClearButton_1.Text = "Clear";
+            this.ClearButton_1.Text = "Unload";
             this.ClearButton_1.UseVisualStyleBackColor = true;
             this.ClearButton_1.Click += new System.EventHandler(this.ClearButton_Click);
             // 
             // ButtonsPanel_2
             // 
-            this.ButtonsPanel_2.Controls.Add(this.LoadButton_2);
             this.ButtonsPanel_2.Controls.Add(this.StartButton_2);
             this.ButtonsPanel_2.Controls.Add(this.StopButton_2);
+            this.ButtonsPanel_2.Controls.Add(this.LoadButton_2);
             this.ButtonsPanel_2.Controls.Add(this.ClearButton_2);
             this.ButtonsPanel_2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ButtonsPanel_2.Location = new System.Drawing.Point(353, 243);
+            this.ButtonsPanel_2.Location = new System.Drawing.Point(423, 243);
             this.ButtonsPanel_2.Name = "ButtonsPanel_2";
             this.ButtonsPanel_2.Padding = new System.Windows.Forms.Padding(6, 15, 0, 0);
             this.ButtonsPanel_2.Size = new System.Drawing.Size(94, 234);
             this.ButtonsPanel_2.TabIndex = 10;
             // 
-            // LoadButton_2
-            // 
-            this.LoadButton_2.Location = new System.Drawing.Point(9, 18);
-            this.LoadButton_2.Name = "LoadButton_2";
-            this.LoadButton_2.Size = new System.Drawing.Size(75, 23);
-            this.LoadButton_2.TabIndex = 6;
-            this.LoadButton_2.Text = "Load";
-            this.LoadButton_2.UseVisualStyleBackColor = true;
-            this.LoadButton_2.Click += new System.EventHandler(this.LoadButton_Click);
-            // 
             // StartButton_2
             // 
-            this.StartButton_2.Location = new System.Drawing.Point(9, 47);
+            this.StartButton_2.Location = new System.Drawing.Point(9, 18);
             this.StartButton_2.Name = "StartButton_2";
             this.StartButton_2.Size = new System.Drawing.Size(75, 22);
             this.StartButton_2.TabIndex = 7;
@@ -361,7 +351,7 @@
             // 
             // StopButton_2
             // 
-            this.StopButton_2.Location = new System.Drawing.Point(9, 75);
+            this.StopButton_2.Location = new System.Drawing.Point(9, 46);
             this.StopButton_2.Name = "StopButton_2";
             this.StopButton_2.Size = new System.Drawing.Size(75, 23);
             this.StopButton_2.TabIndex = 8;
@@ -369,42 +359,42 @@
             this.StopButton_2.UseVisualStyleBackColor = true;
             this.StopButton_2.Click += new System.EventHandler(this.StopButton_Click);
             // 
+            // LoadButton_2
+            // 
+            this.LoadButton_2.Location = new System.Drawing.Point(9, 75);
+            this.LoadButton_2.Name = "LoadButton_2";
+            this.LoadButton_2.Size = new System.Drawing.Size(75, 23);
+            this.LoadButton_2.TabIndex = 6;
+            this.LoadButton_2.Text = "Load";
+            this.LoadButton_2.UseVisualStyleBackColor = true;
+            this.LoadButton_2.Click += new System.EventHandler(this.LoadButton_Click);
+            // 
             // ClearButton_2
             // 
             this.ClearButton_2.Location = new System.Drawing.Point(9, 104);
             this.ClearButton_2.Name = "ClearButton_2";
             this.ClearButton_2.Size = new System.Drawing.Size(75, 23);
             this.ClearButton_2.TabIndex = 9;
-            this.ClearButton_2.Text = "Clear";
+            this.ClearButton_2.Text = "Unload";
             this.ClearButton_2.UseVisualStyleBackColor = true;
             this.ClearButton_2.Click += new System.EventHandler(this.ClearButton_Click);
             // 
             // ButtonsPanel_3
             // 
-            this.ButtonsPanel_3.Controls.Add(this.LoadButton_3);
             this.ButtonsPanel_3.Controls.Add(this.StartButton_3);
             this.ButtonsPanel_3.Controls.Add(this.StopButton_3);
+            this.ButtonsPanel_3.Controls.Add(this.LoadButton_3);
             this.ButtonsPanel_3.Controls.Add(this.ClearButton_3);
             this.ButtonsPanel_3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ButtonsPanel_3.Location = new System.Drawing.Point(353, 483);
+            this.ButtonsPanel_3.Location = new System.Drawing.Point(423, 483);
             this.ButtonsPanel_3.Name = "ButtonsPanel_3";
             this.ButtonsPanel_3.Padding = new System.Windows.Forms.Padding(6, 15, 0, 0);
             this.ButtonsPanel_3.Size = new System.Drawing.Size(94, 236);
             this.ButtonsPanel_3.TabIndex = 11;
             // 
-            // LoadButton_3
-            // 
-            this.LoadButton_3.Location = new System.Drawing.Point(9, 18);
-            this.LoadButton_3.Name = "LoadButton_3";
-            this.LoadButton_3.Size = new System.Drawing.Size(75, 23);
-            this.LoadButton_3.TabIndex = 6;
-            this.LoadButton_3.Text = "Load";
-            this.LoadButton_3.UseVisualStyleBackColor = true;
-            this.LoadButton_3.Click += new System.EventHandler(this.LoadButton_Click);
-            // 
             // StartButton_3
             // 
-            this.StartButton_3.Location = new System.Drawing.Point(9, 47);
+            this.StartButton_3.Location = new System.Drawing.Point(9, 18);
             this.StartButton_3.Name = "StartButton_3";
             this.StartButton_3.Size = new System.Drawing.Size(75, 22);
             this.StartButton_3.TabIndex = 7;
@@ -414,7 +404,7 @@
             // 
             // StopButton_3
             // 
-            this.StopButton_3.Location = new System.Drawing.Point(9, 75);
+            this.StopButton_3.Location = new System.Drawing.Point(9, 46);
             this.StopButton_3.Name = "StopButton_3";
             this.StopButton_3.Size = new System.Drawing.Size(75, 23);
             this.StopButton_3.TabIndex = 8;
@@ -422,13 +412,23 @@
             this.StopButton_3.UseVisualStyleBackColor = true;
             this.StopButton_3.Click += new System.EventHandler(this.StopButton_Click);
             // 
+            // LoadButton_3
+            // 
+            this.LoadButton_3.Location = new System.Drawing.Point(9, 75);
+            this.LoadButton_3.Name = "LoadButton_3";
+            this.LoadButton_3.Size = new System.Drawing.Size(75, 23);
+            this.LoadButton_3.TabIndex = 6;
+            this.LoadButton_3.Text = "Load";
+            this.LoadButton_3.UseVisualStyleBackColor = true;
+            this.LoadButton_3.Click += new System.EventHandler(this.LoadButton_Click);
+            // 
             // ClearButton_3
             // 
             this.ClearButton_3.Location = new System.Drawing.Point(9, 104);
             this.ClearButton_3.Name = "ClearButton_3";
             this.ClearButton_3.Size = new System.Drawing.Size(75, 23);
             this.ClearButton_3.TabIndex = 9;
-            this.ClearButton_3.Text = "Clear";
+            this.ClearButton_3.Text = "Unload";
             this.ClearButton_3.UseVisualStyleBackColor = true;
             this.ClearButton_3.Click += new System.EventHandler(this.ClearButton_Click);
             // 
@@ -438,7 +438,7 @@
             this.NodeSettingsGroupBox_1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.NodeSettingsGroupBox_1.Location = new System.Drawing.Point(3, 3);
             this.NodeSettingsGroupBox_1.Name = "NodeSettingsGroupBox_1";
-            this.NodeSettingsGroupBox_1.Size = new System.Drawing.Size(344, 234);
+            this.NodeSettingsGroupBox_1.Size = new System.Drawing.Size(414, 234);
             this.NodeSettingsGroupBox_1.TabIndex = 12;
             this.NodeSettingsGroupBox_1.TabStop = false;
             this.NodeSettingsGroupBox_1.Text = "Handler #1";
@@ -453,7 +453,7 @@
             this.NodeSettingsListView_1.HideSelection = false;
             this.NodeSettingsListView_1.Location = new System.Drawing.Point(3, 16);
             this.NodeSettingsListView_1.Name = "NodeSettingsListView_1";
-            this.NodeSettingsListView_1.Size = new System.Drawing.Size(338, 215);
+            this.NodeSettingsListView_1.Size = new System.Drawing.Size(408, 215);
             this.NodeSettingsListView_1.TabIndex = 9;
             this.NodeSettingsListView_1.UseCompatibleStateImageBehavior = false;
             this.NodeSettingsListView_1.View = System.Windows.Forms.View.List;
@@ -465,7 +465,7 @@
             this.NodeSettingsGroupBox_3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.NodeSettingsGroupBox_3.Location = new System.Drawing.Point(3, 483);
             this.NodeSettingsGroupBox_3.Name = "NodeSettingsGroupBox_3";
-            this.NodeSettingsGroupBox_3.Size = new System.Drawing.Size(344, 236);
+            this.NodeSettingsGroupBox_3.Size = new System.Drawing.Size(414, 236);
             this.NodeSettingsGroupBox_3.TabIndex = 14;
             this.NodeSettingsGroupBox_3.TabStop = false;
             this.NodeSettingsGroupBox_3.Text = "Handler #3";
@@ -479,7 +479,7 @@
             this.NodeSettingsListView_3.HideSelection = false;
             this.NodeSettingsListView_3.Location = new System.Drawing.Point(3, 16);
             this.NodeSettingsListView_3.Name = "NodeSettingsListView_3";
-            this.NodeSettingsListView_3.Size = new System.Drawing.Size(338, 217);
+            this.NodeSettingsListView_3.Size = new System.Drawing.Size(408, 217);
             this.NodeSettingsListView_3.TabIndex = 9;
             this.NodeSettingsListView_3.UseCompatibleStateImageBehavior = false;
             this.NodeSettingsListView_3.View = System.Windows.Forms.View.List;
@@ -499,28 +499,6 @@
             this.MainToolBar.Size = new System.Drawing.Size(1320, 25);
             this.MainToolBar.TabIndex = 0;
             this.MainToolBar.Text = "toolStrip1";
-            // 
-            // StatusStrip
-            // 
-            this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MessageStatusLabel,
-            this.FillerStatusLabel});
-            this.StatusStrip.Location = new System.Drawing.Point(0, 752);
-            this.StatusStrip.Name = "StatusStrip";
-            this.StatusStrip.Size = new System.Drawing.Size(1330, 22);
-            this.StatusStrip.TabIndex = 5;
-            this.StatusStrip.Text = "statusStrip1";
-            // 
-            // FillerStatusLabel
-            // 
-            this.FillerStatusLabel.Name = "FillerStatusLabel";
-            this.FillerStatusLabel.Size = new System.Drawing.Size(1242, 17);
-            this.FillerStatusLabel.Spring = true;
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // LinkButton1
             // 
@@ -543,6 +521,11 @@
             this.LinkButton2.ToolTipText = "Visit SmartHL7.com";
             this.LinkButton2.Click += new System.EventHandler(this.LinkButton2_Click);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
             // startAllButton
             // 
             this.startAllButton.Image = global::Foldda.Automation.HandlerDevKit.Properties.Resources.play_button;
@@ -561,12 +544,29 @@
             this.stopAllButton.Text = "Stop All";
             this.stopAllButton.Click += new System.EventHandler(this.stopAllButton_Click);
             // 
+            // StatusStrip
+            // 
+            this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MessageStatusLabel,
+            this.FillerStatusLabel});
+            this.StatusStrip.Location = new System.Drawing.Point(0, 752);
+            this.StatusStrip.Name = "StatusStrip";
+            this.StatusStrip.Size = new System.Drawing.Size(1330, 22);
+            this.StatusStrip.TabIndex = 5;
+            this.StatusStrip.Text = "statusStrip1";
+            // 
             // MessageStatusLabel
             // 
             this.MessageStatusLabel.Image = global::Foldda.Automation.HandlerDevKit.Properties.Resources.lightbulb;
             this.MessageStatusLabel.Name = "MessageStatusLabel";
-            this.MessageStatusLabel.Size = new System.Drawing.Size(73, 16);
+            this.MessageStatusLabel.Size = new System.Drawing.Size(73, 17);
             this.MessageStatusLabel.Text = "Welcome";
+            // 
+            // FillerStatusLabel
+            // 
+            this.FillerStatusLabel.Name = "FillerStatusLabel";
+            this.FillerStatusLabel.Size = new System.Drawing.Size(1242, 17);
+            this.FillerStatusLabel.Spring = true;
             // 
             // DevKitForm
             // 
@@ -580,7 +580,7 @@
             this.KeyPreview = true;
             this.Name = "DevKitForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Foldda Handler Developer Kit";
+            this.Text = "Enflow Handler Developer Kit";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);

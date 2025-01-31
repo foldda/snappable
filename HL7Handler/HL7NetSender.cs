@@ -84,8 +84,10 @@ namespace Foldda.Automation.HL7Handler
 
         protected override RecordContainer ProcessContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
         {
-
-            SendContainer(inputContainer, cancellationToken);
+            if(inputContainer?.Records.Count > 0)
+            {
+                SendContainer(inputContainer, cancellationToken);
+            }
 
             return null;
         }

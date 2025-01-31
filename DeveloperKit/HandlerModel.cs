@@ -11,7 +11,8 @@ namespace Foldda.Automation.HandlerDevKit
 
 
     public class HandlerModel : ILoggingProvider
-    {    
+    {
+        static internal HandlerModel DUMMY = new HandlerModel();
         public enum ENTITY_STATE : int
         {
             // ---- these states responds to command
@@ -30,16 +31,9 @@ namespace Foldda.Automation.HandlerDevKit
 
         private HandlerModel() { }
 
-        public class Dummy : HandlerModel
-        {
-            public Dummy() : base() { }
-
-
-        }
-
         ILoggingProvider Logger { get; }
 
-        private int _touched = 0;
+        private int _touched = 1;
 
         internal void Touch()
         {

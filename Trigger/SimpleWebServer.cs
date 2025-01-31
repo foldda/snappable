@@ -141,7 +141,7 @@ namespace Foldda.Automation.Trigger
                     RecordContainer container = new RecordContainer();
 
                     //store all the query data into a LookupRda object, a client would look into these values to get what it wants
-                    LookupRda lookup = new LookupRda();
+                    DictionaryRda lookup = new DictionaryRda();
                     foreach (var key in req.QueryString.AllKeys)
                     {
                         lookup.SetString(key, req.QueryString[key]);

@@ -86,7 +86,7 @@ namespace Foldda.Automation.Framework
                         var input = InputStorage.CollectReceived();
                         foreach (var item in input)
                         {
-                            if (item is RecordContainer inputRecordContainer)
+                            if (item is RecordContainer inputRecordContainer && inputRecordContainer.Records.Count > 0)
                             {
                                 var outputContainer = ProcessContainer(inputRecordContainer, cancellationToken);
 
@@ -380,13 +380,13 @@ namespace Foldda.Automation.Framework
             Log(Logger, e.ToString());
         }
 
-        public class LookupRda : IRda
+        public class DictionaryRda : IRda
         {
             public Dictionary<string, Rda> Store { get; } = new Dictionary<string, Rda>();
 
-            public LookupRda() { }
+            public DictionaryRda() { }
 
-            public LookupRda(Rda rda)
+            public DictionaryRda(Rda rda)
             {
                 FromRda(rda);
             }

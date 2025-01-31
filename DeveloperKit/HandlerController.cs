@@ -10,7 +10,6 @@ using System.Diagnostics;
 //independent to Handlers
 using Foldda.Automation.Framework;
 
-using Foldda.Automation.Util;
 using Charian;
 using System.Reflection;
 using System.Windows.Forms;
@@ -27,7 +26,7 @@ namespace Foldda.Automation.HandlerDevKit
     /// </summary>
     class HandlerController
     {
-        private HandlerModel _handlerModel = new HandlerModel.Dummy();
+        private HandlerModel _handlerModel = HandlerModel.DUMMY;
 
         public HandlerModel HandlerModel
         {
@@ -42,7 +41,7 @@ namespace Foldda.Automation.HandlerDevKit
                 {
                     //... assign new node.
                     _handlerModel = value;
-                    _handlerModel.Touch();
+                    _handlerModel?.Touch();
                 }
             }
         }
@@ -129,7 +128,7 @@ namespace Foldda.Automation.HandlerDevKit
 
         internal void Start(CancellationToken appShutdown)
         {
-            if (HandlerModel != null && !(HandlerModel is HandlerModel.Dummy))
+            if (HandlerModel != null && !(HandlerModel == HandlerModel.DUMMY))
             {
                 HandlerStopCommandCancelSource = new CancellationTokenSource();
 
@@ -234,7 +233,7 @@ namespace Foldda.Automation.HandlerDevKit
             try
             {
                 Log($"Execute STOP command");
-                HandlerModel.SetStateForCommand(HandlerModel.COMMAND_TYPE.NODE_CMD_STOP);   //setter will send node-state-change notification
+                HandlerModel?.SetStateForCommand(HandlerModel.COMMAND_TYPE.NODE_CMD_STOP);   //setter will send node-state-change notification
 
                 HandlerStopCommandCancelSource.Cancel(); //stop local issued "handler tasks"
 
@@ -281,30 +280,37 @@ namespace Foldda.Automation.HandlerDevKit
 
                 HandlerModel.Touch();
 
-                ConfigSettings.Save(DevKitForm.CONFIG_PATHS[Index0], null, fileName, 1);
+                ConfigSettings.Save(DevKitForm.CONFIG_PATHS[Index0], fileName);
             }
             catch(Exception e)
             {
                 Log(e.Message);
-                ConfigSettings.Remove(DevKitForm.CONFIG_PATHS[Index0], fileName);
+                ConfigSettings.Remove(DevKitForm.CONFIG_PATHS[Index0]);
             }
 
         }
 
         internal void RePaint(DevKitForm form)
         {
-            if(HandlerModel.Dirty)
+            if (HandlerModel != null && (HandlerModel == HandlerModel.DUMMY || HandlerModel.Dirty))
             {
                 HandlerModel.Clean();
                 form.DrawHandlerLogView(this.HandlerLoggingPanel, new HandlerView.LoggingPanel(HandlerModel));
                 form.DrawHandlerSettingsListView(this.HandlerSettingsPanel, new HandlerView.HandlerConfigPanel(HandlerModel));
-                form.DrawHandlerButtons(HandlerButtons[(int)HandlerView.HandlerButtonsPanel.INDEX.START], HandlerButtons[(int)HandlerView.HandlerButtonsPanel.INDEX.STOP], new HandlerView.HandlerButtonsPanel(HandlerModel));
+                form.DrawHandlerButtons(
+                    HandlerButtons[(int)HandlerView.HandlerButtonsPanel.INDEX.LOAD], 
+                    HandlerButtons[(int)HandlerView.HandlerButtonsPanel.INDEX.START],
+                    HandlerButtons[(int)HandlerView.HandlerButtonsPanel.INDEX.STOP],
+                    HandlerButtons[(int)HandlerView.HandlerButtonsPanel.INDEX.UNLOAD],
+                    new HandlerView.HandlerButtonsPanel(HandlerModel));
+
+                if(HandlerModel == HandlerModel.DUMMY) { HandlerModel = null; }
             }
         }
 
         internal void Reset()
         {
-            HandlerModel = new HandlerModel.Dummy();
+            HandlerModel = HandlerModel.DUMMY;
             HandlerModel.Touch();
             HandlerStopCommandCancelSource = new CancellationTokenSource();
         }

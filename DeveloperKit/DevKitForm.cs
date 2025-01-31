@@ -138,7 +138,7 @@ namespace Foldda.Automation.HandlerDevKit
             {
                 handlerLoggingTextBox.InvokeIfRequired(() =>
                 {
-                    if (logPainter.HandlerModel is HandlerModel.Dummy)
+                    if (logPainter.HandlerModel == HandlerModel.DUMMY)
                     {
                         handlerLoggingTextBox.Text = string.Empty;
                         handlerLoggingTextBox.Parent.Text = "Handler Log";
@@ -184,7 +184,7 @@ namespace Foldda.Automation.HandlerDevKit
             handlerSettingsListView.InvokeIfRequired(() =>
             {
                 handlerSettingsListView.BeginUpdate();
-                if (configPainter.HandlerModel is HandlerModel.Dummy)
+                if (configPainter.HandlerModel == HandlerModel.DUMMY)
                 {
                     handlerSettingsListView.Clear();
                 }
@@ -205,7 +205,7 @@ namespace Foldda.Automation.HandlerDevKit
 
                             handlerSettingsListView.Columns[0].ImageKey = configPainter.HandlerModel.ImageKey;
                             handlerSettingsListView.Columns[0].Text = configPainter.HandlerModel.HandlerShortName;
-                            handlerSettingsListView.Columns[1].Text = configPainter.HandlerModel.HandlerStateString;
+                            //handlerSettingsListView.Columns[1].Text = configPainter.HandlerModel.HandlerStateString;
 
                             //NodeStateGroup
                             handlerSettingsListView.Groups.Add(configPainter.HandlerInfoGroup);
@@ -239,39 +239,80 @@ namespace Foldda.Automation.HandlerDevKit
             });
         }
 
-        internal void DrawHandlerButtons(Button startButton, Button stopButton, HandlerView.HandlerButtonsPanel handlerButtonsPanel)
+        internal void DrawHandlerButtons(Button loadButton, Button startButton, Button stopButton,  Button unloadButton, HandlerView.HandlerButtonsPanel handlerButtonsPanel)
         {
             var handlerModel = handlerButtonsPanel.HandlerModel;
-            if (handlerModel.CurrentState == HandlerModel.ENTITY_STATE.NODE_STOPPED)
+            if(handlerModel == HandlerModel.DUMMY)
             {
+                loadButton.InvokeIfRequired(() =>
+                {
+                    loadButton.Enabled = true;
+                    loadButton.Text = "Load";
+                });
+
+                unloadButton.InvokeIfRequired(() =>
+                {
+                    unloadButton.Enabled = false;
+                    unloadButton.Text = "UNLOADED";
+                });
+
                 startButton.InvokeIfRequired(() =>
                 {
-                    startButton.Enabled = true;
+                    startButton.Enabled = false;
                     startButton.Text = "Start";
                 });
 
                 stopButton.InvokeIfRequired(() =>
                 {
                     stopButton.Enabled = false;
-                    stopButton.Text = "STOPPED";
-                    stopButton.Focus();  
-                });
-            }
-            else if (handlerModel.CurrentState == HandlerModel.ENTITY_STATE.NODE_STARTED)
-            {
-                startButton.InvokeIfRequired(() =>
-                {
-                    startButton.Enabled = false;
-                    startButton.Text = "STARTED";
-                    startButton.Focus();  
-                });
-
-                stopButton.InvokeIfRequired(() =>
-                {
-                    stopButton.Enabled = true;
                     stopButton.Text = "Stop";
                 });
             }
+            else
+            {
+                loadButton.InvokeIfRequired(() =>
+                {
+                    loadButton.Enabled = false;
+                    loadButton.Text = "LOADED";
+                });
+
+                unloadButton.InvokeIfRequired(() =>
+                {
+                    unloadButton.Enabled = true;
+                    unloadButton.Text = "Unload";
+                });
+
+                if (handlerModel.CurrentState == HandlerModel.ENTITY_STATE.NODE_STOPPED)
+                {
+                    startButton.InvokeIfRequired(() =>
+                    {
+                        startButton.Enabled = true;
+                        startButton.Text = "Start";
+                    });
+
+                    stopButton.InvokeIfRequired(() =>
+                    {
+                        stopButton.Enabled = false;
+                        stopButton.Text = "STOPPED";
+                    });
+                }
+                else if (handlerModel.CurrentState == HandlerModel.ENTITY_STATE.NODE_STARTED)
+                {
+                    startButton.InvokeIfRequired(() =>
+                    {
+                        startButton.Enabled = false;
+                        startButton.Text = "STARTED";
+                    });
+
+                    stopButton.InvokeIfRequired(() =>
+                    {
+                        stopButton.Enabled = true;
+                        stopButton.Text = "Stop";
+                    });
+                }
+            }
+
+            this.ActiveControl = null;
         }
 
 
@@ -338,11 +379,21 @@ namespace Foldda.Automation.HandlerDevKit
 
         private void LoadButton_Click(object sender, EventArgs e)
         {
+
             OpenFileDialog openFileDialog1 = new OpenFileDialog()
             {
                 Filter = "Config files (*.config)|*.config",
                 Title = "Select a handler-config file"
             };
+
+            var controller = GetHandlerController(sender);
+            var savedConfig = ConfigSettings.Get(CONFIG_PATHS[controller.Index0]);
+            if(!string.IsNullOrEmpty(savedConfig))
+            {
+                FileInfo file_info = new FileInfo(savedConfig);
+                openFileDialog1.FileName = file_info.Name;
+                openFileDialog1.InitialDirectory = file_info.DirectoryName;
+            }
 
             //file open dialog
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
@@ -351,7 +402,7 @@ namespace Foldda.Automation.HandlerDevKit
                 {
                     if(File.Exists(openFileDialog1.FileName))
                     {
-                        GetHandlerController(sender).UpdateCurrentNode(openFileDialog1.FileName);
+                        controller.UpdateCurrentNode(openFileDialog1.FileName);
                     }
                     else
                     {
@@ -411,7 +462,7 @@ namespace Foldda.Automation.HandlerDevKit
             if (e.Clicks == 2)
             {
                 HandlerModel handlerModel = GetHandlerController(sender).HandlerModel;
-                if (handlerModel != null && !(handlerModel is HandlerModel.Dummy) && File.Exists(handlerModel.HandlerConfig.ConfigFileFullPath))
+                if (handlerModel != null && !(handlerModel == HandlerModel.DUMMY) && File.Exists(handlerModel.HandlerConfig.ConfigFileFullPath))
                 {
                     Process.Start("notepad.exe", handlerModel.HandlerConfig.ConfigFileFullPath);
                 }

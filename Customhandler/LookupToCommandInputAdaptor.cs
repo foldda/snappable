@@ -7,7 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Company.Custom.Handler
+namespace Foldda.Custom.Handler
 {
     /// <summary>
     /// Class LookupToEventAdaptor illustrates how to convert incompatible data output from a handler to expected data input of another hander .
@@ -44,7 +44,7 @@ namespace Company.Custom.Handler
         {
             // if the record is a Lookup object, we will use it to construct a command-input object
             // which is what OsCommander handler expecting
-            if(record is LookupRda lookUp)
+            if(record is DictionaryRda lookUp)
             {
                 var result = new OsCommander.InputRecord()
                 {

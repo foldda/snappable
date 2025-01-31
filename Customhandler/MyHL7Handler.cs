@@ -7,7 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Company.Custom.Handler
+namespace Foldda.Custom.Handler
 {
     /// <summary>
     /// Class MyCompany.MyApp.MyCustomHandler.MyHL7Handler illustrates how you can make your own custom Foldda runtime compatible hanlder.

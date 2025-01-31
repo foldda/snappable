@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Foldda.Automation.CsvHandler;
 using Foldda.Automation.Framework;
 
-namespace Company.Custom.Handler
+namespace Foldda.Custom.Handler
 {
     /// <summary>
     /// Class MyCompany.MyApp.MyCustomHandler.MyCsvFileReader illustrates how you can make your own custom Foldda runtime-compatible hanlder.

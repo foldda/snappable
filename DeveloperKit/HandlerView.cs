@@ -24,7 +24,7 @@ namespace Foldda.Automation.HandlerDevKit
             {
                 get
                 {
-                    if (HandlerModel is HandlerModel.Dummy == false)
+                    if (HandlerModel != HandlerModel.DUMMY)
                     {
                         return HandlerModel.DisplayedLogLines.Count > 0 ? string.Join("\n", HandlerModel.DisplayedLogLines) : string.Empty;
                     }
@@ -40,7 +40,7 @@ namespace Foldda.Automation.HandlerDevKit
 
         public class HandlerButtonsPanel : HandlerView
         {
-            internal enum INDEX : int { LOAD=0, START=1, STOP=2, CLEAR=3 }
+            internal enum INDEX : int { LOAD=0, START=1, STOP=2, UNLOAD=3 }
             internal HandlerButtonsPanel(HandlerModel model) : base(model) { }
 
             internal Button[] Buttons=> HandlerModel.Buttons;
@@ -55,7 +55,7 @@ namespace Foldda.Automation.HandlerDevKit
                 get
                 {
                     List<ListViewItem> result = new List<ListViewItem>();
-                    if (HandlerModel is HandlerModel.Dummy == false)
+                    if (HandlerModel != HandlerModel.DUMMY)
                     {
                         foreach (var parameter in HandlerModel.Parameters)
                         {
@@ -71,7 +71,7 @@ namespace Foldda.Automation.HandlerDevKit
                 get
                 {
                     List<ListViewItem> result = new List<ListViewItem>();
-                    if (HandlerModel is HandlerModel.Dummy == false)
+                    if (HandlerModel != HandlerModel.DUMMY)
                     {
                         result.Add(MakeListViewItem(HandlerInfoGroup, IMAGE_CONFIG, ".NET Class", HandlerModel.Handler));
                         result.Add(MakeListViewItem(HandlerInfoGroup, IMAGE_CONFIG, ".NET Assembly", HandlerModel.Assembly));

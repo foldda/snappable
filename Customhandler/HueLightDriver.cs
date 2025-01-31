@@ -7,7 +7,7 @@ using Charian;
 using Foldda.Automation.Util;
 using System.Threading.Tasks;
 
-namespace Company.Custom.Handler
+namespace Foldda.Custom.Handler
 {
     /**
      * HueLightDriver converts targetted values from a Lookup reposite to a HttpSenderInput parcel 
@@ -82,7 +82,7 @@ namespace Company.Custom.Handler
             try
             {
                 //this a reposite of name-value pairs from upstream
-                if(record is LookupRda httpRequestResult)
+                if(record is DictionaryRda httpRequestResult)
                 {
                     foreach(var lightId in HueLightIds)
                     {

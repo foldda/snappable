@@ -1,6 +1,6 @@
 # Enflow Components
 
-Foldda Enflow is an integration and data automation tool for assembling data-processing pipelines using vendor-neutral, standardized components. It employs a unique data container format called RDA to allow arbitrarily complex data to be exchanged between any components, effectively allowing components made by any parties to join and work together without pre-setting, and being constrained by, a schema.
+Foldda Enflow is a simple component-based computing framework where vendor-neutral, standardized components can be assembled into data-processing pipelines for integration and data automation. Enflow employs a unique, schemaless data format, called RDA, for connected components to exchange arbitrarily complex data, effectively allowing any Enflow-compliant components, from any person or company, to join and work together without pre-setting, and being constrained by, a data model.
 
 This repo contains files and resources for Enflow component development, including -
 

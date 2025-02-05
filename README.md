@@ -1,14 +1,18 @@
 # Enflow Components
 
-Foldda Enflow is a simple component-based computing framework where vendor-neutral, standardized components can be assembled into data-processing pipelines for integration and data automation. Enflow employs a unique, schemaless data format, called RDA, for connected components to exchange arbitrarily complex data, effectively allowing any Enflow-compliant components, from any person or company, to join and work together without pre-setting, and being constrained by, a data model.
+Enflow is a simple component-based computing framework that allows vendor-neutral, standardized components to be assembled into data-processing pipelines for integration and data automation. 
+
+Enflow employs a unique, schemaless data format, called RDA, for connected components to exchange arbitrarily complex data, effectively allowing any Enflow-compliant components, from any person or company, to join and work together without pre-setting, and being constrained by, a data model.
+
+> In an analogy, Enflow is "the joint" for coupling software components to become a bigger module or an app, just like the LEGO joint allows connecting arbitrarily shaped pieces to function as a more complex unit.
 
 This repo contains files and resources for Enflow component development, including -
 
 1. The API of the component standard, for any third party to make Enflow-compatible components with arbitrary features that can collaborate and interact with Enflow components made by the other vendors.
-2. The source code of many working, production-grade Enflow components, serves as examples or reference/spoiler-plate implementations of various modularized tasks and demonstrates many simple yet effective programming techniques that can be used in Enflow component development.
-3. An easy-to-use tool called the "Developer Kit" that allows you to debug and trace the code of your custom-developed components in Visual Studio.
+2. Source code of many Enflow components for various modularized tasks and functions, which can be used as they are or as a spoilerplate for further customization tailored to your specific requirement.
+3. An easy-to-use "Developer Kit" with GUI that allows debugging and tracing in Visual Studio when developing customized Enflow components.
 
-## Background: Component-Based Computing and An Open Software Component Marketplace 
+## Background: Component-Based Computing and Software Component Marketplace 
 
 The ultimate goal of Enflow Component API is to become the base of an open-sourced software component marketplace, where free and premium components from different vendors are made available for people to assemble apps without programming. Not only component-based software development is much more productive and easier to maintain as you see in the demo, but a market of software components also has great economic value because it encourages a very high degree of software reuse. Theoretically, when a new component is developed and added to the market's collection, the number of possible apps from these components would multiply and grow exponentially, and, unlike using hardware electronic components, software components can be easily copied and reused in an app without much effort or additional cost. 
 

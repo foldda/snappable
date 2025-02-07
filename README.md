@@ -2,17 +2,23 @@
 
 Enflow is a simple component-based computing framework that allows vendor-neutral, standardized components to be assembled into data-processing pipelines for integration and data automation. 
 
-Enflow employs a unique, schemaless data format, called RDA, for connected components to exchange arbitrarily complex data, effectively allowing any Enflow-compliant components, from any person or company, to join and work together without pre-setting, and being constrained by, a data model.
+Enflow leverages Foldda's unique, universal data serialization API, called Charian, for connected components to exchange arbitrarily complex data, effectively allowing any Enflow-compliant components, from any person or company, to join and work together without pre-setting, and being constrained by, a data model.
 
-> In an analogy, Enflow is "the joint" for coupling software components to become a bigger module or an app, just like the LEGO joint allows connecting arbitrarily shaped pieces to function as a more complex unit.
+> Think Enflow provides a "universal joint" for coupling software components to become a bigger module or an app, just like a LEGO joint can connect arbitrarily shaped pieces to function as a more complex unit.
 
 This repo contains files and resources for Enflow component development, including -
 
 1. The API of the component standard, for any third party to make Enflow-compatible components with arbitrary features that can collaborate and interact with Enflow components made by the other vendors.
-2. Source code of many Enflow components for various modularized tasks and functions, which can be used as they are or as a spoilerplate for further customization tailored to your specific requirement.
-3. An easy-to-use "Developer Kit" with GUI that allows debugging and tracing in Visual Studio when developing customized Enflow components.
+2. Source code of many Enflow components for various modularized tasks and functions, which can be used as they are, or as spoilerplates for further customizing a component tailored to your specific requirement.
+3. An easy-to-use "Developer Kit" program with GUI allows debugging and tracing the execution of connected Enflow components in Visual Studio.
 
-## Background: Component-Based Computing and Software Component Marketplace 
+## Background: Component-Based Computing - The Challenge 
+
+Component-based computing promises many attractive benefits with its modularized architecture and interoperability feature, including better reusability, scalability, maintainability, and flexibility. However, implementing such a system has proven challenging and very few have succeeded. One fundamental problem to be addressed when implementing component-based computing is how components are going to connect and exchange data - to achieve maximum interoperability, minimum assumptions should be made between components about each other's data model and behavior, on the other hand, there shall be a level of "agreement" (i.e. a protocol) between the connected components about what and how data are exchanged for an interactive transaction. Note any such agreement being established would inevitably set a boundary to components about what can and cannot be done, so one of the design challenges for a true interoperable component-based computing system is to have the data exchange protocol as flexible as possible while maintaining operatable.
+
+> Einstein once said: Everything should be made as simple as possible, but not simpler.
+
+One example of such an agreement is the REST API where schema 
 
 The ultimate goal of Enflow Component API is to become the base of an open-sourced software component marketplace, where free and premium components from different vendors are made available for people to assemble apps without programming. Not only component-based software development is much more productive and easier to maintain as you see in the demo, but a market of software components also has great economic value because it encourages a very high degree of software reuse. Theoretically, when a new component is developed and added to the market's collection, the number of possible apps from these components would multiply and grow exponentially, and, unlike using hardware electronic components, software components can be easily copied and reused in an app without much effort or additional cost. 
 

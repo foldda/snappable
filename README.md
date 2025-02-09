@@ -2,13 +2,13 @@
 
 Enflow is a simple component-based computing framework that allows vendor-neutral, standardized components to be assembled into data-processing pipelines for integration and data automation. 
 
-Enflow leverages Foldda's unique, universal data serialization API, called Charian, for connected components to exchange arbitrarily complex data, effectively allowing any Enflow-compliant components, from any person or company, to join and work together without pre-setting, and being constrained by, a data model.
+Enflow leverages Charian, a universal data serializor, for connected components to exchange arbitrarily complex data, effectively allowing any Enflow-compliant components, from any person or company, to join and work together without pre-setting, and being constrained by, a data model.
 
-> Think Enflow provides a "universal joint" for coupling software components to become a bigger module or an app, just like a LEGO joint can connect arbitrarily shaped pieces to function as a more complex unit.
+> Just like a LEGO joint can connect arbitrarily shaped pieces to function as a more complex unit, Enflow works by providing a "universal joint" for coupling software components to become a bigger module or an app.
 
 This repo contains files and resources for Enflow component development, including -
 
-1. The API of the component standard, for any third party to make Enflow-compatible components with arbitrary features that can collaborate and interact with Enflow components made by the other vendors.
+1. The framework's component and runtime API, for anyone to make compatible components, with arbitrary features that can collaborate and interact with Enflow components made by any other vendors.
 2. Source code of many Enflow components for various modularized tasks and functions, which can be used as they are, or as spoilerplates for further customizing a component tailored to your specific requirement.
 3. An easy-to-use "Developer Kit" program with GUI allows debugging and tracing the execution of connected Enflow components in Visual Studio.
 

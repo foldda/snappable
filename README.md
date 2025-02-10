@@ -8,7 +8,7 @@ Enflow leverages Charian, a universal data serializor, for connected components 
 
 > Just like a LEGO joint can connect arbitrarily shaped pieces to function as a more complex unit, Enflow works by providing a "universal joint" for coupling software components to become a bigger module or an app.
 
-> Another way to look at Enflow works like breadboards - electrical components connect to the breadboard and work together as they use universal standard pins for sending and receiving signals. Enflow components send and receive data using the simple channel and format defined by the API.
+> Another analogy is that Enflow works like a breadboard where electrical components connect to it and work together as they use universal standard pins for sending and receiving signals. Enflow components send and receive data using the simple channel and format defined by the API.
 
 This repo contains files and resources for Enflow component development, including -
 

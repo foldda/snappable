@@ -1,15 +1,22 @@
 # Enflow Portable Components
 
-Enflow is a simple component-based computing framework that has an ambicious goal: to allows making vendor-neutral, standardized components and _physically_ assembling these components into data-processing apps -much like using the bolts and nuts purchased from hardware stores for use in home projects. 
+Enflow is a simple component-based computing framework API with an ambitious goal: to allows making vendor-neutral, standardized components and _physically_ assembling these components into data-processing apps -much like using the bolts and nuts purchased from hardware stores for use in home projects. 
 
-To achieve such a goal, a Enflow component must have these constraints - 
+To achieve such a goal, a Enflow component must implement a number of constraints set by the API, including - 
 
-* For being physically assembled into a app, the component must be referencible by an OS-level physical computer object such as a file or a folder.
-* For being functional, the component needs to a way to perform a specified data-processing task
-* For handling data input and output, the component needs to have have a way to exchange data with the other Enflow components.
+* For being functional, the component needs to a way to perform a specified data-processing task,
+* For handling data-processing task's input and output, the component needs to have have a way to exchange data with the other Enflow components.
+* For being physically assemblable, the component must be referencible by an OS-level physical computer object such as a file or a folder,
 
-In addition to these, for bigger market adpation, the framework API must be vendor-neutral (i.e. open-sourced and no dependency on propriatry library).
+In addition to these, for bigger market adpation, the framework API must be vendor-neutral i.e. no dependency on propriatry libraries. Vendor-neutral means components can be aquiried from an open market, and components can be made with the same functions by different vendors and are interchangiable. 
 
+Before we explain how the API is designed with regards to these constrains below, you may want to watch this video to visualize the intended outcome of Foldda's Enflow Components framework.
+
+## Data-process Flow Abstraction
+
+## Connecting The Components
+
+## Being Physical and Portable
 
 pipelines for integration and data automation. "Portable" means Enflow components and assembled applications can be used on any computer[^1] without setup or installation. 
 

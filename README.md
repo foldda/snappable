@@ -1,23 +1,38 @@
 # Enflow Portable Components
 
-Enflow is a simple component-based computing framework API with an ambitious goal: to allows making vendor-neutral, standardized components and _physically_ assembling these components into data-processing apps -much like using the bolts and nuts purchased from hardware stores for use in home projects. 
+Enflow is a simple component-based computing framework API with an ambitious goal: to allows making non-prorpiatry data-processing solutions using vendor-neutral, standardized components. That is, you can physically aquire and assemble these components into apps, and the environment (called a "runtime") for running these apps is also non-prorpiatry and vendor neutral. By doing so, it promotes very high degree of software (component) re-use, much like using the bolts and nuts purchased from hardware stores for use in home projects. 
 
-To achieve such a goal, a Enflow component must implement a number of constraints set by the API, including - 
+To achieve such a goal, the Enflow API must define what a component must implement, including - 
 
 * For being functional, the component needs to a way to perform a specified data-processing task,
 * For handling data-processing task's input and output, the component needs to have have a way to exchange data with the other Enflow components.
-* For being physically assemblable, the component must be referencible by an OS-level physical computer object such as a file or a folder,
+* For being a physical assembly (i.e. "portable"), the component needs to be referencible by an OS-level physical computer object such as a file or a folder,
 
-In addition to these, for bigger market adpation, the framework API must be vendor-neutral i.e. no dependency on propriatry libraries. Vendor-neutral means components can be aquiried from an open market, and components can be made with the same functions by different vendors and are interchangiable. 
+In addition to these, the framework API also defines a runtime must implement to run an Enflow-component-based app, so it's vendor-neutral, meaning the apps' components can be aquiried from open markets, and components with the same functions made by different vendors are interchangiable. This YouTube video gives a visual demonstration of the intended outcome of the framework, where Enflow components are assembled into data-processing solutions that can be deployed and run in a standard-compliant runtime environment.
 
-Before we explain how the API is designed with regards to these constrains below, you may want to watch this video to visualize the intended outcome of Foldda's Enflow Components framework.
+Below we explain how the API is designed to specify these constrains, so the components and runtimes can interact with each other, performing their intended functions, within these standardized constrains. 
 
 ## Data-process Flow Abstraction
+
+In Emflow API's design, the process of using a component is modeled as a factory worker at a product processing line: the abstracted worker is given an "input container" which contains a co
 
 ## Connecting The Components
 
 ## Being Physical and Portable
 
+## Standardized Runtimes
+
+### Enflow Component Deverloper Kit
+
+### Enflow Solution Manager
+
+### Enflow Win_Service
+
+## Summary
+
+The Enflow component-based computing framework promotes high-level modular software re-use, by specifying a simple and practical open standard of software components and solution runtime, so both a component and a runtime can be independly developped, and are interchangible. 
+
+Functional implementations of the Enflow Components and Runtime are available
 pipelines for integration and data automation. "Portable" means Enflow components and assembled applications can be used on any computer[^1] without setup or installation. 
 
 [^1]: On any Windows computers only at the moment.

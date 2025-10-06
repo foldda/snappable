@@ -21,7 +21,7 @@ namespace Foldda.Automation.CsvHandler
          * mapping defined in the config file) to a database table.
          */
 
-        public CsvDbTableWriter(ILoggingProvider logger) : base(logger) { }
+        public CsvDbTableWriter(IHandlerManager manager) : base(manager) { }
 
         /**
          * Defines each of the Csv columns and their corresponding database table column's name and data-type, in the
@@ -53,33 +53,36 @@ namespace Foldda.Automation.CsvHandler
          * </Parameter>
          */
 
-
-        protected override RecordContainer ProcessContainer(RecordContainer container, CancellationToken cancellationToken)
+        /// <summary>
+        /// Driven by the Handler-manager, this method processes a record inputContainer - passed in by the handler manager.
+        /// Note this handler would deposite its output, if any, to a designated storage from the manager
+        /// </summary>
+        /// <param name="inputContainer">a inputContainer with a collection of records</param>
+        /// <returns>a status integer</returns>
+        public override Task<int> ProcessPipelineRecordContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
         {
-            if (container.Records.Count > 0)
+            if (inputContainer.Records.Count > 0)
             {
 
                 int recordsWritten = 0;
                 try
                 {
-                    if (container.MetaData is TabularRecord.MetaData metaData)
+                    if (inputContainer.MetaData is TabularRecord.MetaData metaData)
                     {
                         VerifyDBConfig(LocalConfig);
-                        recordsWritten += this.WriteToDatabase(LocalConfig /**using local DB config**/, container.Records, metaData, cancellationToken);
+                        recordsWritten += this.WriteToDatabase(LocalConfig /**using local DB config**/, inputContainer.Records, metaData);
                     }
-
-                    OutputStorage.Receive(new HandlerEvent(Id, DateTime.Now));  //create a dummy event 
                 }
                 catch (Exception e)
                 {
-                    Log($"ERROR: Write container '{container.MetaData.ToRda().ScalarValue}' to database table [{LocalConfig.DbTableName}] failed with exception: {e.Message}");
+                    Log($"ERROR: Write inputContainer '{inputContainer.MetaData.ToRda().ScalarValue}' to database table [{LocalConfig.DbTableName}] failed with exception: {e.Message}");
                     Deb(e.StackTrace);
                 }
 
                 Log($"Total {recordsWritten} records processed.");
             }
 
-            return null;    //output container 
+            return Task.FromResult(0);    //output status
         }
 
         /// <summary>
@@ -92,7 +95,7 @@ namespace Foldda.Automation.CsvHandler
         /// <param name="container"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected virtual int WriteToDatabase(DbTableConnectionConfig config, List<IRda> tabularRecords, TabularRecord.MetaData metaData, CancellationToken cancellationToken)
+        protected virtual int WriteToDatabase(DbTableConnectionConfig config, List<IRda> tabularRecords, TabularRecord.MetaData metaData)
         {
             using (OleDbConnection connection = new OleDbConnection(config.DbConnectionString))
             {
@@ -107,7 +110,7 @@ namespace Foldda.Automation.CsvHandler
 
                 using (var insertCommand = connection.CreateCommand())
                 {
-                    //1. build the OleDB (INSERT) Command object based on container columns
+                    //1. build the OleDB (INSERT) Command object based on inputContainer columns
                     System.Text.StringBuilder fields = new System.Text.StringBuilder();
                     System.Text.StringBuilder questionMarks = new System.Text.StringBuilder();
 

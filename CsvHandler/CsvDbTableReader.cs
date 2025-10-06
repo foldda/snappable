@@ -7,6 +7,7 @@ using System.Data.OleDb;
 using System.Threading.Tasks;
 using System.Linq;
 using System.IO;
+using static Foldda.Automation.CsvHandler.TabularRecord;
 
 namespace Foldda.Automation.CsvHandler
 {
@@ -28,13 +29,13 @@ namespace Foldda.Automation.CsvHandler
         public const string QUERY_WHERE_CLAUSE = "query-where-clause";
         public string QueryWhereClause { get; private set; }
 
-        public CsvDbTableReader(ILoggingProvider logger) : base(logger) { }
+        public CsvDbTableReader(IHandlerManager manager) : base(manager) { }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             try
             {
-                base.SetParameter(config);
+                base.Setup(config);
                 QueryWhereClause = config.GetSettingValue(QUERY_WHERE_CLAUSE, string.Empty);
             }
             catch(Exception e)
@@ -44,9 +45,14 @@ namespace Foldda.Automation.CsvHandler
             }
         }
 
-        protected override Task ProcessHandlerEvent(HandlerEvent handlerEvent, CancellationToken cancellationToken)
+        /// <summary>
+        /// In this case, the handler reponds to its manager-injected timer "heart-beat" event and performs a file-reading task using the default config.
+        /// </summary>
+        /// <param name="handlerEvent">an event</param>
+        /// <param name="cancellationToken">optionally cancels async ops</param>
+        /// <returns>a task can be waited upon</returns>
+        protected override Task ProcessHandlerEvent(MessageRda.HandlerEvent handlerEvent, CancellationToken cancellationToken)
         {
-
             try
             {
                 //testing if the trigger contains 'file-read config instructions' in its context,
@@ -70,9 +76,8 @@ namespace Foldda.Automation.CsvHandler
                     //if query "*"
                     metaData.ColumnNames = _verifiedTargetTableSchema.ToArray();
                 }
-                RecordContainer outputContainer = 
-                    new RecordContainer() { MetaData = metaData, RecordEncoding = TabularRecord.TabularRecordEncoding.Default };
-                outputContainer.MetaData = metaData;
+                RecordContainer outputContainer =
+                    new RecordContainer() { MetaData = metaData, RecordEncoding = TabularRecordEncoding.Default };
 
                 int recordsRead = ReadFromDatabase(config, outputContainer, cancellationToken);
                 Log($"Retrieved {recordsRead} records.");
@@ -84,7 +89,34 @@ namespace Foldda.Automation.CsvHandler
             }
 
             return Task.Delay(50);
+
         }
+
+        /// <summary>
+        /// The handler also respond to incoming notification messages that carry DbTableConnectionConfig as the message body
+        /// </summary>
+        /// <param name="handlerNotification">an incoming message</param>
+        /// <param name="cancellationToken">optionally cancels async ops</param>
+        /// <returns>a task can be waited upon</returns>
+        protected override Task ProcessHandlerNotification(MessageRda.HandlerNotification handlerNotification, CancellationToken cancellationToken)
+        {
+            if (handlerNotification.ReceiverId.Equals(this.UID) && handlerNotification.NotificationBodyRda is DbTableConnectionConfig config)
+            {
+                TabularRecord.MetaData metaData = new TabularRecord.MetaData() { SourceId = config.DbTableName };
+
+                RecordContainer outputContainer =
+                    new RecordContainer() { MetaData = metaData, RecordEncoding = TabularRecord.TabularRecordEncoding.Default };
+                outputContainer.MetaData = metaData;
+
+                int recordsRead = ReadFromDatabase(config, outputContainer, cancellationToken); ;
+            }
+            else
+            {
+                Logger.Log($"WARNING - Notification message is not handled - {handlerNotification.SenderId}: {handlerNotification.ReceiverId} : {handlerNotification.NotificationBodyRda}"); ;
+            }
+            return Task.Delay(50);
+        }
+
 
         /// <summary>
         /// It is recommended to utilize the pre- and post-processing stored-procs in the table reading, through ELT retrieving pattern, 

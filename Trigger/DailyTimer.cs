@@ -16,11 +16,11 @@ namespace Foldda.Automation.Trigger
 
         List<int> ExcludedWeekDays { get; set; } = new List<int>();
 
-        public DailyTimer(ILoggingProvider logger) : base(logger) { }
+        public DailyTimer(IHandlerManager manager) : base(manager) { }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
-            base.SetParameter(config);
+            base.Setup(config);
 
             string setting = config.GetSettingValue(EXCLUDED_DAYS_OF_WEEK, string.Empty);
 

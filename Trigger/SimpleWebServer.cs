@@ -47,9 +47,9 @@ namespace Foldda.Automation.Trigger
   </body>
 </html>";
 
-        public SimpleWebServer(ILoggingProvider logger) : base(logger) { }
+        public SimpleWebServer(IHandlerManager manager) : base(manager) { }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             int port = config.GetSettingValue(LISTENING_PORT, 80);
             URI = $"http://localhost:{port}/";
@@ -61,11 +61,11 @@ namespace Foldda.Automation.Trigger
             }
         }
 
-        public override Task ProcessData(CancellationToken cancellationToken) => Listen(URI, cancellationToken);
+        public override Task<int> Init(CancellationToken cancellationToken) => Listen(URI, cancellationToken);
 
         private const int ChunkSize = 1024;
 
-        public Task Listen(string prefix, CancellationToken token)
+        public Task<int> Listen(string prefix, CancellationToken token)
         {
             HttpListener listener = new HttpListener();
 
@@ -87,6 +87,7 @@ namespace Foldda.Automation.Trigger
                     listener.Stop();
                 }
 
+                return 0;
             }, token);
 
         }
@@ -150,7 +151,7 @@ namespace Foldda.Automation.Trigger
                     container.Add(lookup);
 
                     //send to down-stream handlers
-                    OutputStorage.Receive(container);
+                    HandlerManager.PipelineOutputDataStorage.Receive(container);
 
                     return FORM_COMPLETE_PAGE;
                 }

@@ -10,7 +10,7 @@ namespace Foldda.Automation.Framework
 
         List<IRda> CollectReceived();
 
-        //both DataContainer and HandlerEvent are IRda objects, 
+        //both DataContainer and FrameworkMessage are IRda objects, 
         void Receive(IRda item);
 
         ////receives a container (of records) and adds the content to the Received collection
@@ -21,6 +21,6 @@ namespace Foldda.Automation.Framework
         //void Receive(IRda record, string dataSenderId);  
         
         ////receives a event
-        //void Receive(HandlerEvent event1);
+        //void Receive(FrameworkMessage event1);
     }
 }

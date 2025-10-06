@@ -22,14 +22,14 @@ namespace Foldda.Automation.CsvHandler
         internal TabularRecord.TabularRecordEncoding CsvRecordEncoding { get; set; } = TabularRecord.DEFAULT_RECORD_ENCODING;
 
 
-        public BaseCsvHandler(ILoggingProvider logger) : base(logger) { }
+        public BaseCsvHandler(IHandlerManager manager) : base(manager) { }
 
-        public override AbstractCharStreamRecordScanner GetDefaultFileRecordScanner(ILoggingProvider loggingProvider)
+        protected override AbstractCharStreamRecordScanner GetDefaultFileRecordScanner(ILoggingProvider loggingProvider)
         {
             return new TabularRecord.TabularRecordStreamScanner(loggingProvider, CsvRecordEncoding);
         }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             string columnFixedLengths = config.GetSettingValue(CSV_FIXED_COLUMNS_LENGTHS, null);
             if(!string.IsNullOrEmpty(columnFixedLengths))
@@ -62,39 +62,47 @@ namespace Foldda.Automation.CsvHandler
         }
 
         /// <summary>
-        /// Determine what type the record is, then process accordingly.
+        /// Driven by the Handler-manager, this method processes a record inputContainer - passed in by the handler manager.
+        /// Note this handler would deposite its output, if any, to a designated storage from the manager
         /// </summary>
-        /// <param name="record"></param>
-        /// <param name="inputContainer"></param>
-        /// <param name="outputContainer"></param>
-        /// <param name="cancellationToken"></param>
-        protected sealed override Task ProcessRecord(IRda record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        /// <param name="inputContainer">a inputContainer with a collection of records</param>
+        /// <returns>a status integer</returns>
+        public override async Task<int> ProcessPipelineRecordContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
         {
+            RecordContainer outputContainer = new RecordContainer()
+            {
+                MetaData = new RecordContainer.DefaultMetaData(this.UID, DateTime.UtcNow)
+                {
+                    OriginalMetaData = inputContainer.MetaData //keep the soure container's meta-data
+                }
+            };
 
-            try
+            HandlerManager.PipelineOutputDataStorage.Receive(inputContainer);    //default is pass-thru
+
+            ///alternatively processing each record indivisually ... something like
+
+            foreach (var record in inputContainer.Records)
             {
                 if (record is TabularRecord csvRecord)
                 {
-                    ProcessTabularRecord(csvRecord, inputContainer, outputContainer, cancellationToken);
+                    await ProcessTabularRecord(csvRecord, outputContainer, CancellationToken.None);
                 }
                 else
                 {
-                    Log($"WARNING: Record type UNKNOWN and is ignored by this CSV data handler. Record => {record?.ToRda()}");
+                    Log($"WARNING: Record of type {record.GetType().FullName} is ignored. Record => {record?.ToRda()}");
                 }
-
-            }
-            catch (Exception e)
-            {
-                Logger.Log($"Failed converting input record to TabularRecord, record is skipped - {e.Message}.\n{e.StackTrace}");
             }
 
-            return Task.Delay(50);
+            HandlerManager.PipelineOutputDataStorage.Receive(outputContainer);
+
+            return 0;
         }
 
-        protected virtual void ProcessTabularRecord(TabularRecord record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        protected virtual Task ProcessTabularRecord(TabularRecord record, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             //default is a pass-through
             outputContainer.Add(record);
+            return Task.CompletedTask;
 
             //force sub-class to implement
             //throw new NotImplementedException();

@@ -195,7 +195,7 @@ namespace Foldda.Automation.Util
 
                             //foreach (var line in this.CachedLines.GetConsumingEnumerable())
                             //{
-                            //    string logLine = System.String.Format("[{0:T}] {1}\n", System.DateTime.Now, line).Replace("\n", Environment.NewLine);
+                            //    string logLine = System.String.Print("[{0:T}] {1}\n", System.DateTime.Now, line).Replace("\n", Environment.NewLine);
                             //    this.LoggedLinesSinceLastRotate += logLine.Length;
 
                             //    //try a couple of times in case there are IO-exceptions (eg reading while writing)

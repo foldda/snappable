@@ -35,11 +35,11 @@ namespace Foldda.Automation.CsvHandler
     {
         public const string CSV_COLUMN_TO_JSON_MAPPING = "csv-column-to-json-mapping";
 
-        public CsvToJsonConverter(ILoggingProvider logger) : base(logger) { }
+        public CsvToJsonConverter(IHandlerManager manager) : base(manager) { }
 
         private Dictionary<string, string> _csvMappings = new Dictionary<string, string>();
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             _csvMappings.Clear();
             List<string> mappings = config.GetSettingValues(CSV_COLUMN_TO_JSON_MAPPING);
@@ -57,7 +57,7 @@ namespace Foldda.Automation.CsvHandler
 
                 <Parameter>
                   <Name>csv-column-to-json-mapping</Name>
-                  <Value>eg. Message Id|Column N header</Value>
+                  <Value>eg. Message UID|Column N header</Value>
                 </Parameter>  
               </Parameters>
 
@@ -69,10 +69,10 @@ namespace Foldda.Automation.CsvHandler
             }
         }
 
-        protected override void ProcessTabularRecord(TabularRecord csvRecord, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        protected override Task ProcessTabularRecord(TabularRecord csvRecord, RecordContainer outputContainer, CancellationToken cancellationToken)
         {            
             //Csv container label would carry the meta-data such as the source-file-id, also columns name, data-types etc.
-            TabularRecord.MetaData csvContainerMetaData = TabularRecord.GetMetaData(inputContainer.MetaData.ToRda());
+            TabularRecord.MetaData csvContainerMetaData = TabularRecord.GetMetaData(outputContainer.MetaData.ToRda());
             TabularRecord csvHeader = new TabularRecord(csvContainerMetaData.ColumnNames);
 
             StringBuilder jsonStringBuilder = new StringBuilder("{");
@@ -94,7 +94,7 @@ namespace Foldda.Automation.CsvHandler
                 Log($"WARNING: CSV record [{csvRecord}] has no matching elements and is skipped.");
             }
 
-            return;
+            return Task.CompletedTask;
         }
 
         //give a selector, return the elements' value of the targeted segment as a named Json property

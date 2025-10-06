@@ -17,9 +17,9 @@ namespace Foldda.Automation.HL7Handler
         public const string FILTERING_RULE = "filtering-rule";
         protected List<SelectionPathDefilition> MatchingRules { get; private set; } = new List<SelectionPathDefilition>();
 
-        public HL7Filter(ILoggingProvider logger) : base(logger) { }
+        public HL7Filter(IHandlerManager manager) : base(manager) { }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             MatchingRules.Clear(); 
             var parameters = config.GetSettingValues(FILTERING_RULE); 
@@ -32,7 +32,7 @@ namespace Foldda.Automation.HL7Handler
             }            
         }
 
-        protected override Task ProcessInputHL7MessageRecord(HL7Message record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        protected override Task ProcessInputHL7MessageRecord(HL7Message record, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             if(FilterHL7Message(record))
             {

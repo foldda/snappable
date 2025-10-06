@@ -59,7 +59,7 @@ namespace Foldda.Automation.Framework
 
         public virtual IRda FromRda(Rda rda)
         {
-            //sub-class to implement desrialization here
+            //sub-class to implement deserialization here
             //.... (late binding) restoring MetaData, Records, and ProcessingContext
 
             return this;

@@ -28,9 +28,9 @@ namespace Foldda.Automation.HL7Handler
         protected string _outputPrefix { get; private set; }
         protected bool _mllpSeparatorEncode { get; private set; }
 
-        public HL7FileWriter(ILoggingProvider logger) : base(logger) { }
+        public HL7FileWriter(IHandlerManager manager) : base(manager) { }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             _targetPath = config.GetSettingValue(TARGET_PATH, string.Empty);
             if (string.IsNullOrEmpty(_targetPath))
@@ -64,12 +64,17 @@ namespace Foldda.Automation.HL7Handler
         const string PER_DAY_PATTERN = "yyMMdd";
 
         int recordCount = 0;
+        public static readonly string SessionId = $"run-{DateTime.UtcNow:HHmmss}";
 
-        protected override Task ProcessInputHL7MessageRecord(HL7Message record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        protected override Task ProcessInputHL7MessageRecord(HL7Message record, RecordContainer dataContainer, CancellationToken cancellationToken)
         {
             //if multiple containers from a same file gets processed, this aggregate the data to the same file
             //TODO: if this is undesired, used inputContainer.GetHash() to keep track and differenciate the containers
-            string outputFileName = inputContainer.MetaData.ToRda().ScalarValue;
+            string outputFileName = dataContainer.MetaData.ScalarValue;
+            if(dataContainer.MetaData is RecordContainer.DefaultMetaData sourceMetaData)
+            {
+                outputFileName = sourceMetaData.OriginalCreatorId;
+            }
 
             //https://stackoverflow.com/questions/6053541/regex-every-non-alphanumeric-character-except-white-space-or-colon/6053606
             outputFileName = Regex.Replace(outputFileName /*OriginSourceName*/, @"[^a-zA-Z\d\.]", "_");
@@ -99,7 +104,7 @@ namespace Foldda.Automation.HL7Handler
                     {
 
                         recordCount++;
-                        fileName = $@"{uniquePerContainerFileName}-{recordCount:D3}";
+                        fileName = $@"{SessionId}-{uniquePerContainerFileName}-{recordCount:D3}";
                         break;
                     }
                 default:

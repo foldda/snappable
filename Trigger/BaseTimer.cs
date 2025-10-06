@@ -4,6 +4,7 @@ using Foldda.Automation.Util;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -28,14 +29,9 @@ namespace Foldda.Automation.Trigger
         //
         protected string TimerId { get; set; }
 
-        public BaseTimer(ILoggingProvider logger) : base(logger) { }
+        public BaseTimer(IHandlerManager manager) : base(manager) { }
 
-        public override AbstractCharStreamRecordScanner GetDefaultFileRecordScanner(ILoggingProvider loggingProvider)
-        {
-            return null;    // throw new NotImplementedException();
-        }
-
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             TimeSettings.Clear();
             TimeTable = new ConcurrentQueue<DateTime>();
@@ -71,72 +67,47 @@ namespace Foldda.Automation.Trigger
         /// </summary>
         internal abstract void ResetTimeTable();
 
-        public override async Task ProcessData(CancellationToken cancellationToken)
+        public override Task<int> ProcessInboundMessage(MessageRda message, CancellationToken cancellationToken)
         {
-            await Task.Run(async () =>
+            //this is driven by the handler-manager's heartbeat events
+            if (message is MessageRda.HandlerEvent eventMsg && eventMsg.EventSourceId == HandlerManager.UID && eventMsg.EventDetailsRda == Rda.NULL)
             {
-                try
+                if (TimeTable.Count == 0)
                 {
-                    while (cancellationToken.IsCancellationRequested == false)
+                    ResetTimeTable();   //sub-class adds new entries into the table
+                }
+                else
+                {
+                    HashSet<DateTime> futureEventsHashSet = new HashSet<DateTime>();//used for removing duplicated entries
+
+                    //lopp thru all scheduled events and see if any of them are due to be fired
+                    while (TimeTable.TryDequeue(out DateTime t))
                     {
-                        int count = TimeTable.Count;
-                        if(count == 0)
+                        if (t > DateTime.Now)
                         {
-                            await Task.Delay(200);
-                            ResetTimeTable();   //sub-class adds new entries into the table
+                            /* store, but not triggering, future events */
+                            futureEventsHashSet.Add(t);
                         }
-                        else
+                        else if (t > DateTime.Now.AddSeconds(-1))
                         {
-                            //used for removing duplicated entries
-                            HashSet<DateTime> hashSet = new HashSet<DateTime>();
-
-                            //lopp thru all events and see if any of them shall be fired
-                            while (count > 0)
-                            {
-                                if (TimeTable.TryDequeue(out DateTime t))
-                                {
-                                    if (t > DateTime.Now)
-                                    {
-                                        /* use hashset to de-duplicate */
-                                        if (hashSet.Add(t)) 
-                                        { 
-                                            TimeTable.Enqueue(t); //do nothing with future events
-                                        }
-                                        //else are duplicates
-                                    }                                    
-                                    else if (t > DateTime.Now.AddSeconds(-1))
-                                    {
-                                        //fire an event if it's 'just' expired
-                                        OutputStorage.Receive(new HandlerEvent(TimerId, t));
-                                        Log($"Timer '{TimerId}' fired at {t.ToString("HH:mm:ss")}.");
-                                    }
-                                    //else the 'long expired' events are dropped
-
-                                    count--;
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
+                            //fire an event if it's 'just' expired
+                            HandlerManager.PostHandlerOutboundMessage(new MessageRda.HandlerEvent(UID, t, new Rda() { ScalarValue = TimerId }));
+                            Log($"Timer '{TimerId}' fired at {t.ToString("HH:mm:ss")}.");
                         }
+                        //else the 'long expired' events are dropped
+                    }
 
-                        await Task.Delay(100);
+                    //put future events back to the timetable
+                    foreach(var t in futureEventsHashSet)
+                    {
+                        TimeTable.Enqueue(t); 
                     }
                 }
-                catch (Exception e)
-                {
-                    Log($"\nHandler operation is stopped due to exception - {e.Message}.");
-                }
-                finally
-                {
-                    //Node.LogEvent(Constant.NodeEventType.LastStop);
-                    //don't set STATE here, let command and state-table to drive state 
-                    Log($"Node handler '{this.GetType().Name}' tasks stopped.");
-                }
+            }
 
-            });
+            return base.ProcessInboundMessage(message, cancellationToken);
         }
+
 
         protected class DayTimeSetting
         {

@@ -22,15 +22,15 @@ namespace Foldda.Automation.HL7Handler
         protected int Port { get; private set; }
         protected string HostName { get; private set; }
 
-        public HL7NetReceiver(ILoggingProvider logger) : base(logger) { }
+        public HL7NetReceiver(IHandlerManager manager) : base(manager) { }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             Port = config.GetSettingValue(LISTENING_PORT, -1);
             HostName = Dns.GetHostName();
         }
 
-        public override Task ProcessData(CancellationToken cancellationToken)
+        public override Task<int> Init(CancellationToken cancellationToken)
         {
             AckManager ackProducer = new AckManager(this.Logger);
 
@@ -48,7 +48,7 @@ namespace Foldda.Automation.HL7Handler
                             {
                                 //we use a buffer to introduce a delay to the collection of consectively received records, so 
                                 //they are packed in the same container
-                                ackProducer.CollectedBufferredContainers(OutputStorage, MINIMAL_CONTAINER_INACTIVE_AGE_SEC);
+                                ackProducer.CollectedBufferredContainers(HandlerManager.PipelineOutputDataStorage, MINIMAL_CONTAINER_INACTIVE_AGE_SEC);
 
                                 await Task.Delay(100);
                             } while (cancellationToken.IsCancellationRequested == false);
@@ -73,6 +73,8 @@ namespace Foldda.Automation.HL7Handler
                     //don't set STATE here, let command and state-table to drive state 
                     Log($"Node handler '{this.GetType().Name}' tasks stopped.");
                 }
+
+                return 0;
 
             });
         }
@@ -165,14 +167,14 @@ namespace Foldda.Automation.HL7Handler
                         {
                             clientContainer = new RecordContainer()
                             {
-                                MetaData = new HandlerEvent(clientId, DateTime.Now),
+                                MetaData = new RecordContainer.DefaultMetaData(clientId, DateTime.Now),
                                 RecordEncoding = HL7Message.HL7MessageEncoding.Default
                             };
                             TempPerClientContainers.TryAdd(clientId, clientContainer);
                         }
                         else
                         {
-                            (clientContainer.MetaData as HandlerEvent).EventTime = DateTime.Now;    //reset the timestamp of the container
+                            (clientContainer.MetaData as RecordContainer.DefaultMetaData).CreateTime = DateTime.Now;    //reset the timestamp of the container
                         }
 
                         //store the received record
@@ -200,8 +202,8 @@ namespace Foldda.Automation.HL7Handler
                     {
                         if(TempPerClientContainers.TryGetValue(key, out RecordContainer clientContainer))
                         {
-                            HandlerEvent containerLastActive = clientContainer.MetaData as HandlerEvent;
-                            if (containerLastActive == null || (DateTime.Now - containerLastActive.EventTime).TotalSeconds > minimalTimeLapBetweenPackets)
+                            var containerLastActive = clientContainer.MetaData as RecordContainer.DefaultMetaData;
+                            if (containerLastActive == null || (DateTime.Now - containerLastActive.CreateTime).TotalSeconds > minimalTimeLapBetweenPackets)
                             {
                                 if (TempPerClientContainers.TryRemove(key, out RecordContainer removedContainer) && 
                                     removedContainer.Records.Count > 0)

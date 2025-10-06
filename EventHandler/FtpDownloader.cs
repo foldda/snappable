@@ -15,7 +15,7 @@ namespace Foldda.Automation.EventHandler
      * a designated FTP host, using supplied parameters including host's network details, login and 
      * password, targeted files path and naming pattern, etc.
      * 
-     * These parameters can also come from a inbound HandlerEvent record, i.e. like driving commands
+     * These parameters can also come from a inbound FrameworkMessage record, i.e. like driving commands
      * 
      */
     public class FtpDownloader : BasicDataHandler
@@ -104,17 +104,11 @@ namespace Foldda.Automation.EventHandler
 
         List<string> DownloadUriExclusionList { get; } = new List<string>();    //full-path
 
-        public FtpDownloader(ILoggingProvider logger) : base(logger)
+        public FtpDownloader(IHandlerManager manager) : base(manager)
         {
         }
 
-        //dummy implementation is required
-        public override AbstractCharStreamRecordScanner GetDefaultFileRecordScanner(ILoggingProvider loggingProvider)
-        {
-            return null;    // throw new NotImplementedException();
-        }
-
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             LocalConfig = new FtpDownloadConfig()
             {
@@ -134,7 +128,7 @@ namespace Foldda.Automation.EventHandler
             DownloadUriExclusionList.Clear();
         }
 
-        protected override Task ProcessHandlerEvent(HandlerEvent handlerEvent, CancellationToken cancellationToken)
+        protected override Task ProcessHandlerEvent(MessageRda.HandlerEvent handlerEvent, CancellationToken cancellationToken)
         {
             try
             {
@@ -151,12 +145,9 @@ namespace Foldda.Automation.EventHandler
                 {
                     foreach (var fileReaderConfig in downloadedFiles)
                     {
-                        HandlerEvent event1 = new HandlerEvent(Id, DateTime.Now)
-                        {
-                            EventDetailsRda = fileReaderConfig
-                        };
+                        MessageRda.HandlerEvent event1 = new MessageRda.HandlerEvent(UID, DateTime.Now, fileReaderConfig);
 
-                        OutputStorage.Receive(event1);
+                        HandlerManager.PipelineOutputDataStorage.Receive(event1);
                     }
 
                     Log($"Downloaded {downloadedFiles.Count} files.");

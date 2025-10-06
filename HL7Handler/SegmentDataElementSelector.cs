@@ -35,7 +35,7 @@ namespace Foldda.Automation.HL7Handler
 
             //construct the conditional RegEx, based on splitting (!= or ==)
             string[] ruleParts = selectorString.Split(
-                new string[] { EQUAL_OPERATOR, NOT_EQUAL_OPERATOR }, StringSplitOptions.RemoveEmptyEntries);
+                new string[] { EQUAL_OPERATOR, NOT_EQUAL_OPERATOR }, StringSplitOptions.None);
 
             SegmentName = ruleParts[0].Substring(0, 3);
             if (ruleParts[0].Length > 4 && ruleParts[0].IndexOf('-') > 2)
@@ -215,7 +215,7 @@ namespace Foldda.Automation.HL7Handler
         {
             if (Regex != null)
             {
-                return Regex.IsMatch(element.Value) && !ExlcudeMatched;
+                return Regex.IsMatch(element.Value) ^ ExlcudeMatched;
             }
 
             return true;

@@ -35,12 +35,12 @@ namespace Foldda.Automation.EventHandler
         public const string EMAIL_BODY_FILE = "email-body-file";  /* "template-file.txt"*/
         public const string EMAIL_SUBJECT = "email-subject";/* "default subject" */
 
-        public EmailSender(ILoggingProvider logger) : base(logger)
+        public EmailSender(IHandlerManager manager) : base(manager)
         {
         }
 
         static readonly char[] addressSepatatorChars = new char[] { ';', ',' };
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
 
             //try get the default message content from the path in the config file
@@ -76,27 +76,49 @@ namespace Foldda.Automation.EventHandler
 
 
         const string SENDER = "no-reply@foldda.com";
-        protected override async Task ProcessRecord(IRda record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+
+
+        /// <summary>
+        /// Process a record inputContainer - passed in by the handler manager.
+        /// Note this handler would deposite its output, if any, to a designated storage from the manager
+        /// </summary>
+        /// <param name="inputContainer">a inputContainer with a collection of records</param>
+        /// <returns>a status integer</returns>
+        public override async Task<int> ProcessPipelineRecordContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
         {
-            //1. construct the mail-content object from record's Rda (or use the default from local config) 
-            if(record is EmailContent email)
+
+            ///alternatively processing each record indivisually ... something like
+
+            foreach (var record in inputContainer.Records)
+            {
+                if (record is EmailContent email)
+                {
+                    await SendEmail(email);
+                }
+            }
+
+            return 0;
+        }
+
+
+        /// <summary>
+        /// Process a handler message - passed in by the handler manager.
+        /// Note this handler would deposite its output, if any , to designated storage(s) via the manager
+        /// </summary>
+        /// <param name="message">a handler message, can be an event, notification, or command, or other types</param>
+        /// <returns>a status integer</returns>
+        /// <param name="cancellationToken"></param>
+        public override async Task<int> ProcessInboundMessage(MessageRda message, CancellationToken cancellationToken)
+        {
+            if (message is MessageRda.HandlerEvent handlerEvent && handlerEvent.EventDetailsRda is EmailContent email)
             {
                 await SendEmail(email);
             }
-            else
+            else if (message is MessageRda.HandlerNotification handlerNotification && handlerNotification.NotificationBodyRda is EmailContent email2)
             {
-                Log($"Record of type {record?.GetType().FullName} is not the expected 'EmailContent' type and is ignored.");
+                await SendEmail(email2);
             }
-
-        }
-
-        protected override async Task ProcessHandlerEvent(HandlerEvent handlerEvent, CancellationToken cancellationToken)
-        {
-            if (handlerEvent is OsCommander.OutputRecord output)
-            {
-                DefaultMailContent.EmailBody = output.ExecutionOutput;
-                await SendEmail(DefaultMailContent);
-            }
+            return 0;
         }
 
         private async Task SendEmail(EmailContent email)

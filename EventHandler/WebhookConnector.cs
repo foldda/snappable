@@ -22,11 +22,11 @@ namespace Foldda.Automation.EventHandler
 
         private Webhook Connector { get; set; }
 
-        public WebhookConnector(ILoggingProvider logger) : base(logger)
+        public WebhookConnector(IHandlerManager manager) : base(manager)
         {
         }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             /*
 
@@ -43,14 +43,14 @@ namespace Foldda.Automation.EventHandler
             }
         }
 
-        protected override RecordContainer ProcessContainer(RecordContainer container, CancellationToken cancellationToken)
+        public override Task<int> ProcessPipelineRecordContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
         {
-            if (container.Records.Count > 0)
+            if (inputContainer.Records.Count > 0)
             {
                 int recordsWritten = 0;
                 try
                 {
-                    foreach (var record in container.Records)
+                    foreach (var record in inputContainer.Records)
                     {
                         string jsonPayload = record.ToRda().ScalarValue;
                         Connector.SendData(jsonPayload, cancellationToken);
@@ -58,7 +58,7 @@ namespace Foldda.Automation.EventHandler
                         recordsWritten++;
                     }
 
-                    OutputStorage.Receive(new HandlerEvent(Id, DateTime.Now));  //create a dummy event 
+                    HandlerManager.PipelineOutputDataStorage.Receive(new MessageRda.HandlerEvent(UID, DateTime.Now, Rda.NULL));  //create a dummy event 
                 }
                 catch (Exception e)
                 {
@@ -69,7 +69,7 @@ namespace Foldda.Automation.EventHandler
                 Log($"Total {recordsWritten} records processed.");
             }
 
-            return null;    //output container 
+            return Task.FromResult(0);    //output inputContainer 
         }
 
         //a record to be processed by this handler

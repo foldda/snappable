@@ -22,9 +22,9 @@ namespace Foldda.Automation.HL7Handler
         public const string CSV_COLUMN_HL7_ELEMENTS = "csv-column-hl7-elements";
         HL7Filter.SelectionPathDefilition DataElementSelectionPathDefinition { get; set; }
 
-        public HL7ToCsvConverter(ILoggingProvider logger) : base(logger) { }
+        public HL7ToCsvConverter(IHandlerManager manager) : base(manager) { }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             /*
              * implied group hierarchy and option for filtering
@@ -46,7 +46,12 @@ namespace Foldda.Automation.HL7Handler
 
         }
 
-        protected override Task ProcessInputHL7MessageRecord(HL7Message hl7, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        //protected override Task ProcessInputHL7MessageRecord(HL7Message hl7, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        //{
+        //}
+
+
+        protected override Task ProcessInputHL7MessageRecord(HL7Message hl7, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             List<List<string>> csvBlock = new List<List<string>>();
             foreach (var path in DataElementSelectionPathDefinition.GetQualifiedPaths(hl7.Segments))
@@ -55,7 +60,7 @@ namespace Foldda.Automation.HL7Handler
             }
 
             //add csv to the output container
-            foreach(List<string> row in csvBlock)
+            foreach (List<string> row in csvBlock)
             {
                 TabularRecord tabularRecord = new TabularRecord(row);
                 outputContainer.Add(tabularRecord);
@@ -63,5 +68,6 @@ namespace Foldda.Automation.HL7Handler
 
             return Task.Delay(50);
         }
+
     }
 }

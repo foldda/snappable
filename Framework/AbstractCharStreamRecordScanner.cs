@@ -33,7 +33,7 @@ namespace Foldda.Automation.Framework
 
         protected void Log(string message)
         {
-            Logger.Log(message);
+            Logger?.Log(message);
         }
 
         public async Task ScanRecordsInStreamAsync(char[] content, Encoding encoding, CancellationToken cancellationDelegate)

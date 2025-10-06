@@ -1,4 +1,5 @@
 ﻿using Charian;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -19,14 +20,14 @@ namespace Foldda.Automation.Framework
     /// RDA container allows programming-late-binding like behavior, but even further i.e. also can be loose and adaptive, in messaging/data-exchange.
     /// 
     /// </summary>
-    public class RecordContainer : IRda
+    public class RecordContainer : Rda
     {
         public enum RDA_INDEX : int { MetaData, Records, ProcessingContext }
 
         /// <summary>
         /// The meta-data applicable to all records in this container
         /// </summary>
-        public IRda MetaData{ get; set; }
+        public Rda MetaData{ get; set; }
 
         /// <summary>
         /// The 'native' string-encoding for the container's records 
@@ -81,25 +82,68 @@ namespace Foldda.Automation.Framework
             Records.Add(data);
         }
 
-        public Rda ToRda()
+        public class DefaultMetaData : Rda
         {
-            Rda result = new Rda();
-            result[(int)RDA_INDEX.MetaData] = MetaData.ToRda();
-            foreach(var record in Records)
+            enum SUB_RDA_INDEX : int { CREATER_ID, CREATE_TIME_TOKENS, ORIGINAL_META_DATA }
+
+            public DefaultMetaData()
             {
-                result[(int)RDA_INDEX.Records].Elements.Add(record.ToRda());
+                CreaterId = string.Empty;
+                CreateTime = DateTime.Now;
             }
-            result[(int)RDA_INDEX.ProcessingContext] = ProcessingContext.ToRda();
 
-            return result;
+            public DefaultMetaData(string sourceId, DateTime time)
+            {
+                CreaterId = sourceId;
+                CreateTime = time;
+            }
+
+            public string CreaterId
+            {
+                get => this[(int)SUB_RDA_INDEX.CREATER_ID].ScalarValue;
+                set => this[(int)SUB_RDA_INDEX.CREATER_ID].ScalarValue = value;
+            }
+
+
+            public DateTime CreateTime
+            {
+                get
+                {
+                    return MakeDateTime(this[(int)SUB_RDA_INDEX.CREATE_TIME_TOKENS].ChildrenValueArray);
+                }
+                set
+                {
+                    this[(int)SUB_RDA_INDEX.CREATE_TIME_TOKENS].ChildrenValueArray = MakeDateTimeTokens(value);
+                }
+            }
+
+            //when a container is created for storing output, use this field to store the meta-data of the source/original data container
+            public Rda OriginalMetaData
+            {
+                get => this[(int)SUB_RDA_INDEX.ORIGINAL_META_DATA];
+                set => this[(int)SUB_RDA_INDEX.ORIGINAL_META_DATA] = value;
+            }
+
+            public override string ToString()
+            {
+                return $"{CreaterId} - {CreateTime}";
+            }
+
+            public string OriginalCreatorId
+            {
+                get
+                {
+                    if(this.OriginalMetaData is DefaultMetaData originalMetaData)
+                    {
+                        return originalMetaData.OriginalCreatorId;  //recurrsion
+                    }
+                    else
+                    {
+                        return this.CreaterId;
+                    }
+                }
+            }
         }
 
-        public virtual IRda FromRda(Rda rda)
-        {
-            //sub-class to implement desrialization here
-            //.... (late binding) restoring MetaData, Records, and ProcessingContext
-
-            return this;
-        }
     }
 }

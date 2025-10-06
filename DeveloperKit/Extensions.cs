@@ -15,7 +15,7 @@ namespace Foldda.Automation.HandlerDevKit
     {
         // https://stackoverflow.com/questions/2367718/automating-the-invokerequired-code-pattern
 
-        public static void InvokeIfRequired(this Control control, MethodInvoker action)
+        public static void InvokeIfRequired(this Control control, System.Windows.Forms.MethodInvoker action)
         {
             if (control.InvokeRequired)
             {

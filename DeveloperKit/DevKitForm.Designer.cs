@@ -1,4 +1,6 @@
-﻿namespace Foldda.Automation.HandlerDevKit
+﻿using System;
+
+namespace Foldda.Automation.HandlerDevKit
 {
     partial class DevKitForm
     {
@@ -324,7 +326,9 @@
             this.ClearButton_1.TabIndex = 9;
             this.ClearButton_1.Text = "Unload";
             this.ClearButton_1.UseVisualStyleBackColor = true;
-            this.ClearButton_1.Click += new System.EventHandler(this.ClearButton_Click);
+            this.ClearButton_1.Click += async (s, e) => await this.ClearButton_ClickAsync(s, e);  //new System.EventHandler(this.ClearButton_ClickAsync);
+
+                
             // 
             // ButtonsPanel_2
             // 
@@ -377,7 +381,7 @@
             this.ClearButton_2.TabIndex = 9;
             this.ClearButton_2.Text = "Unload";
             this.ClearButton_2.UseVisualStyleBackColor = true;
-            this.ClearButton_2.Click += new System.EventHandler(this.ClearButton_Click);
+            this.ClearButton_2.Click += async (s, e) => await this.ClearButton_ClickAsync(s, e);  //new System.EventHandler(this.ClearButton_ClickAsync);
             // 
             // ButtonsPanel_3
             // 
@@ -430,7 +434,7 @@
             this.ClearButton_3.TabIndex = 9;
             this.ClearButton_3.Text = "Unload";
             this.ClearButton_3.UseVisualStyleBackColor = true;
-            this.ClearButton_3.Click += new System.EventHandler(this.ClearButton_Click);
+            this.ClearButton_3.Click += async (s, e) => await this.ClearButton_ClickAsync(s, e);  //new System.EventHandler(this.ClearButton_ClickAsync);
             // 
             // NodeSettingsGroupBox_1
             // 

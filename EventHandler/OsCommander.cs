@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using static Foldda.Automation.EventHandler.EmailSender;
 
 namespace Foldda.Automation.EventHandler
 {
@@ -18,7 +19,7 @@ namespace Foldda.Automation.EventHandler
 
     public class OsCommander : BasicDataHandler
     {
-        public class InputRecord : Rda
+        public class CommandInputParameters : Rda
         {
             //these constants are used by getting config settings to construct a FtpDownloaderInput record
             public const string PARAM_CMD_EXECUTABLE = "cmd-executable";
@@ -28,11 +29,11 @@ namespace Foldda.Automation.EventHandler
             public const string PARAM_ARGUMENTS_3 = "arguments_3";
             public const string PARAM_TIMEOUT_SEC = "timeout-sec";
 
-            public InputRecord(Rda originalRda) : base(originalRda)
+            public CommandInputParameters(Rda originalRda) : base(originalRda)
             {
             }
 
-            public InputRecord() : base()
+            public CommandInputParameters() : base()
             {
             }
 
@@ -69,54 +70,93 @@ namespace Foldda.Automation.EventHandler
         }
 
         //this data record tells the downstream handler (eg a Csv-Reader where to pick up the resulted data)
-        public class OutputRecord : HandlerEvent
+        public class CommandOutputRecord : MessageRda.HandlerEvent
         {
-            public OutputRecord(string sourceId, DateTime time) : base(sourceId, time)
+            public CommandOutputRecord(string sourceId, DateTime time, Rda output) : base(sourceId, time, output)
             {
                 //
+                ExecutionOutput = output.ScalarValue;
             }
 
-            public string ExecutionOutput { get; set; }
+            public string ExecutionOutput { get; }
         }
 
-        public OsCommander(ILoggingProvider logger) : base(logger)
+        public OsCommander(IHandlerManager manager) : base(manager)
         {
         }
 
-        protected override Task ProcessRecord(IRda containerRecord, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        /// <summary>
+        /// Process a record inputContainer - passed in by the handler manager.
+        /// Note this handler would deposite its output, if any, to a designated storage from the manager
+        /// </summary>
+        /// <param name="inputContainer">a inputContainer with a collection of records</param>
+        /// <returns>a status integer</returns>
+        public override async Task<int> ProcessPipelineRecordContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
         {
-            
-            Log($"Handler processing triggered by container record {containerRecord}");
 
-            //InputRecord commandConfig;
-            //testing if the trigger contains 'download instructions' in its context,
-            if(!(containerRecord is InputRecord commandConfig) || string.IsNullOrEmpty(commandConfig.CMD_EXECUTABLE))
+            ///alternatively processing each record indivisually ... something like
+
+            foreach (var record in inputContainer.Records)
             {
-                Log($"Trigger event has no command-exectution instrcution in input record, local config settings are used.");
-                commandConfig = LocalConfig;
+                if (record is CommandInputParameters commandConfig2)
+                {
+                    if (string.IsNullOrEmpty(commandConfig2.CMD_EXECUTABLE))
+                    {
+                        Log($"Record has no command-exectution instrcution in input record, local config settings are used.");
+                        commandConfig2 = LocalConfig;
+                    }
+
+                    await RunCommand(commandConfig2);
+                }
             }
 
-            return RunCommand(commandConfig);
+            return 0;
         }
 
-        protected override Task ProcessHandlerEvent(HandlerEvent evn, CancellationToken cancellationToken)
+
+        /// <summary>
+        /// Process a handler message - passed in by the handler manager.
+        /// Note this handler would deposite its output, if any , to designated storage(s) via the manager
+        /// </summary>
+        /// <param name="message">a handler message, can be an event, notification, or command, or other types</param>
+        /// <returns>a status integer</returns>
+        /// <param name="cancellationToken"></param>
+        public override async Task<int> ProcessInboundMessage(MessageRda message, CancellationToken cancellationToken)
         {
-            Log($"Handler processing triggered by event {evn}");
-
-            //InputRecord commandConfig;
-            //testing if the trigger contains 'download instructions' in its context,
-            if(!(evn.EventDetailsRda is InputRecord commandConfig) || string.IsNullOrEmpty(commandConfig.CMD_EXECUTABLE))
+            if (message is MessageRda.HandlerEvent handlerEvent && handlerEvent.EventDetailsRda is CommandInputParameters commandConfig)
             {
-                Log($"Trigger event has no command-exectution instrcution in input record, local config settings are used.");
-                commandConfig = LocalConfig;
-            }
+                if (string.IsNullOrEmpty(commandConfig.CMD_EXECUTABLE))
+                {
+                    Log($"Trigger event has no command-exectution instrcution in input record, local config settings are used.");
+                    commandConfig = LocalConfig;
+                }
 
-            return RunCommand(commandConfig);            //force sub-class to implement
+                await RunCommand(commandConfig);
+
+                return 0;
+            }
+            else if (message is MessageRda.HandlerNotification handlerNotification && handlerNotification.NotificationBodyRda is CommandInputParameters commandConfig2)
+            {
+                if (string.IsNullOrEmpty(commandConfig2.CMD_EXECUTABLE))
+                {
+                    Log($"Trigger event has no command-exectution instrcution in input record, local config settings are used.");
+                    commandConfig2 = LocalConfig;
+                }
+
+                await RunCommand(commandConfig2);
+
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
         }
+
 
         public const int DEFAULT_TIMEOUT = 1; //1 sec
 
-        private async Task RunCommand(InputRecord commandConfig)
+        private async Task RunCommand(CommandInputParameters commandConfig)
         {
             await Task.Run(() => {
                 try
@@ -199,7 +239,7 @@ namespace Foldda.Automation.EventHandler
                                 if (process.ExitCode == 0)
                                 {
                                     Log($"INFO: Executing command '{fullCommand}' successed. Output = {output}");
-                                    OutputStorage.Receive(new OutputRecord(this.GetType().Name, DateTime.Now) { ExecutionOutput = output.ToString() });
+                                    HandlerManager.PostHandlerOutboundMessage(new CommandOutputRecord(this.GetType().Name, DateTime.Now, new Rda() { ScalarValue = output.ToString() }));
                                 }
                                 else
                                 {
@@ -225,17 +265,17 @@ namespace Foldda.Automation.EventHandler
 
         }
 
-        internal InputRecord LocalConfig { get; private set; }
+        internal CommandInputParameters LocalConfig { get; private set; }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
-            LocalConfig = new InputRecord()
+            LocalConfig = new CommandInputParameters()
             {
-                CMD_EXECUTABLE = config.GetSettingValue(InputRecord.PARAM_CMD_EXECUTABLE, string.Empty).Trim(),
-                ARGUMENTS = config.GetSettingValue(InputRecord.PARAM_ARGUMENTS, string.Empty).Trim(),
-                ARGUMENTS_2 = config.GetSettingValue(InputRecord.PARAM_ARGUMENTS_2, string.Empty).Trim(),
-                ARGUMENTS_3 = config.GetSettingValue(InputRecord.PARAM_ARGUMENTS_3, string.Empty).Trim(),
-                TIMEOUT_SEC = config.GetSettingValue(InputRecord.PARAM_TIMEOUT_SEC, DEFAULT_TIMEOUT)
+                CMD_EXECUTABLE = config.GetSettingValue(CommandInputParameters.PARAM_CMD_EXECUTABLE, string.Empty).Trim(),
+                ARGUMENTS = config.GetSettingValue(CommandInputParameters.PARAM_ARGUMENTS, string.Empty).Trim(),
+                ARGUMENTS_2 = config.GetSettingValue(CommandInputParameters.PARAM_ARGUMENTS_2, string.Empty).Trim(),
+                ARGUMENTS_3 = config.GetSettingValue(CommandInputParameters.PARAM_ARGUMENTS_3, string.Empty).Trim(),
+                TIMEOUT_SEC = config.GetSettingValue(CommandInputParameters.PARAM_TIMEOUT_SEC, DEFAULT_TIMEOUT)
             };
         }
     }

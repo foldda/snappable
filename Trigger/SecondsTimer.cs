@@ -8,13 +8,13 @@ namespace Foldda.Automation.Trigger
     public class SecondsTimer : BaseTimer
     {
         public const string SECONDS_INTERVAL = "seconds-interval";
-        public SecondsTimer(ILoggingProvider logger) : base(logger) { }
+        public SecondsTimer(IHandlerManager manager) : base(manager) { }
 
         private int SecondsInterval { get; set; }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
-            base.SetParameter(config); //get timer-id, other settings are ignored
+            base.Setup(config); //get timer-id, other settings are ignored
 
             string setting = config.GetSettingValue(SECONDS_INTERVAL, string.Empty);
             if(int.TryParse(setting, out int seconds) && seconds > 0)

@@ -33,9 +33,9 @@ namespace Foldda.Automation.HL7Handler
         TcpClient _tcpClient;
         Timer _idleTimer;
 
-        public HL7NetSender(ILoggingProvider logger) : base(logger) { }
+        public HL7NetSender(IHandlerManager manager) : base(manager) { }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             ServerName = config.GetSettingValue(SERVER_ADDRESS, string.Empty); //Node.GetFirstConfigValue(SERVER_ADDRESS) ?? string.Empty;
             ServerPort = config.GetSettingValue(SERVER_PORT, 0);
@@ -82,15 +82,23 @@ namespace Foldda.Automation.HL7Handler
             }
         }
 
-        protected override RecordContainer ProcessContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
+
+        /// <summary>
+        /// Process a record inputContainer - passed in by the handler manager.
+        /// Note this handler would deposite its output, if any, to a designated storage from the manager
+        /// </summary>
+        /// <param name="inputContainer">a inputContainer with a collection of records</param>
+        /// <returns>a status integer</returns>
+        public override Task<int> ProcessPipelineRecordContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
         {
-            if(inputContainer?.Records.Count > 0)
+            if (inputContainer?.Records.Count > 0)
             {
                 SendContainer(inputContainer, cancellationToken);
             }
 
-            return null;
+            return Task.FromResult(0);
         }
+
 
         //idle times up, tear down the connection
         private void DisconnectWhenTimeUp(object sender)

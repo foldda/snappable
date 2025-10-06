@@ -30,6 +30,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventHandler", "EventHandle
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomHandler", "CustomHandler\CustomHandler.csproj", "{73662AD7-8C2E-477C-890C-FA6991D0A890}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiHandler", "WebApiHandler\WebApiHandler.csproj", "{B2CBD40A-6AB0-4066-B0DC-78BAF6125F0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,10 @@ Global
 		{73662AD7-8C2E-477C-890C-FA6991D0A890}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73662AD7-8C2E-477C-890C-FA6991D0A890}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73662AD7-8C2E-477C-890C-FA6991D0A890}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2CBD40A-6AB0-4066-B0DC-78BAF6125F0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2CBD40A-6AB0-4066-B0DC-78BAF6125F0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2CBD40A-6AB0-4066-B0DC-78BAF6125F0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2CBD40A-6AB0-4066-B0DC-78BAF6125F0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

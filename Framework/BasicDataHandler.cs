@@ -11,6 +11,7 @@ using Charian;
 using System.Text.RegularExpressions;
 using System.IO.Compression;
 using System.Data;
+using System.Runtime.CompilerServices;
 //using Foldda.OpenConnect.Framework;
 //using Foldda.Automation.;
 
@@ -18,34 +19,34 @@ namespace Foldda.Automation.Framework
 {
     /// <summary>
     /// 
-    /// This class implements the default ("do nothing") behavior for the 1 abstract task defined by the IDataHandler:
+    /// This class implements the default (no-op, "do nothing") behavior for the 1 abstract task defined by the IDataHandler:
     /// 
-    /// 2) For translating/transforming data based on the input from the 'input storage', and placing the result to the 'output storage'.
+    /// 2) For translating/transforming data based on the inboundMessages from the 'inboundMessages storage', and placing the result to the 'output storage'.
     /// 
-    /// The container stores parameters are supplied by a hosting runtime environment, like Foldda from foldda.com.
+    /// The inputContainer stores parameters are supplied by a hosting runtime environment, like Foldda from foldda.com.
     /// 
     /// </summary>
     public class BasicDataHandler : IDataHandler
     {
-        public string Id { set; get; }
+        public string UID => HandlerManager.UID;
+        public string Name => HandlerManager.Name;
 
-        public BasicDataHandler(ILoggingProvider logger)
+        public BasicDataHandler(IHandlerManager handlerManager)
         {
-            Logger = logger;
+            HandlerManager = handlerManager;
         }
 
         //common config string
         public const string YES_STRING = "YES";
         public const string NO_STRING = "NO";
 
-        public IDataStore InputStorage { get; protected set; }
-        public IDataStore OutputStorage { get; protected set; }
+        public IHandlerManager HandlerManager { get; set; }
 
-        public ILoggingProvider Logger { get; set; }
+        public ILoggingProvider Logger => HandlerManager.HandlerLogger;
 
         public class FileReaderConfig : Rda
         {
-            public enum RDA_INDEX : int { InputFileNameOrPattern, InputFilePath }
+            public enum RDA_INDEX : int { InputFileNameOrPattern, InputFilePath, FilePathScanningIntervalSec }
 
             public string InputFileNameOrPattern
             {
@@ -57,125 +58,131 @@ namespace Foldda.Automation.Framework
                 get => this[(int)RDA_INDEX.InputFilePath].ScalarValue;
                 set => this[(int)RDA_INDEX.InputFilePath].ScalarValue = value.ToString();
             }
+
+            const int DEFAULT_INTERVAL_SEC = 1;
+
+            public int FilePathScanningIntervalSec
+            {
+                get => int.TryParse(this[(int)RDA_INDEX.FilePathScanningIntervalSec].ScalarValue, out int result) ? result : DEFAULT_INTERVAL_SEC;
+                set => this[(int)RDA_INDEX.FilePathScanningIntervalSec].ScalarValue = value.ToString();
+            }
         }
 
-        public virtual void SetParameter(IConfigProvider config) { }
-
-        public void Setup(IConfigProvider config, IDataStore inputStorage, IDataStore outputStorage)
+        public virtual void Setup(IConfigProvider config) 
         {
-            this.InputStorage = inputStorage;
-            this.OutputStorage = outputStorage;
-            SetParameter(config);
+            var now = DateTime.Now;
+            string message = $"EVENT: Handler '{Name}' is started at {now.ToString("HH:mm:ss")}.";
+            //create an event and send to down-stream
+            MessageRda record = new MessageRda.HandlerEvent(UID, now, new Rda() { ScalarValue = message });
+            HandlerManager.PostHandlerOutboundMessage(record);
+
+            Log(message);
+
         }
 
         /// <summary>
-        /// This is a wrapper to the more simplified DataTransformationTask (method)
+        /// Process a record inputContainer - passed in by the handler manager.
+        /// Note this handler would deposite its output, if any, to a designated storage from the manager
         /// </summary>
-        /// <param name="inputStorage">Input records are from here</param>
-        /// <param name="OutputStorage">Result (output) records are stored here.</param>
-        /// <param name="cancellationToken">Used to stop the processing loop.</param>
-        /// <returns></returns>
-        public virtual async Task ProcessData(CancellationToken cancellationToken)
+        /// <param name="inputContainer">a inputContainer with a collection of records</param>
+        /// <returns>a status integer</returns>
+        public virtual Task<int> ProcessPipelineRecordContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
         {
-            await Task.Run(async () =>
-            {
-                try
-                {
-                    do
-                    {
-                        var input = InputStorage.CollectReceived();
-                        foreach (var item in input)
-                        {
-                            if (item is RecordContainer inputRecordContainer && inputRecordContainer.Records.Count > 0)
-                            {
-                                var outputContainer = ProcessContainer(inputRecordContainer, cancellationToken);
+            HandlerManager.PipelineOutputDataStorage.Receive(inputContainer);    //default is pass-thru
 
-                                if (outputContainer?.Records.Count > 0)
-                                {
-                                    OutputStorage.Receive(outputContainer);
-                                }
-                            }
-                            else if (item is HandlerEvent handlerEvent)
-                            {
-                                await ProcessHandlerEvent(handlerEvent, cancellationToken);
-                            }
+            ///alternatively processing each record indivisually ... something like
 
-                        }
+            //foreach (var record in inputContainer.Records)
+            //{
+            //    IRda output = ProcessRecord(record);
+            //    HandlerManager.PipelineOutputDataStorage.Receive(output);
+            //}
 
-                        await Task.Delay(50);
-                    } 
-                    while (cancellationToken.IsCancellationRequested == false) ;
-                }
-                catch (Exception e)
-                {
-                    if (e is OperationCanceledException)
-                    {
-                        Log($"Handler '{this.GetType().Name}' DataTransformationProcess operation is cancelled.");
-                    }
-                    else
-                    {
-                        Deb($"ERROR: Handler data-processing task is unexpectedly stopped due to error - {e.Message}.\n{e.StackTrace}");
-                        throw e;
-                    }
-                }
-                finally
-                {
-                    Log($"Handler data-transfomation processing task stopped.");
-                }
-
-            });
+            return Task.FromResult(0);
         }
 
-        protected virtual Task ProcessHandlerEvent(HandlerEvent handlerEvent, CancellationToken cancellationToken)
+
+        /// <summary>
+        /// Process a handler message - passed in by the handler manager.
+        /// Note this handler would deposite its output, if any , to designated storage(s) via the manager
+        /// </summary>
+        /// <param name="message">a handler message, can be an event, notification, or command, or other types</param>
+        /// <returns>a status integer</returns>
+        /// <param name="cancellationToken"></param>
+        public virtual Task<int> ProcessInboundMessage(MessageRda message, CancellationToken cancellationToken)
+        {
+            if (message is MessageRda.HandlerEvent handlerEvent)
+            {
+                ProcessHandlerEvent(handlerEvent, cancellationToken);
+            }
+            else if (message is MessageRda.HandlerNotification handlerNotification)
+            {
+                ProcessHandlerNotification(handlerNotification, cancellationToken);
+            }
+            return Task.FromResult(0);
+        }
+
+
+        //in this virtual method, the event is processed and may produce an event being posted to the handler-manager's message-board
+        //or a new data inputContainer to the OutputStoarge.
+        protected virtual Task ProcessHandlerEvent(MessageRda.HandlerEvent handlerEvent, CancellationToken cancellationToken)
         {
             //force sub-class to implement
-            Logger.Log($"WARNING - HandlerEvent from upstream is not handled - {handlerEvent.EventSourceId}: {handlerEvent.EventDetailsRda}"); ;
+            if(handlerEvent.EventSourceId.Equals(HandlerManager.UID))
+            {
+                //by default, ignore Handler Manager's injected events - which is from Runtime
+                //TODO - processing Handler Manager events here..
+            }
+            else
+            {
+                //Log($"WARNING - FrameworkMessage from upstream is not handled - {handlerEvent.EventSourceId}: {handlerEvent.EventDetailsRda}"); ;
+            }
             //throw new NotImplementedException();
             return Task.Delay(50);
         }
 
-        /// <summary>
-        /// If the container is expected, by checking the Meta data - eg from the correct sender/source, continue to process each record.
-        /// </summary>
-        /// <param name="inputContainer"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>A container of output/produced records</returns>
-        protected virtual RecordContainer ProcessContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
+        protected virtual Task ProcessHandlerNotification(MessageRda.HandlerNotification handlerNotification, CancellationToken cancellationToken)
         {
-            //By default, output container is the same type as the input container
-            RecordContainer outputContainer = new RecordContainer() { MetaData = inputContainer.MetaData, RecordEncoding = inputContainer.RecordEncoding };
-            //label the processed container .. default just keeping it as the input
-
-            //process each record
-            foreach (var record in inputContainer.Records)
+            //force sub-class to implement
+            if (handlerNotification.ReceiverId.Equals(this.UID)) 
             {
-                ProcessRecord(record, inputContainer, outputContainer, cancellationToken);
+                //by default, ignore Handler Manager's injected events - which is from Runtime
+                //some handlers, such as the HL7FileReader/CsvFileReader, override this method and leverage these 'heartbeat' events to trigger routine directory scanning/file reading
+                if(handlerNotification.NotificationBodyRda == Rda.NULL)
+                {
+                    //runtime timer event
+                }
+                else
+                {
+                    //TODO - processing Handler Manager events here..
+                }
             }
-
-            //... override this method if output container would have meta-data, encoding changes
-
-            return outputContainer;
-        }
-
-        /// <summary>
-        /// Check if the record is expected. Each handler can expect one or more types of records to handle.
-        /// </summary>
-        /// <param name="record"></param>
-        /// <param name="outputContainer">This is where to deposite the produced (output) record if applicable.</param>
-        /// <param name="cancellationToken"></param>
-        protected virtual Task ProcessRecord(IRda record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
-        {
-            //default is a pass-through
-            outputContainer.Add(record);
-
+            else
+            {
+                Log($"WARNING - Notification message is not handled - {handlerNotification.SenderId}: {handlerNotification.NotificationBodyRda}"); ;
+            }
+            //throw new NotImplementedException();
             return Task.Delay(50);
         }
 
-
-        public virtual AbstractCharStreamRecordScanner GetDefaultFileRecordScanner(ILoggingProvider loggingProvider)
+        protected virtual AbstractCharStreamRecordScanner GetDefaultFileRecordScanner(ILoggingProvider loggingProvider)
         {
-            //used by 'sub-class dependent' (because of the record-type) file-scanning
+            //used by 'sub-class-dependent' (because of the record-type) encoding file-scanning eg file reading and archiving 
             return null;    //by default 
+        }
+
+        protected AbstractCharStreamRecordScanner _defaultFileRecordScanner;
+
+        public virtual AbstractCharStreamRecordScanner DefaultFileRecordScanner 
+        {
+            get
+            { 
+                if(_defaultFileRecordScanner == null)
+                {
+                    _defaultFileRecordScanner = GetDefaultFileRecordScanner(Logger);
+                }
+                return _defaultFileRecordScanner; 
+            }
         }
 
         protected void Deb(string v)
@@ -231,19 +238,18 @@ namespace Foldda.Automation.Framework
                 return result;
             }
 
-            FileInfo[] files = targetDirectory.GetFiles().OrderBy(p => p.LastWriteTime).ToArray();
+            var files = targetDirectory.GetFiles().OrderBy(p => p.LastWriteTime);
             foreach (FileInfo file in files)
             {
                 if (scanner.SkippedFileList.Contains(file.FullName))
                 {
-                    logger?.Log($@"File [{file.Name}] in the target directory is listed to be skipped.");
                     await Task.Delay(100);
                     continue;
                 }
                 else if (!Match(file.Name, regexPattern) && !file.Name.EndsWith(tempFileNameSuffix))
                 {
                     scanner.SkippedFileList.Add(file.FullName);
-                    logger?.Log($@"Skipped [{file.Name}] in the source directory '{targetDirectory.Name}' as it doesn't match the targeted name pattern '{regexPattern}'.");
+                    logger?.Log($@"File [{file.Name}] in directory '{targetDirectory.Name}' is skipped from future scanning as it doesn't match the targeted name pattern '{regexPattern}'.");
                     continue;
                 }
 
@@ -285,7 +291,11 @@ namespace Foldda.Automation.Framework
                     Task consumer = Task.Run(async () =>
                     {
                         //this task harvests the scanner-produced records
-                        RecordContainer container = new RecordContainer() { MetaData = new Rda() { ScalarValue = file.Name }, RecordEncoding = scanner.RecordEncoding };
+                        RecordContainer container = new RecordContainer() 
+                        { 
+                            MetaData = new RecordContainer.DefaultMetaData(file.Name, DateTime.UtcNow), 
+                            RecordEncoding = scanner.RecordEncoding 
+                        };
 
                         while (!cancellationToken.IsCancellationRequested)
                         {
@@ -319,7 +329,7 @@ namespace Foldda.Automation.Framework
                     if (count == 0)
                     {
                         File.Move(newTempFileName, file.FullName);
-                        logger?.Log($"Restored {newTempFileName} to {file.FullName} and will not attempt to process it until next restart.");
+                        logger?.Log($"Restored {newTempFileName} to {file.FullName}, which contains no legit records, and will not attempt to process it until next restart.");
                         //if no records found, exclude this file (but don't delete) in the future scanning 
                         scanner.SkippedFileList.Add(file.FullName);
                     }
@@ -378,6 +388,11 @@ namespace Foldda.Automation.Framework
         public void Log(Exception e)
         {
             Log(Logger, e.ToString());
+        }
+
+        public virtual Task<int> Init(CancellationToken cancellationToken)
+        {
+            return Task.FromResult(0);  //default
         }
 
         public class DictionaryRda : IRda
@@ -460,13 +475,13 @@ namespace Foldda.Automation.Framework
                 {
                     FromRda(rda);
                 }
-                internal Pair(string key, Rda value) : base()
+                internal Pair(string key, IRda value) : base()
                 {
                     Name = key;
-                    Value = value;
+                    Value = value.ToRda();
                 }
 
-                internal Pair(string key, string value) : this(key, Parse(value)) { }
+                //internal Pair(string key, string value) : this(key, Parse(value)) { }
 
                 enum META_DATA : int { NAME, VALUE } //
 

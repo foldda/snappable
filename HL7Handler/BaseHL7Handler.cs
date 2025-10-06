@@ -16,7 +16,7 @@ namespace Foldda.Automation.HL7Handler
 
     public abstract class BaseHL7Handler : BasicDataHandler
     {
-        public BaseHL7Handler(ILoggingProvider logger) : base(logger) { }
+        public BaseHL7Handler(IHandlerManager manager) : base(manager) { }
 
         //protected IRda ProcessContainerRecord(DataContainer.Record record, CancellationToken cancellationToken)
         //{
@@ -24,39 +24,48 @@ namespace Foldda.Automation.HL7Handler
         //    return ProcessHL7Record(hl7Record, record.Container.Label.ToRda(), cancellationToken);
         //}
 
-        public override AbstractCharStreamRecordScanner GetDefaultFileRecordScanner(ILoggingProvider loggingProvider)
+        protected override AbstractCharStreamRecordScanner GetDefaultFileRecordScanner(ILoggingProvider loggingProvider)
         {
             return new HL7Message.HL7MessageScanner(loggingProvider, HL7Message.HL7MessageEncoding.Default);
         }
 
         /// <summary>
-        /// Determine what type the record is, then process accordingly.
+        /// Process a record inputContainer - passed in by the handler manager.
+        /// Note this handler would deposite its output, if any, to a designated storage from the manager
         /// </summary>
-        /// <param name="record"></param>
-        /// <param name="inputContainer"></param>
-        /// <param name="outputContainer"></param>
-        /// <param name="cancellationToken"></param>
-        protected sealed override async Task ProcessRecord(IRda record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        /// <param name="inputContainer">a inputContainer with a collection of records</param>
+        /// <returns>a status integer</returns>
+        public override Task<int> ProcessPipelineRecordContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
         {
+            //HandlerManager.PipelineOutputDataStorage.Receive(inputContainer);    //default is pass-thru
 
-            try
+            ///alternatively processing each record indivisually ... something like
+
+            RecordContainer outputContainer = new RecordContainer() 
+            { 
+                MetaData = new RecordContainer.DefaultMetaData(this.UID, DateTime.UtcNow) 
+                { 
+                    OriginalMetaData = inputContainer.MetaData //keep the input container's meta-data here
+                } 
+            };
+            foreach (var record in inputContainer.Records)
             {
                 if (record is HL7Message hl7Message)
                 {
-                    await ProcessInputHL7MessageRecord(hl7Message, inputContainer, outputContainer, cancellationToken);
+                    ProcessInputHL7MessageRecord(hl7Message, outputContainer, cancellationToken);
                 }
                 else
                 {
                     Log($"WARNING: Record of type {record.GetType().FullName} is ignored. Record => {record?.ToRda()}");
                 }
             }
-            catch (Exception e)
-            {
-                Logger.Log($"Failed converting input record to HL7, record is skipped - {e.Message}.\n{e.StackTrace}");
-            }
+
+            HandlerManager.PipelineOutputDataStorage.Receive(outputContainer);
+
+            return Task.FromResult(0);
         }
 
-        protected virtual Task ProcessInputHL7MessageRecord(HL7Message record, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        protected virtual Task ProcessInputHL7MessageRecord(HL7Message record, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             //default is a pass-through
             outputContainer.Add(record);

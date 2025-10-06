@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Foldda.Custom.Handler</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CsvHandler\CsvHandler.csproj" />
+    <ProjectReference Include="..\EventHandler\EventHandler.csproj" />
+    <ProjectReference Include="..\Framework\Framework.csproj" />
+    <ProjectReference Include="..\HL7Handler\HL7Handler.csproj" />
+    <ProjectReference Include="..\Util\Util.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="SmartHL7.Api">
+      <HintPath>..\SmartHL7.Api\bin\Debug\netstandard2.0\SmartHL7.Api.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+<!--
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="copy /Y $(TargetDir)$(ProjectName).dll $(SolutionDir)\Manager\bin\$(Configuration)\$(ProjectName).dll" />
+		<Exec Command="copy /Y $(TargetDir)$(ProjectName).pdb $(SolutionDir)\Manager\bin\$(Configuration)\$(ProjectName).pdb" />
+		<Exec Command="copy /Y $(TargetDir)$(ProjectName).dll $(SolutionDir)\WinService\bin\$(Configuration)\$(ProjectName).dll" />
+		<Exec Command="copy /Y $(TargetDir)$(ProjectName).pdb $(SolutionDir)\WinService\bin\$(Configuration)\$(ProjectName).pdb" />
+	</Target>
+-->
+
+</Project>

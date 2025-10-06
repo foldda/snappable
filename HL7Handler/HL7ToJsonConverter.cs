@@ -34,10 +34,10 @@ namespace Foldda.Automation.HL7Handler
     {
         public const string HL7_TO_JSON_MAPPING = "hl7-to-json-mapping";
 
-        public HL7ToJsonConverter(ILoggingProvider logger) : base(logger) { }
+        public HL7ToJsonConverter(IHandlerManager manager) : base(manager) { }
         Dictionary<string, SegmentDataElementSelector> elementSelectors = new Dictionary<string, SegmentDataElementSelector>(); 
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             elementSelectors.Clear();
             List<string> mappings = config.GetSettingValues(HL7_TO_JSON_MAPPING);
@@ -63,7 +63,7 @@ namespace Foldda.Automation.HL7Handler
                 </Parameter>  
                 <Parameter>
                   <Name>hl7-to-json-mapping</Name>
-                  <Value>Message Id|MSH-10</Value>
+                  <Value>Message UID|MSH-10</Value>
                 </Parameter>  
               </Parameters>
 
@@ -75,7 +75,7 @@ namespace Foldda.Automation.HL7Handler
             }
         }
 
-        protected override Task ProcessInputHL7MessageRecord(HL7Message hl7, RecordContainer inputContainer, RecordContainer outputContainer, CancellationToken cancellationToken)
+        protected override Task ProcessInputHL7MessageRecord(HL7Message hl7, RecordContainer outputContainer, CancellationToken cancellationToken)
         {
             StringBuilder jsonStringBuilder = new StringBuilder("{");
             foreach (var jsonProp in elementSelectors.Keys)
@@ -83,7 +83,7 @@ namespace Foldda.Automation.HL7Handler
                 jsonStringBuilder.Append(MakeJsonProperty(hl7, jsonProp, elementSelectors.TryGetValue(jsonProp, out SegmentDataElementSelector selector) ? selector : null)).Append(',');
             }
 
-            if(jsonStringBuilder.Length > 1)
+            if (jsonStringBuilder.Length > 1)
             {
                 //remove the last appended comma
                 jsonStringBuilder.Remove(jsonStringBuilder.Length - 1, 1);

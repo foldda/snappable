@@ -13,7 +13,7 @@ namespace Foldda.Automation.HL7Handler
 {
     public class HL7Message : IRda
     {
-        /* About .NET Event-handling ..https://stackoverflow.com/questions/803242/understanding-events-and-event-handlers-in-c-sharp */
+        /* About .NET HandlerEvent-handling ..https://stackoverflow.com/questions/803242/understanding-events-and-event-handlers-in-c-sharp */
         /* the "event client" (this) does 2 things : 1-declare the event, 2- raise the event (eg, in the Log() method) telling something needs to be done ... by handler(s) */
         /* (else-where, that is, anywhere has reference to a client-object, "event server/handler" do 2 things : 1-implement the even-handling delegate, 2-register to be interested to this client's raised event */
 

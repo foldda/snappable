@@ -33,11 +33,11 @@ namespace Foldda.Automation.CsvHandler
 
         protected Mode _mode { get; private set; }
 
-        public CsvFileWriter(ILoggingProvider logger) : base(logger) { }
+        public CsvFileWriter(IHandlerManager manager) : base(manager) { }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
-            base.SetParameter(config); //constructs the RecordEncoding
+            base.Setup(config); //constructs the RecordEncoding
 
             OutputFolderPath = config.GetSettingValue(OUTPUT_FOLDER_PATH, string.Empty); 
 
@@ -56,7 +56,7 @@ namespace Foldda.Automation.CsvHandler
             _mode = PER_DAY.Equals(mode) ? Mode.ByDay :
                 (PER_HOUR.Equals(mode) ? Mode.ByHour :
                     (PER_RECORD.Equals(mode) ? Mode.ByRecord :  //per containe record
-                        Mode.BySource //default - per container-source
+                        Mode.BySource //default - per inputContainer-source
                     )
                 );
 
@@ -64,33 +64,16 @@ namespace Foldda.Automation.CsvHandler
 
         public string TypeExt { get; } = ".csv";  //eg, .hl7, .txt
 
-        protected override RecordContainer ProcessContainer(RecordContainer container, CancellationToken cancellationToken)
+        /// <summary>
+        /// Driven by the Handler-manager, this method processes a record inputContainer - passed in by the handler manager.
+        /// Note this handler would deposite its output, if any, to a designated storage from the manager
+        /// </summary>
+        /// <param name="inputContainer">a inputContainer with a collection of records</param>
+        /// <returns>a status integer</returns>
+        public override Task<int> ProcessPipelineRecordContainer(RecordContainer inputContainer, CancellationToken cancellationToken)
         {
-            if (container.Records.Count > 0)
-            {
-                int recordsWritten = 0;
-                try
-                {
-                    ProcessCsvContainer(container, cancellationToken);
-
-                    OutputStorage.Receive(new HandlerEvent(Id, DateTime.Now));  //create a dummy event 
-                }
-                catch (Exception e)
-                {
-                    Log($"ERROR: Writing file failed with exception: {e.Message}");
-                    Deb(e.StackTrace);
-                }
-
-                Log($"Total {recordsWritten} records processed.");
-            }
-
-            return null;    //output container 
-        }
-
-        protected void ProcessCsvContainer(RecordContainer container, CancellationToken cancellationToken)
-        {
-            //Csv container label would carry the meta-data such as the source-file-id, also columns name, data-types etc.
-            TabularRecord.MetaData csvContainerMetaData = TabularRecord.GetMetaData(container.MetaData.ToRda());
+            //Csv inputContainer label would carry the meta-data such as the source-file-id, also columns name, data-types etc.
+            TabularRecord.MetaData csvContainerMetaData = TabularRecord.GetMetaData(inputContainer.MetaData.ToRda());
 
             //https://stackoverflow.com/questions/6053541/regex-every-non-alphanumeric-character-except-white-space-or-colon/6053606
             //change non aplha-numeric (except period) to under-score
@@ -108,7 +91,7 @@ namespace Foldda.Automation.CsvHandler
                 //construct the file name per record
                 string outputFileName = $@"{fileName}-{index++}";
                 string filePath = $@"{OutputFolderPath}\{outputFileName}{TypeExt}";
-                foreach (TabularRecord csvRow in container.Records)
+                foreach (TabularRecord csvRow in inputContainer.Records)
                 {
                     WriteRecordLineToFile(filePath, csvRow, true);  //overwrite
                 }
@@ -120,7 +103,7 @@ namespace Foldda.Automation.CsvHandler
                 //if the file is first created, add a header row
                 if (!File.Exists(filePath))
                 {
-                    //TabularRecord.MetaData meta = TabularRecord.GetMetaData(container.MetaData);
+                    //TabularRecord.MetaData meta = TabularRecord.GetMetaData(inputContainer.MetaData);
                     if (csvContainerMetaData.ColumnNames?.Length > 0)
                     {
                         TabularRecord csvHeaderRow = new TabularRecord(csvContainerMetaData.ColumnNames.ToList());
@@ -128,15 +111,15 @@ namespace Foldda.Automation.CsvHandler
                     }
                 }
 
-                foreach (TabularRecord csvDataRow in container.Records)
+                foreach (TabularRecord csvDataRow in inputContainer.Records)
                 {
                     WriteRecordLineToFile(filePath, csvDataRow, false);  //append
                 }
             }
 
-            Log($"Wrote {container.Records.Count} lines into file '{fileName}{TypeExt}'.");
+            Log($"Wrote {inputContainer.Records.Count} lines into file '{fileName}{TypeExt}'.");
 
-            return;
+            return Task.FromResult(0);
 
         }
 

@@ -65,7 +65,7 @@ namespace Foldda.Automation.CsvHandler
 
         internal DbTableConnectionConfig LocalConfig { get; private set; }
 
-        public override void SetParameter(IConfigProvider config)
+        public override void Setup(IConfigProvider config)
         {
             /*
              * Set the default settings if these are unavailable from the input parameter records
@@ -146,7 +146,7 @@ namespace Foldda.Automation.CsvHandler
             }
         }
 
-        public BaseCsvDbTableHandler(ILoggingProvider logger) : base(logger) { }
+        public BaseCsvDbTableHandler(IHandlerManager manager) : base(manager) { }
 
 
         protected void VerifyDBConfig(DbTableConnectionConfig dbConfig)
@@ -328,7 +328,7 @@ namespace Foldda.Automation.CsvHandler
 
             internal static CsvColumnDataDefinition ParseSpec(string specific)
             {
-                Rda rda = Rda.Parse("|;\\|" + specific);    //makes it an Rda-formatted string for parsing.
+                Rda rda = (Rda) Rda.Parse("|;\\|" + specific);    //makes it an Rda-formatted string for parsing.
 
                 return new CsvColumnDataDefinition(rda);
             }

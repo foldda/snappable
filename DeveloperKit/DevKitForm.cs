@@ -357,17 +357,18 @@ namespace Foldda.Automation.HandlerDevKit
         private void MainForm_Load(object sender, EventArgs e)
         {
             int store_id = 0;
-            DataStore Store_0 = new DataStore(store_id++);  //first inbound (not used)
-            DataStore Store_1 = new DataStore(store_id++);
-            DataStore Store_2 = new DataStore(store_id++);
-            DataStore Store_3 = new DataStore(store_id);  //last outbound (not used)
+            DataStore DataStore_0 = new DataStore(store_id++);  //first inbound (not used)
+            DataStore DataStore_1 = new DataStore(store_id++);
+            DataStore DataStore_2 = new DataStore(store_id++);
+            DataStore DataStore_3 = new DataStore(store_id++);  //last outbound (not used)
+            DataStore EventStore_common = new DataStore(store_id++);  //shared event store
 
             //3 handler controllers, each gets assigned with input/output data stores and front-end views
             Controllers = new List<HandlerController>()
             {
-                new HandlerController(this, Store_0, Store_1, LiveLogBox_1, NodeSettingsListView_1, new Button[] { LoadButton_1, StartButton_1, StopButton_1, ClearButton_1 }, 0),
-                new HandlerController(this, Store_1, Store_2, LiveLogBox_2, NodeSettingsListView_2, new Button[] { LoadButton_2, StartButton_2, StopButton_2, ClearButton_2 }, 1),
-                new HandlerController(this, Store_2, Store_3, LiveLogBox_3, NodeSettingsListView_3, new Button[] { LoadButton_3, StartButton_3, StopButton_3, ClearButton_3 }, 2)
+                new HandlerController(this, DataStore_0, DataStore_1, EventStore_common, LiveLogBox_1, NodeSettingsListView_1, new Button[] { LoadButton_1, StartButton_1, StopButton_1, ClearButton_1 }, 0),
+                new HandlerController(this, DataStore_1, DataStore_2, EventStore_common, LiveLogBox_2, NodeSettingsListView_2, new Button[] { LoadButton_2, StartButton_2, StopButton_2, ClearButton_2 }, 1),
+                new HandlerController(this, DataStore_2, DataStore_3, EventStore_common, LiveLogBox_3, NodeSettingsListView_3, new Button[] { LoadButton_3, StartButton_3, StopButton_3, ClearButton_3 }, 2)
             };
 
             ControllerTask = RefreshModelsView(AppShutdownCancellationSource.Token);
@@ -406,7 +407,7 @@ namespace Foldda.Automation.HandlerDevKit
                     }
                     else
                     {
-                        throw new Exception("Config Ffile does not exist.");
+                        throw new Exception("Config file does not exist.");
                     }
                 }
                 catch (Exception ex)
@@ -443,11 +444,14 @@ namespace Foldda.Automation.HandlerDevKit
             }
         }
 
-        private void ClearButton_Click(object sender, EventArgs e)
+        //This is the "Unload" button
+        private async Task ClearButton_ClickAsync(object sender, EventArgs e)
         {
             try
             {
-                GetHandlerController(sender).Reset();
+                var handlerController = GetHandlerController(sender);
+                await handlerController.Stop();
+                handlerController.Reset();
             }
             catch (Exception ex)
             {
@@ -479,7 +483,7 @@ namespace Foldda.Automation.HandlerDevKit
                 }
                 catch(Exception ex) 
                 {
-                    Log($"Handler [{controller.Handler.Id}] failed starting - {ex.Message}");
+                    Log($"Handler [{controller.Handler.Name}] failed starting - {ex.Message}");
                 }
             }
         }
@@ -494,7 +498,7 @@ namespace Foldda.Automation.HandlerDevKit
                 }
                 catch (Exception ex)
                 {
-                    Log($"Handler [{controller.Handler.Id}] failed stopping - {ex.Message}");
+                    Log($"Handler [{controller.Handler.Name}] failed stopping - {ex.Message}");
                 }
             }
         }

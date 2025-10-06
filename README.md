@@ -1,8 +1,8 @@
-# Enflow Portable Components
+# Snappable
 
-Enflow is a simple component-based computing framework API with an ambitious goal: to allows making non-prorpiatry data-processing solutions using vendor-neutral, standardized components. That is, you can physically aquire and assemble these components into apps, and the environment (called a "runtime") for running these apps is also non-prorpiatry and vendor neutral. By doing so, it promotes very high degree of software (component) re-use, much like using the bolts and nuts purchased from hardware stores for use in home projects. 
+Snappable is a component-based app-development framework - an API and toolkit that allows dynamically assembling apps using independently developed software components. Through the framework API, components, even without prior knowledge of each other, can be connected and exchange data and interact with each other in an app. This lays the ground for so-called "component-based computing", where one can physically acquire components from an open market and assemble them into apps, and by doing so, it brings many benefits, such as rapid app development, more reliable software and lower cost resulted from a high degree of software (component) re-use. In an analogy, it's much like the hardware world of using the bolts and nuts purchased from hardware stores for use in home projects. 
 
-To achieve such a goal, the Enflow API must define what a component must implement, including - 
+To achieve such a goal, the Snappable API must define what a component must implement, including - 
 
 * For being functional, the component needs to a way to perform a specified data-processing task,
 * For handling data-processing task's input and output, the component needs to have have a way to exchange data with the other Enflow components.

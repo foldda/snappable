@@ -1,6 +1,10 @@
 # Snappable
 
-Snappable is a component-based app-development framework - an API and toolkit that allows dynamically assembling apps using independently developed software components. Through the framework API, components, even without prior knowledge of each other, can be connected and exchange data and interact with each other in an app. This lays the ground for so-called "component-based computing", where one can physically acquire components from an open market and assemble them into apps, and by doing so, it brings many benefits, such as rapid app development, more reliable software and lower cost resulted from a high degree of software (component) re-use. In an analogy, it's much like the hardware world of using the bolts and nuts purchased from hardware stores for use in home projects. 
+Snappable is a component-based app-development framework - an API and toolkit that allows dynamically assembling apps using independently developed software components. The so-called "component-based computing" is a nice concept, where people can use components available from the market and assemble them into apps, but it has never been properly implemented due to the fact if two components need to exchange data, they need to agree on a certain data format (eg a XML schema), and even when such agreement has been reached, the components being built to be compiliant would become so-called "tightly coupled" - meaning neighter party can evolve without breaking the agreement. Using components made from many different companies in a market would mean we need to establish and maintain a many data format agreements.
+
+## The Problem
+
+Through the framework API, components, even without prior knowledge of each other, can be connected and exchange data and interact with each other in an app. This lays the ground for , and by doing so, it brings many benefits, such as rapid app development, more reliable software and lower cost resulted from a high degree of software (component) re-use. In an analogy, it's much like the hardware world of using the bolts and nuts purchased from hardware stores for use in home projects. 
 
 To achieve such a goal, the Snappable API must define what a component must implement, including - 
 

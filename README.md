@@ -1,8 +1,26 @@
 # Snappable
 
-Snappable is a component-based app-development framework - an API and toolkit that allows dynamically assembling apps using independently developed software components. The so-called "component-based computing" is a nice concept, where people can use components available from the market and assemble them into apps, but it has never been properly implemented due to the fact if two components need to exchange data, they need to agree on a certain data format (eg a XML schema), and even when such agreement has been reached, the components being built to be compiliant would become so-called "tightly coupled" - meaning neighter party can evolve without breaking the agreement. Using components made from many different companies in a market would mean we need to establish and maintain a many data format agreements.
+In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
-## The Problem
+There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e. Netflix cannot use Shopify developed components and vise versa, partially because these components are using incompatible data models, designed and maintained by different vendors, and cannot communicate and interact with each other.
+
+Snappable is a component-interfacing architecture and API for software components to #freely exhange arbitrarily complex data# between each other, so compatible components ("Snappable components"), even they are independently developed, can potentially work together regardless of the vendor and their internal data models.
+
+Essentially, Snappable defines the "Lego joints" for software components, so they can be connected and communicating with each other, like joining Lego blocks.
+
+## Charian
+
+The Snappable API uses an universal, schemaless data container introduced by Charian called RDA (Recursive Delimited Array) which has simple multi-dimemsional-array structure and can be encoded as a text string. Using Charian, the dynamically expandable multi-dimemsional-array structure provides a practically unlimited storage space for storing any data objects, and as a text string, it can be easily passed between even the most basic computer programs, via function calls or networked data transfer or anything in between.  
+
+## Data Joints
+
+Leveraging the RDA universal data container, the Snappable API defines an software architecture consist of a set of standardized classes and functions that plays their roles in an interactive scenario of how Snappable components can exchange data: involving having two abstract objects (interfaces) for  to implement and use for exchanging data. In such highly abstracted scenario, a Snappable component is provide with a work environment consists of an input data source, and an output data sink. The component runs in a process loop, pulling input data from the input data source, do "some processing" about it, and 
+
+### ISnappable
+
+
+
+ 
 
 Through the framework API, components, even without prior knowledge of each other, can be connected and exchange data and interact with each other in an app. This lays the ground for , and by doing so, it brings many benefits, such as rapid app development, more reliable software and lower cost resulted from a high degree of software (component) re-use. In an analogy, it's much like the hardware world of using the bolts and nuts purchased from hardware stores for use in home projects. 
 

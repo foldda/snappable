@@ -1,18 +1,20 @@
-# Snappable
+# Solving A Problem Of Component-based Computing
 
 In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
 There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e. Netflix cannot use Shopify developed components and vise versa, partially because these components are using incompatible data models, designed and maintained by different vendors, and cannot communicate and interact with each other.
 
-Snappable is a component-interfacing architecture and API for software components to #freely exhange arbitrarily complex data# between each other, so compatible components ("Snappable components"), even they are independently developed, can potentially work together regardless of the vendor and their internal data models.
+## Defining A Data-exchanging "Joint"
 
-Essentially, Snappable defines the "Lego joints" for software components, so they can be connected and communicating with each other, like joining Lego blocks.
+Snappable is a simple, unified data-exchanging framework and API for independently developed software components to #freely exhange arbitrarily complex data# between each other. EWssentially, Snappable defines the "joint" for software components, so "Snappable components" can be flexibly connected and communicate with each other and forms into an application, like the Lego joints allow joining Lego blocks of all colors and shapes into a model, 
 
-## Charian
+The unified framework includes defining a one-size-fits-all universal data container, and a set of standardized ways of exchanging data using such container. 
+
+## RDA - A One-Size-Fits-All Universal Data Container
 
 The Snappable API uses an universal, schemaless data container introduced by Charian called RDA (Recursive Delimited Array) which has simple multi-dimemsional-array structure and can be encoded as a text string. Using Charian, the dynamically expandable multi-dimemsional-array structure provides a practically unlimited storage space for storing any data objects, and as a text string, it can be easily passed between even the most basic computer programs, via function calls or networked data transfer or anything in between.  
 
-## Data Joints
+## Snappable - A Data-exchanging Framework
 
 Leveraging the RDA universal data container, the Snappable API defines an software architecture consist of a set of standardized classes and functions that plays their roles in an interactive scenario of how Snappable components can exchange data: involving having two abstract objects (interfaces) for  to implement and use for exchanging data. In such highly abstracted scenario, a Snappable component is provide with a work environment consists of an input data source, and an output data sink. The component runs in a process loop, pulling input data from the input data source, do "some processing" about it, and 
 

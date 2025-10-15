@@ -4,25 +4,43 @@ In software engineering, a software component is a modular, independent, and reu
 
 There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e. Netflix cannot use Shopify developed components and vise versa, partially because these components are using incompatible data models, designed and maintained by different vendors, and cannot communicate and interact with each other.
 
-## Defining A Data-exchanging "Joint"
+## Making A Data-Exchanging "Joint"
 
 Snappable is a simple, unified data-exchanging framework and API for independently developed software components to #freely exhange arbitrarily complex data# between each other. EWssentially, Snappable defines the "joint" for software components, so "Snappable components" can be flexibly connected and communicate with each other and forms into an application, like the Lego joints allow joining Lego blocks of all colors and shapes into a model, 
 
 The unified framework includes defining a one-size-fits-all universal data container, and a set of standardized ways of exchanging data using such container. 
 
-## RDA - A One-Size-Fits-All Universal Data Container
+## An Universal Data Container
 
-The Snappable API uses an universal, schemaless data container introduced by Charian called RDA (Recursive Delimited Array) which has simple multi-dimemsional-array structure and can be encoded as a text string. Using Charian, the dynamically expandable multi-dimemsional-array structure provides a practically unlimited storage space for storing any data objects, and as a text string, it can be easily passed between even the most basic computer programs, via function calls or networked data transfer or anything in between.  
+The Snappable API uses an universal, schemaless data container called RDA (Recursive Delimited Array). When wrapped by Charian, an intuitive RDA codec API, RDA is rendered to become a simple multi-dimemsional-array structure that is  dynamically expandable, providing a practically unlimited storage space for storing any data objects.  and as a text string, it can be easily passed between even the most basic computer programs, via function calls or networked data transfer or anything in between.  
 
-## Snappable - A Data-exchanging Framework
+## A Standard Way Of Exchanging Data
 
-Leveraging the RDA universal data container, the Snappable API defines an software architecture consist of a set of standardized classes and functions that plays their roles in an interactive scenario of how Snappable components can exchange data: involving having two abstract objects (interfaces) for  to implement and use for exchanging data. In such highly abstracted scenario, a Snappable component is provide with a work environment consists of an input data source, and an output data sink. The component runs in a process loop, pulling input data from the input data source, do "some processing" about it, and 
+Leveraging the RDA universal data container, the Snappable API defines an software architecture consist of a set of standardized classes and functions that plays their roles in an interactive scenario of how Snappable components can exchange data. In such highly abstracted scenario, a Snappable component is provided with a work environment consists of an input data source, and an output data sink. The component runs in a process loop, pulling input data from the input data source, do "some processing" about it, and dispose any output to the output data sink, and both the input and output data are in the form of RDA.
 
 ### ISnappable
 
+### ISnappableManager
 
+### IDataStore
 
- 
+## Snappable Components And Beyond
+
+Any system implementing the Snappable API can benefit from its component-based computing architecture. For example, from this repo, there is a component called "HL7Networkreceiver", which can listen on a network port for receiving incoming HL7 messages. If your application requires such a function, you can implement the ISnappableManager interface, providing a "joint" where the HL7Networkreceiver can plug into and to dispose received messages to the output data store provided by your app. 
+
+You can also be a component developper, for example you can develop a component (implementing the ISnappable) that can covert input HL7 messages to write the data to a specialized database, and other people can use your component to join to the HL7Networkreceiver to assemble an app that can receive HL7 messages from the network and write to the database.
+
+In these cases, both the apps and the components can be independently developped, components can be made available "on the shelf", and be used and re-used by any customer. And indeed, because of the standardized component joints, people can truely benefit from a much extended software component "market", for example, there can be many types of HL7Networkreceiver to choose from, and you can quickly swap and test and find the most suitable for you - just like choosing a light bulb from a harware store.
+
+### Data Types Convertions
+
+Obviosuly just because two components can be joined together and exchange data, doesn't necessarily mean they will work together smoothly, just like you can randomly connect two Lego pieces but the result may not be a interesting model that you wanted. Components work together need to understand the data they are sending and receiving. In the above exmples, the data type is the well defined HL7 message, so components designed to work with HL7 data type will work automatically. This is understandable just like a light bulb from a hardware store may only work with sockets supplies 220v AC.
+
+Just like we have hardware circuits that can convert 220V AC to 5V DC, for cross domain, cross application data integration and interfacing, unless the receiver can handle multiple data types at once (which is possible), it is commonly require data type to be converted. In this repo, we see an example of such convertor component that converts HL7 data into delimited CSV format, so it can be written to a tabular database table.
+
+## Snappble Runtimes
+
+If we compare Snappable components to electrical components, such transistors or ICs, a Snappble Runtime is the software version of "breadboard", that provides the sockets and wirings to connect the components.
 
 Through the framework API, components, even without prior knowledge of each other, can be connected and exchange data and interact with each other in an app. This lays the ground for , and by doing so, it brings many benefits, such as rapid app development, more reliable software and lower cost resulted from a high degree of software (component) re-use. In an analogy, it's much like the hardware world of using the bolts and nuts purchased from hardware stores for use in home projects. 
 

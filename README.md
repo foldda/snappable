@@ -2,15 +2,17 @@
 
 In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
-There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e. Netflix cannot use Shopify developed components and vise versa, partially because these components are using incompatible data models, designed and maintained by different vendors, and cannot communicate and interact with each other.
+There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e. Netflix cannot use Shopify developed components and vise versa, because these components' internal data models are likely incompatible due to they are designed and maintained by different vendors so they cannot communicate and interact with each other.
+
+So we need to find a way to allow independently developped components to communicate event they have no control over what data woule be sent or would like to be received at "the other end".
 
 ## Developping A Data-Exchanging "Lego Joint"
 
-Snappable is a simple library for software components to _freely exhange arbitrarily complex data_, even these components are independently developped and have no previous knowledge about each other. It is like the Lego joints allow joining Lego blocks of all colors and shapes into a model, essentially, Snappable defines a "joint" for software components, so "Snappable components" can be flexibly connected and communicate with each other and forms into an application.
+Introducing Snappable, a simple library for software components to _freely exhange arbitrarily complex data_, even these components are independently developped and have no previous knowledge about each other. Essentially, Snappable defines a "joint" for software components, so "Snappable components" can be flexibly connected and communicate with each other and forms into an application. It is like the Lego joints allow joining Lego blocks of all colors and shapes into a model. 
 
-Snappable is similar to the breadboard used for building electric curcuits by connecting electronic componnents and ICs. In this analogy, it defines the conductive metal pins for transfering electrical signals between the electronic componnent.
+Another analogy of describing Snappable is the breadboard used for building electric curcuits by connecting electronic componnents and ICs. In this analogy, it defines the conductive metal pins for transfering electrical signals between the electronic componnent. Similarily, Snappable defines the pins and wires for connecting software components.
 
-Like in both analogies, the component connector (Lego's joint, and breadboard's conductive wire/pin) are simple and unified. Snappable provides something similar, for data exchange, and it does so by defining a one-size-fits-all universal data container, and a set of standardized ways of facilitating data exchange using such container. 
+Like in both analogies, the component connector (Lego's joint, and breadboard's conductive wire/pin) are simple and unified, and that is what Snappable uniquely offers - it provides a simple, practical, and unified way for component data exchange, which includes defining a one-size-fits-all universal data container, and a data points manager that facilitates data exchange using such container. 
 
 ## An Universal Data Container
 

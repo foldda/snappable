@@ -2,15 +2,15 @@
 
 In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
-There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e. Netflix cannot use Shopify developed components and vise versa, because these components' internal data models are likely incompatible due to they are designed and maintained by different vendors so they cannot communicate and interact with each other.[1]
+There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e. Netflix cannot use Shopify developed components and vise versa, because these components are likely having incompatible data models, due to they are designed and maintained by different vendors, so they cannot communicate and colaborate.[^1]
 
-[1] Using middleware products to mitigate incompatibale data models in the data communication is less of a solution because 1) the data convertion logic inside the middleware tides itself to the data models used at either ends's communicating party, making it a high-maintainance, tight-coupling soltuion, and 2) the solution ties the components to the middleware vendor, making it less universal.
+[^1]: Using middleware products to mitigate incompatibale data models in the data communication is less of a solution because 1) it's too fine-grain at the component-level, and 2) the data convertion logic inside the middleware tides itself to the data models used at either ends's communicating party, making it a high-maintainance, tight-coupling soltuion. Besides, a middleware based solution ties the components to the middleware vendor, making the components less universal.
 
-So to achieve Universal Component-Based Computing which enables ultimate software component reuse, we need a way to allow independently developped components to flexibly connect to each other and to exchange data, without tight-coupling.
+So to achieve _universal_ component-based computing, which enables ultimate software component reuse, we need a way to allow independently developped components to flexibly connect to each other and to exchange data, without tight-coupling.
 
 ## The Need For An "Univeral Data-Exchanging Joint"
 
-Introducing Snappable, a simple library for software components to _freely exhange arbitrarily complex data_, that is, even if these components are developped independently and have different data models. 
+Introducing Snappable, a simple library for any software components to _freely exhange arbitrarily complex data between each other_, even if they are independently developped and have incompatible data models. 
 
 Essentially, just like the Lego joints allow joining Lego blocks of all colors and shapes into a model, Snappable defines a "joint" for software components data exchange, for "Snappable components" to connect and to communicate with each other and just like Lego, this allows software components to be flexibly assembled into modular applications.
 

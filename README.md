@@ -4,17 +4,19 @@ In software engineering, a software component is a modular, independent, and reu
 
 There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e. Netflix cannot use Shopify developed components and vise versa, partially because these components are using incompatible data models, designed and maintained by different vendors, and cannot communicate and interact with each other.
 
-## Making A Data-Exchanging "Joint"
+## Lego-Inspired Data-Exchanging "Joint"
 
-Snappable is a simple, unified data-exchanging framework and API for independently developed software components to #freely exhange arbitrarily complex data# between each other. EWssentially, Snappable defines the "joint" for software components, so "Snappable components" can be flexibly connected and communicate with each other and forms into an application, like the Lego joints allow joining Lego blocks of all colors and shapes into a model, 
+Snappable is a simple library for software components to _freely exhange arbitrarily complex data_, even these components are independently developped and have no previous knowledge about each other. It is like the Lego joints allow joining Lego blocks of all colors and shapes into a model, essentially, Snappable defines a "joint" for software components, so "Snappable components" can be flexibly connected and communicate with each other and forms into an application.
 
-The unified framework includes defining a one-size-fits-all universal data container, and a set of standardized ways of exchanging data using such container. 
+Snappable is similar to the breadboard used for building electric curcuits by connecting electronic componnents and ICs. In this analogy, it defines the conductive metal pins for transfering electrical signals between the electronic componnent.
+
+Like in both analogies, the component connector (Lego's joint, and breadboard's conductive wire/pin) are simple and unified. Snappable provides something similar, for data exchange, and it does so by defining a one-size-fits-all universal data container, and a set of standardized ways of facilitating data exchange using such container. 
 
 ## An Universal Data Container
 
 The Snappable API uses an universal, schemaless data container called RDA (Recursive Delimited Array). When wrapped by Charian, an intuitive RDA codec API, RDA is rendered to become a simple multi-dimemsional-array structure that is  dynamically expandable, providing a practically unlimited storage space for storing any data objects.  and as a text string, it can be easily passed between even the most basic computer programs, via function calls or networked data transfer or anything in between.  
 
-## A Standard Way Of Exchanging Data
+## Unified Facilitated Data Exchange
 
 Leveraging the RDA universal data container, the Snappable API defines an software architecture consist of a set of standardized classes and functions that plays their roles in an interactive scenario of how Snappable components can exchange data. In such highly abstracted scenario, a Snappable component is provided with a work environment consists of an input data source, and an output data sink. The component runs in a process loop, pulling input data from the input data source, do "some processing" about it, and dispose any output to the output data sink, and both the input and output data are in the form of RDA.
 

@@ -12,23 +12,23 @@ So to achieve _universal_ component-based computing, which enables ultimate soft
 
 Introducing Snappable, a simple library for any software components to _freely exhange arbitrarily complex data between each other_, even if they are independently developped and have incompatible data models. 
 
-Essentially, just like the Lego joints allow joining Lego blocks of all colors and shapes into a model, Snappable defines a "joint" for software components data exchange, for "Snappable components" to connect and to communicate with each other and just like Lego, this allows software components to be flexibly assembled into modular applications.
+Essentially,  defines a "joint" for software components data exchange, for "Snappable components" to connect and to communicate with each other. Just like the Lego joints allow joining Lego blocks of all colors and shapes into a model, Snappable allows software components to be flexibly assembled into modular applications.
 
 Another analogy of describing Snappable is the breadboard used for building prototype electric curcuits. By connecting electronic componnents and ICs via conductive metal wires and pins, breadboard allows transfering electrical signals between the electronic componnent according to a circuit design. Similarily, Snappable defines the pins and wires that connects software components for building a collabrative application.
 
-Like in both analogies, the component connector (Lego's joint, and breadboard's conductive wire/pin) are simple and universal, and that is what Snappable needs to offer - a simple, practical, and unified way for _any_ components data exchange. 
+Like in both analogies, the joints connecting software components (Lego's joint, and breadboard's conductive wire/pin) need to be simple and universal, and that is what Snappable aims to offer - a simple, practical, and unified way for _any_ components data exchange. 
 
 ## An Universal Data Container
 
 The Snappable API uses an universal, schemaless data container called RDA (Recursive Delimited Array). When wrapped by Charian, an intuitive RDA codec API, RDA is rendered to become a simple multi-dimemsional-array structure that is  dynamically expandable, providing a practically unlimited storage space for storing any data objects.  and as a text string, it can be easily passed between even the most basic computer programs, via function calls or networked data transfer or anything in between.  
 
-## Facilitating Unified Data Exchange
+## Unified Data Exchange Facilitation 
 
 Leveraging the RDA universal data container, the Snappable API defines an software architecture consist of a set of standardized classes and functions that plays their roles in an interactive scenario of how Snappable components can exchange data. In such highly abstracted scenario, a Snappable component is provided with a work environment consists of an input data source, and an output data sink. The component runs in a process loop, pulling input data from the input data source, do "some processing" about it, and dispose any output to the output data sink, and both the input and output data are in the form of RDA.
 
 ### ISnappable
 
-### ISnappableManager
+### IDataJointsManager
 
 ### IDataStore
 

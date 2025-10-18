@@ -6,13 +6,15 @@ There are many successful products and real-world projects that have been built 
 
 [^1]: Using middleware products to mitigate incompatibale data models in the data communication is not an effective solution because 1) it's too fine-grain at the component-level, and 2) the data convertion logic inside the middleware tides itself to the data models used at either ends's communicating party, making it a high-maintainance, tight-coupling soltuion. Besides, a middleware based solution ties the components to the middleware product, making the components product dependent to the middleware.
 
-So to achieve _universal_ component-based computing, which enables ultimate software component reuse, we need a way to allow independently developped components to flexibly connect to each other and to exchange data, without tight-coupling.
+The key to ultimately success in component-based computing, with _universal_ software component reuse, is to have a way (a system) to allow independently developped components to flexibly connect to each other and to exchange data, without tight-coupling. It is very much like the Lego joints can garranteedly join Lego blocks into a model, where the mdoel can have an arbitaray purpose, and regardless whether the Lego blocks' shapes or if they are availble now or will be made in the future.
 
-## The Need For An "Univeral Data-Exchanging Joint"
+So essentially, to achieve Logo-like flexibily in apps-building and component reuse, we need a generic, unified, and capable system for "joining" software components, and by joining we mean allowing the connected components to freely exchange data for any purposes.
+
+## An "Lego Joint" For Connecting Software Components
 
 Introducing Snappable, a simple library for any software components to _freely exhange arbitrarily complex data between each other_, even if they are independently developped and have incompatible data models. 
 
-Essentially,  defines a "joint" for software components data exchange, for "Snappable components" to connect and to communicate with each other. Just like the Lego joints allow joining Lego blocks of all colors and shapes into a model, Snappable allows software components to be flexibly assembled into modular applications.
+defines a "joint" for software components data exchange, for "Snappable components" to connect and to communicate with each other.
 
 Another analogy of describing Snappable is the breadboard used for building prototype electric curcuits. By connecting electronic componnents and ICs via conductive metal wires and pins, breadboard allows transfering electrical signals between the electronic componnent according to a circuit design. Similarily, Snappable defines the pins and wires that connects software components for building a collabrative application.
 

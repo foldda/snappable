@@ -6,41 +6,55 @@ There are many successful products and real-world projects that have been built 
 
 [^1]: Using middleware products to mitigate incompatibale data models in the data communication is not an effective solution because 1) it's too fine-grain at the component-level, and 2) the data convertion logic inside the middleware tides itself to the data models used at either ends's communicating party, making it a high-maintainance, tight-coupling soltuion. Besides, a middleware based solution ties the components to the middleware product, making the components product dependent to the middleware.
 
-The key to ultimately success in component-based computing, with _universal_ software component reuse, is to have a way (a system) to allow independently developped components to flexibly connect to each other and to exchange data, without tight-coupling. It is very much like the Lego joints can garranteedly join Lego blocks into a model, where the mdoel can have an arbitaray purpose, and regardless whether the Lego blocks' shapes or if they are availble now or will be made in the future.
+One of the key challenges to ultimately success in component-based computing, for achieving _universal_ software component reuse and the other benefits, is to have a way (a system) to allow independently developped components to flexibly connect to each other and to exchange data, without tight-coupling. 
 
-So essentially, to achieve Logo-like flexibily in apps-building and component reuse, we need a generic, unified, and capable system for "joining" software components, and by joining we mean allowing the connected components to freely exchange data for any purposes.
+Just like the Lego joints garrantees joining Lego blocks into a model (regardless of teh model's arbitaray purpose and whether the Lego blocks' shapes or if they are availble now or will be made in the future), to achieve Logo-like flexibility in apps-building and component reuse, there needs to be a generic, unified, and capable system for "joining" software components - that is, the ability of allowing the connected components to freely exchange data for any purposes.
 
-## An "Lego Joint" For Connecting Software Components
+## A "Lego Joint" For Software Components
 
-Introducing Snappable, a simple library for any software components to _freely exhange arbitrarily complex data between each other_, even if they are independently developped and have incompatible data models. 
+Implemented as a minimalist library, Snappable is an API for software components to leverage for _freely exhanging arbitrarily complex data between each other_. Snappable offers a simple data transport layer for these "snappable" and "detachable" components[^2] which can be independently developped or separately acquired. 
 
-defines a "joint" for software components data exchange, for "Snappable components" to connect and to communicate with each other.
+[^2]: The components would be able to physically exchange data at transport-layer. On top of physically exchanging data, between the components collabrative interaction, there still is a "logical" application-layer where the data is interpreted and consumed. 
 
 Another analogy of describing Snappable is the breadboard used for building prototype electric curcuits. By connecting electronic componnents and ICs via conductive metal wires and pins, breadboard allows transfering electrical signals between the electronic componnent according to a circuit design. Similarily, Snappable defines the pins and wires that connects software components for building a collabrative application.
 
-Like in both analogies, the joints connecting software components (Lego's joint, and breadboard's conductive wire/pin) need to be simple and universal, and that is what Snappable aims to offer - a simple, practical, and unified way for _any_ components data exchange. 
+Like in both analogies, the joints connecting software components (Lego's joint, and breadboard's conductive wire/pin) need to be simple and universal - the features the Snappable library aims to deliver. 
 
 ## An Universal Data Container
 
-The Snappable API uses an universal, schemaless data container called RDA (Recursive Delimited Array). When wrapped by Charian, an intuitive RDA codec API, RDA is rendered to become a simple multi-dimemsional-array structure that is  dynamically expandable, providing a practically unlimited storage space for storing any data objects.  and as a text string, it can be easily passed between even the most basic computer programs, via function calls or networked data transfer or anything in between.  
+The foundation technology of the Snappable API is an universal, text-based data encoding format called RDA (Recursive Delimited Array). Charian is a RDA codec API that renders RDA as a simple multi-dimemsional-array structure that promises having the ability to accomandate any arbitarary structured data.
+
+Attributed to its recursive, expandable multidimensional array structure, an RDA container can be used as a dynamically expandable, practically unlimited storage space that any data object can fit in. Also, as it can be converted to and from a text string, an RDA container can be passed between independent programs, such as via in-process or remote function calls, or via networked data transfer or anything in between.  
 
 ## Unified Data Exchange Facilitation 
 
-Leveraging the RDA universal data container, the Snappable API defines an software architecture consist of a set of standardized classes and functions that plays their roles in an interactive scenario of how Snappable components can exchange data. In such highly abstracted scenario, a Snappable component is provided with a work environment consists of an input data source, and an output data sink. The component runs in a process loop, pulling input data from the input data source, do "some processing" about it, and dispose any output to the output data sink, and both the input and output data are in the form of RDA.
+Leveraging the RDA universal data container, the Snappable API defines a data transport layer consisit of set of classes and functions that a "snappable component" (explained below) would utilize and exchange data with the other snappable components. The way how a snappable component using the provided data transport layer is very straight-forward, and can be conceptually explained as below -
+
+n software architecture consist of a set of standardized classes and functions that plays their roles in an interactive scenario of how Snappable components can exchange data. In such highly abstracted scenario, a Snappable component is provided with a work environment consists of an input data source, and an output data sink. The component runs in a process loop, pulling input data from the input data source, do "some processing" about it, and dispose any output to the output data sink, and both the input and output data are in the form of RDA.
 
 ### ISnappable
 
-### IDataJointsManager
+### ISnappableManager
 
 ### IDataStore
 
-## Snappable Components And Beyond
-
+### Working Examples Demo
 Any system implementing the Snappable API can benefit from its component-based computing architecture. For example, from this repo, there is a component called "HL7Networkreceiver", which can listen on a network port for receiving incoming HL7 messages. If your application requires such a function, you can implement the ISnappableManager interface, providing a "joint" where the HL7Networkreceiver can plug into and to dispose received messages to the output data store provided by your app. 
 
 You can also be a component developper, for example you can develop a component (implementing the ISnappable) that can covert input HL7 messages to write the data to a specialized database, and other people can use your component to join to the HL7Networkreceiver to assemble an app that can receive HL7 messages from the network and write to the database.
 
 In these cases, both the apps and the components can be independently developped, components can be made available "on the shelf", and be used and re-used by any customer. And indeed, because of the standardized component joints, people can truely benefit from a much extended software component "market", for example, there can be many types of HL7Networkreceiver to choose from, and you can quickly swap and test and find the most suitable for you - just like choosing a light bulb from a harware store.
+
+### Component Developper Kit
+
+## Commercial And Inductrial Usage
+
+## Our Vision 
+One objective of this project is to overcome one of the major challenge of implementing ture cross-vendor software component collabration and sharing. We have demonstrated that using the novel RDA encoding and the Charian serialization API, a small code-base API can achieve rather effective and practical component-based computing.
+
+It shall be noted that even we are confident and positive with our code in this repo, the most value of this project is prove cross-vendor software component sharing is practically achievable, and key to this is implementing a generic data-transport layer that that features effective loose coupling to the connected components.
+
+Through using Snapple ourselves, and through our clients, we have seen promising outcome that encourges us to continue enbrace and support this project, and we hope the software development would agree with us by sharing and same vision and hopefully benefit from, or even contribute to, what are provided here in this repo.
 
 ### Data Types Convertions
 

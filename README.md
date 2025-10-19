@@ -1,24 +1,24 @@
-# Solving A Problem Of Universal Component-Based Computing
+# Towards Ture Generic Component-Based Computing
 
 In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
-There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e. Netflix cannot use Shopify developed components and vise versa, because components from different companies likely have incompatible data models so they cannot communicate and colaborate.[^1]
+There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e. Netflix cannot use Shopify developed components and vise versa. To have well-defined interfaces that are generic and applicable to components across companies is evideably difficult, because components made different companies are likely to have incompatible and changing data models behind them, and if the interfaces cannot adapt to these differences and dynamic changes, the component won't be able to exchange data and collabrate [^1]. 
 
 [^1]: Using middleware products to mitigate incompatibale data models in the data communication is not an effective solution because 1) it's too fine-grain at the component-level, and 2) the data convertion logic inside the middleware tides itself to the data models used at either ends's communicating party, making it a high-maintainance, tight-coupling soltuion. Besides, a middleware based solution ties the components to the middleware product, making the components product dependent to the middleware.
 
-One of the key challenges to ultimately success in component-based computing, for achieving _universal_ software component reuse and the other benefits, is to have a way (a system) to allow independently developped components to flexibly connect to each other and to exchange data, without tight-coupling. 
-
-Just like the Lego joints garrantees joining Lego blocks into a model (regardless of teh model's arbitaray purpose and whether the Lego blocks' shapes or if they are availble now or will be made in the future), to achieve Logo-like flexibility in apps-building and component reuse, there needs to be a generic, unified, and capable system for "joining" software components - that is, the ability of allowing the connected components to freely exchange data for any purposes.
+Essentially, we need a way (a system) to allow independently developped components to flexibly interfacing with each other to exchange data, without tight-coupling.
 
 ## A "Lego Joint" For Software Components
 
-Implemented as a minimalist library, Snappable is an API for software components to leverage for _freely exhanging arbitrarily complex data between each other_. Snappable offers a simple data transport layer for these "snappable" and "detachable" components[^2] which can be independently developped or separately acquired. 
+Snappable is a minimalist library that offers an API for software components to _freely exhanging arbitrarily complex data between each other_.
+ 
+Just like the Lego joints that garrantee joining any Lego block into a model, regardless of the model's arbitaray purpose or the Lego block's individual shape, Snappable lets a developer to achieve Logo-like flexibility in apps-building and component reuse. Snappable offers a simple data transport layer, through which the connected components can freely exchange data for any purposes[^2], and these "snappable" and "detachable" components can be independently developped or be separately acquired.
 
-[^2]: The components would be able to physically exchange data at transport-layer. On top of physically exchanging data, between the components collabrative interaction, there still is a "logical" application-layer where the data is interpreted and consumed. 
+[^2]: While the data transport layer allows physically exchanging data, between the components collabrative interaction, there still is a "logical" application-layer where the data is interpreted and consumed. 
 
 Another analogy of describing Snappable is the breadboard used for building prototype electric curcuits. By connecting electronic componnents and ICs via conductive metal wires and pins, breadboard allows transfering electrical signals between the electronic componnent according to a circuit design. Similarily, Snappable defines the pins and wires that connects software components for building a collabrative application.
 
-Like in both analogies, the joints connecting software components (Lego's joint, and breadboard's conductive wire/pin) need to be simple and universal - the features the Snappable library aims to deliver. 
+Like in both analogies, the joints connecting software components (Lego's joint, and breadboard's conductive wire/pin) need to be simple and universal, which are the key features implemented by the Snappable library. 
 
 ## An Universal Data Container
 

@@ -1,8 +1,74 @@
-# Enflow Portable Components
+# Towards Ture Generic Component-Based Computing
 
-Enflow is a simple component-based computing framework API with an ambitious goal: to allows making non-prorpiatry data-processing solutions using vendor-neutral, standardized components. That is, you can physically aquire and assemble these components into apps, and the environment (called a "runtime") for running these apps is also non-prorpiatry and vendor neutral. By doing so, it promotes very high degree of software (component) re-use, much like using the bolts and nuts purchased from hardware stores for use in home projects. 
+In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
-To achieve such a goal, the Enflow API must define what a component must implement, including - 
+There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e. Netflix cannot use Shopify developed components and vise versa. To have well-defined interfaces that are generic and applicable to components across companies is evideably difficult, because components made different companies are likely to have incompatible and changing data models behind them, and if the interfaces cannot adapt to these differences and dynamic changes, the component won't be able to exchange data and collabrate [^1]. 
+
+[^1]: Using middleware products to mitigate incompatibale data models in the data communication is not an effective solution because 1) it's too fine-grain at the component-level, and 2) the data convertion logic inside the middleware tides itself to the data models used at either ends's communicating party, making it a high-maintainance, tight-coupling soltuion. Besides, a middleware based solution ties the components to the middleware product, making the components product dependent to the middleware.
+
+Essentially, we need a way (a system) to allow independently developped components to flexibly interfacing with each other to exchange data, without tight-coupling.
+
+## A "Lego Joint" For Software Components
+
+Snappable is a minimalist library that offers an API for software components to _freely exhanging arbitrarily complex data between each other_.
+ 
+Just like the Lego joints that garrantee joining any Lego block into a model, regardless of the model's arbitaray purpose or the Lego block's individual shape, Snappable lets a developer to achieve Logo-like flexibility in apps-building and component reuse. Snappable offers a simple data transport layer, through which the connected components can freely exchange data for any purposes[^2], and these "snappable" and "detachable" components can be independently developped or be separately acquired.
+
+[^2]: While the data transport layer allows physically exchanging data, between the components collabrative interaction, there still is a "logical" application-layer where the data is interpreted and consumed. 
+
+Another analogy of describing Snappable is the breadboard used for building prototype electric curcuits. By connecting electronic componnents and ICs via conductive metal wires and pins, breadboard allows transfering electrical signals between the electronic componnent according to a circuit design. Similarily, Snappable defines the pins and wires that connects software components for building a collabrative application.
+
+Like in both analogies, the joints connecting software components (Lego's joint, and breadboard's conductive wire/pin) need to be simple and universal, which are the key features implemented by the Snappable library. 
+
+## An Universal Data Container
+
+The foundation technology of the Snappable API is an universal, text-based data encoding format called RDA (Recursive Delimited Array). Charian is a RDA codec API that renders RDA as a simple multi-dimemsional-array structure that promises having the ability to accomandate any arbitarary structured data.
+
+Attributed to its recursive, expandable multidimensional array structure, an RDA container can be used as a dynamically expandable, practically unlimited storage space that any data object can fit in. Also, as it can be converted to and from a text string, an RDA container can be passed between independent programs, such as via in-process or remote function calls, or via networked data transfer or anything in between.  
+
+## Unified Data Exchange Facilitation 
+
+Leveraging the RDA universal data container, the Snappable API defines a data transport layer consisit of set of classes and functions that a "snappable component" (explained below) would utilize and exchange data with the other snappable components. The way how a snappable component using the provided data transport layer is very straight-forward, and can be conceptually explained as below -
+
+n software architecture consist of a set of standardized classes and functions that plays their roles in an interactive scenario of how Snappable components can exchange data. In such highly abstracted scenario, a Snappable component is provided with a work environment consists of an input data source, and an output data sink. The component runs in a process loop, pulling input data from the input data source, do "some processing" about it, and dispose any output to the output data sink, and both the input and output data are in the form of RDA.
+
+### ISnappable
+
+### ISnappableManager
+
+### IDataStore
+
+### Working Examples Demo
+Any system implementing the Snappable API can benefit from its component-based computing architecture. For example, from this repo, there is a component called "HL7Networkreceiver", which can listen on a network port for receiving incoming HL7 messages. If your application requires such a function, you can implement the ISnappableManager interface, providing a "joint" where the HL7Networkreceiver can plug into and to dispose received messages to the output data store provided by your app. 
+
+You can also be a component developper, for example you can develop a component (implementing the ISnappable) that can covert input HL7 messages to write the data to a specialized database, and other people can use your component to join to the HL7Networkreceiver to assemble an app that can receive HL7 messages from the network and write to the database.
+
+In these cases, both the apps and the components can be independently developped, components can be made available "on the shelf", and be used and re-used by any customer. And indeed, because of the standardized component joints, people can truely benefit from a much extended software component "market", for example, there can be many types of HL7Networkreceiver to choose from, and you can quickly swap and test and find the most suitable for you - just like choosing a light bulb from a harware store.
+
+### Component Developper Kit
+
+## Commercial And Inductrial Usage
+
+## Our Vision 
+One objective of this project is to overcome one of the major challenge of implementing ture cross-vendor software component collabration and sharing. We have demonstrated that using the novel RDA encoding and the Charian serialization API, a small code-base API can achieve rather effective and practical component-based computing.
+
+It shall be noted that even we are confident and positive with our code in this repo, the most value of this project is prove cross-vendor software component sharing is practically achievable, and key to this is implementing a generic data-transport layer that that features effective loose coupling to the connected components.
+
+Through using Snapple ourselves, and through our clients, we have seen promising outcome that encourges us to continue enbrace and support this project, and we hope the software development would agree with us by sharing and same vision and hopefully benefit from, or even contribute to, what are provided here in this repo.
+
+### Data Types Convertions
+
+Obviosuly just because two components can be joined together and exchange data, doesn't necessarily mean they will work together smoothly, just like you can randomly connect two Lego pieces but the result may not be a interesting model that you wanted. Components work together need to understand the data they are sending and receiving. In the above exmples, the data type is the well defined HL7 message, so components designed to work with HL7 data type will work automatically. This is understandable just like a light bulb from a hardware store may only work with sockets supplies 220v AC.
+
+Just like we have hardware circuits that can convert 220V AC to 5V DC, for cross domain, cross application data integration and interfacing, unless the receiver can handle multiple data types at once (which is possible), it is commonly require data type to be converted. In this repo, we see an example of such convertor component that converts HL7 data into delimited CSV format, so it can be written to a tabular database table.
+
+## Snappble Runtimes
+
+If we compare Snappable components to electrical components, such transistors or ICs, a Snappble Runtime is the software version of "breadboard", that provides the sockets and wirings to connect the components.
+
+Through the framework API, components, even without prior knowledge of each other, can be connected and exchange data and interact with each other in an app. This lays the ground for , and by doing so, it brings many benefits, such as rapid app development, more reliable software and lower cost resulted from a high degree of software (component) re-use. In an analogy, it's much like the hardware world of using the bolts and nuts purchased from hardware stores for use in home projects. 
+
+To achieve such a goal, the Snappable API must define what a component must implement, including - 
 
 * For being functional, the component needs to a way to perform a specified data-processing task,
 * For handling data-processing task's input and output, the component needs to have have a way to exchange data with the other Enflow components.

@@ -12,21 +12,21 @@ So, for companies building freely interchangeable "generic" software components,
  
 Snappable is a library for generic component interfacing. Just like the Lego joints that guarantee joining any Lego block into a model, regardless of the model's arbitrary purpose or the Lego block's individual shape,  Snappable offers a simple data transport layer API, through which connected components can _freely exchange arbitrarily complex data between each other_ regardless of how different or incompatible their internal data models[^2]. Snappable allows these "snappable" and "detachable" components can be independently developed or be separately acquired, meaning Logo-like flexibility in app-building and component reuse.
 
-[^2]: While the data transport layer allows physically exchanging data between the components collaborative interaction, there is still a "logical" application-layer typically implemented in the components themselves where the data is interpreted and consumed. 
+[^2]: While the data transport layer allows physically exchanging data between the components collaborative interaction, there is still a "logical" application-layer typically implemented in the components themselves, where the data is interpreted and consumed. 
 
-Another analogy for describing Snappable is the breadboard used for building prototype electronic circuits. By connecting electronic components and ICs via conductive metal wires and pins, breadboard allows transferring electrical signals between the electronic components according to a circuit design. Similarly, Snappable defines the pins and wires that connects software components for building a collabrative application.
+Another analogy for describing Snappable is the breadboard used for building prototype electronic circuits. By connecting electronic components and ICs via conductive metal wires and pins, a breadboard allows transferring electrical signals between the electronic components according to a circuit design. Similarly, Snappable defines the pins and wires that connect software components for building a collaborative application.
 
 <img src="img/breadboard.webp" width="350" align="center">
 
-Like in both analogies, the joints connecting software components (Lego's joint, and breadboard's conductive wire/pin) need to be simple and universal, which are the key features implemented by the Snappable library. 
+Like in both analogies, the joints connecting software components (Lego's joint, and breadboard's conductive wire/pin) are the key for simple and universal physical components interfacing, and the Snappable library is implementing such joints for connecting software components. 
 
 ## Using A Universal Data Container
 
-The foundation technology of the Snappable API is an universal, text-based data encoding format called RDA (Recursive Delimited Array). Charian is a RDA codec API that renders RDA as a simple multi-dimemsional-array structure that promises having the ability to accomandate any arbitarary structured data.
+The core technology of the Snappable API is a universal, text-based data encoding format called RDA (Recursive Delimited Array). Charian is an RDA codec API that renders RDA as a simple multidimensional array structure that promises having the ability to accommodate any arbitrary structured data.
 
 Attributed to its recursive, expandable multidimensional array structure, an RDA container can be used as a dynamically expandable, practically unlimited storage space that any data object can fit in. Also, as it can be converted to and from a text string, an RDA container can be passed between independent programs, such as via in-process or remote function calls, or via networked data transfer or anything in between.  
 
-## Unified Data Exchange Facilitation 
+## Facilitating Unified Data Exchange  
 
 Leveraging the RDA universal data container, the Snappable API defines a data transport layer consisit of set of classes and functions that a "snappable component" (explained below) would utilize and exchange data with the other snappable components. The way how a snappable component using the provided data transport layer is very straight-forward, and can be conceptually explained as below -
 

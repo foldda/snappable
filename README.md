@@ -9,7 +9,7 @@ Without pre-establishing a compatible data model, it's a challenge for cross-app
 [^1]: Using middleware products to mitigate incompatible data models in the data communication is not an effective solution because 1) component-level interfacing is too fine-grained for using middleware, and 2) the data conversion logic inside the middleware ties the interface to the data models used at either end's communicating party, making it a high-maintenance, tight-coupling solution. Besides, a middleware-based solution ties the components to the middleware product, making the components product-dependent on the middleware.
 
 ## A "Lego Joint" Inspiration
-<img src="img/legoP.webp" width="350" align="center">
+<img src="img/legoP.webp" width="474" align="center">
 
 *Q:* What do all Lego blocks have in common?  
 *A:* They all have standardized joints that can be used for connecting other blocks.
@@ -53,7 +53,7 @@ In these cases, both the apps and the components can be independently developped
 
 ### Component Developper Kit
 
-## Commercial And Inductrial Usage
+## Commercial And Industrial Usage
 
 ## Our Vision 
 One objective of this project is to overcome one of the major challenge of implementing ture cross-vendor software component collabration and sharing. We have demonstrated that using the novel RDA encoding and the Charian serialization API, a small code-base API can achieve rather effective and practical component-based computing.
@@ -94,11 +94,11 @@ In Emflow API's design, the process of using a component is modeled as a factory
 
 ## Standardized Runtimes
 
-### Enflow Component Deverloper Kit
+### Snappable Component Deverloper Kit
 
-### Enflow Solution Manager
+### iSnap - A Commercial Product
 
-### Enflow Win_Service
+### iSnap Win_Service
 
 ## Summary
 

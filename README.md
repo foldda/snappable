@@ -9,8 +9,15 @@ Logically, for companies building software components that can work across diffe
 [^1]: Using middleware products to mitigate incompatible data models in the data communication is not an effective solution because 1) component-level interfacing is too fine-grained for using middleware, and 2) the data conversion logic inside the middleware ties the interface to the data models used at either end's communicating party, making it a high-maintenance, tight-coupling solution. Besides, a middleware-based solution ties the components to the middleware product, making the components product-dependent on the middleware.
 
 ## A "Lego Joint" Inspiration
- 
-Snappable is a library for generic component interfacing. Just like the Lego joints that guarantee joining any Lego block into a model, regardless of the model's arbitrary purpose or the Lego block's individual shape,  Snappable offers a simple data transport layer API, through which connected components can _freely exchange arbitrarily complex data between each other_ regardless of how different or incompatible their internal data models[^2]. Snappable allows these "snappable" and "detachable" components can be independently developed or be separately acquired, meaning Logo-like flexibility in app-building and component reuse.
+
+*Q:* What do all Lego blocks have in common?
+*A:* They all have standardized joints that can be used for connecting other blocks.
+
+<img src="img/legoP.webp" width="350" align="center">
+
+Snappable is a library that provides generic component interfacing, through which software components (even are completely independent of each other) can be "joined" together and exchange data. Component interfacing using Snappable is the key that enables general component-based applications development (i.e., app-building by simply assembling pre-built generic components), just like Lego joints enable building Lego models using Lego blocks, regardless of their individual shape and color. 
+
+Technically, Snappable provides a unified, universal data transport layer API, through which connected components can _freely exchange arbitrarily complex data between each other_ regardless of how different or incompatible their internal data models[^2]. Snappable allows these "snappable" and "detachable" components can be independently developed or be separately acquired, meaning Logo-like flexibility in app-building and component reuse.
 
 [^2]: While the data transport layer allows physically exchanging data between the components collaborative interaction, there is still a "logical" application-layer typically implemented in the components themselves, where the data is interpreted and consumed. 
 

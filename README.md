@@ -2,11 +2,11 @@
 
 In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
-There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e., Netflix cannot use Shopify-developed components and vice versa. Truly generic software components that can collaborate across companies' domains hardly exist, because each company controls its data models behind its software modules, which are always dynamically changing, so it's difficult to define generic interfaces applicable to cross-company components for them to exchange data and collaborate[^1]. 
+There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e., Netflix cannot use Shopify-developed components and vice versa. This is because it's impractical for companies to adhere to "compatible" data models as they develop applications independently, and their applications are always evolving. 
+
+For companies building software components that can work across different applications, there needs to be a general interface through which components can exchange data and collaborate, and the interface would be standardized and independent, immune from any changes to the application's business logic. Technically speaking, it means effective component-level interfacing without tight-coupling (being bound by the components' different data models).[^1]
 
 [^1]: Using middleware products to mitigate incompatible data models in the data communication is not an effective solution because 1) component-level interfacing is too fine-grained for using middleware, and 2) the data conversion logic inside the middleware ties the interface to the data models used at either end's communicating party, making it a high-maintenance, tight-coupling solution. Besides, a middleware-based solution ties the components to the middleware product, making the components product-dependent on the middleware.
-
-So, for companies building freely interchangeable "generic" software components, we need a mechanism that allows the components to flexibly interface with each other to exchange data, without being bound by their different data models (tight-coupling).
 
 ## A "Lego Joint" Inspiration
  
@@ -56,7 +56,7 @@ It shall be noted that even we are confident and positive with our code in this 
 
 Through using Snapple ourselves, and through our clients, we have seen promising outcome that encourges us to continue enbrace and support this project, and we hope the software development would agree with us by sharing and same vision and hopefully benefit from, or even contribute to, what are provided here in this repo.
 
-### Data Types Convertions
+### Data Types Conversions
 
 Obviosuly just because two components can be joined together and exchange data, doesn't necessarily mean they will work together smoothly, just like you can randomly connect two Lego pieces but the result may not be a interesting model that you wanted. Components work together need to understand the data they are sending and receiving. In the above exmples, the data type is the well defined HL7 message, so components designed to work with HL7 data type will work automatically. This is understandable just like a light bulb from a hardware store may only work with sockets supplies 220v AC.
 
@@ -95,6 +95,8 @@ In Emflow API's design, the process of using a component is modeled as a factory
 ### Enflow Win_Service
 
 ## Summary
+
+Truly generic software components also mean they are freely interchangeable,  "generic" software components, we need a mechanism that allows the components to flexibly interface with each other to exchange data, without being bound by their different data models (tight-coupling).
 
 The Enflow component-based computing framework promotes high-level modular software re-use, by specifying a simple and practical open standard of software components and solution runtime, so both a component and a runtime can be independly developped, and are interchangible. 
 

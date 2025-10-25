@@ -1,32 +1,32 @@
-# Towards Ture Generic Component-Based Computing
+# Snappable - Connecting Generic Software Component
 
 In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
-There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e. Netflix cannot use Shopify developed components and vise versa. To have well-defined interfaces that are generic and applicable to components across companies is evideably difficult, because components made different companies are likely to have incompatible and changing data models behind them, and if the interfaces cannot adapt to these differences and dynamic changes, the component won't be able to exchange data and collabrate [^1]. 
+There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e., Netflix cannot use Shopify-developed components and vice versa. This is because it's impractical for companies to adhere to "compatible" data models as they develop applications independently, and their applications are always evolving. 
 
-[^1]: Using middleware products to mitigate incompatibale data models in the data communication is not an effective solution because 1) it's too fine-grain at the component-level, and 2) the data convertion logic inside the middleware tides itself to the data models used at either ends's communicating party, making it a high-maintainance, tight-coupling soltuion. Besides, a middleware based solution ties the components to the middleware product, making the components product dependent to the middleware.
+Logically, for companies building software components that can work across different applications, the components would need to exchange data and collaborate through a general interface - an interface that is standardized and independent, immune to any changes to an application's business logic. Technically speaking, it means the interface supports effective component interfacing without tight-coupling (bonding the components to be dependent on each other).[^1]
 
-Essentially, we need a way (a system) to allow independently developped components to flexibly interfacing with each other to exchange data, without tight-coupling.
+[^1]: Using middleware products to mitigate incompatible data models in the data communication is not an effective solution because 1) component-level interfacing is too fine-grained for using middleware, and 2) the data conversion logic inside the middleware ties the interface to the data models used at either end's communicating party, making it a high-maintenance, tight-coupling solution. Besides, a middleware-based solution ties the components to the middleware product, making the components product-dependent on the middleware.
 
-## A "Lego Joint" For Software Components
-
-Snappable is a minimalist library that offers an API for software components to _freely exhanging arbitrarily complex data between each other_.
+## A "Lego Joint" Inspiration
  
-Just like the Lego joints that garrantee joining any Lego block into a model, regardless of the model's arbitaray purpose or the Lego block's individual shape, Snappable lets a developer to achieve Logo-like flexibility in apps-building and component reuse. Snappable offers a simple data transport layer, through which the connected components can freely exchange data for any purposes[^2], and these "snappable" and "detachable" components can be independently developped or be separately acquired.
+Snappable is a library for generic component interfacing. Just like the Lego joints that guarantee joining any Lego block into a model, regardless of the model's arbitrary purpose or the Lego block's individual shape,  Snappable offers a simple data transport layer API, through which connected components can _freely exchange arbitrarily complex data between each other_ regardless of how different or incompatible their internal data models[^2]. Snappable allows these "snappable" and "detachable" components can be independently developed or be separately acquired, meaning Logo-like flexibility in app-building and component reuse.
 
-[^2]: While the data transport layer allows physically exchanging data, between the components collabrative interaction, there still is a "logical" application-layer where the data is interpreted and consumed. 
+[^2]: While the data transport layer allows physically exchanging data between the components collaborative interaction, there is still a "logical" application-layer typically implemented in the components themselves, where the data is interpreted and consumed. 
 
-Another analogy of describing Snappable is the breadboard used for building prototype electric curcuits. By connecting electronic componnents and ICs via conductive metal wires and pins, breadboard allows transfering electrical signals between the electronic componnent according to a circuit design. Similarily, Snappable defines the pins and wires that connects software components for building a collabrative application.
+Another analogy for describing Snappable is the breadboard used for building prototype electronic circuits. By connecting electronic components and ICs via conductive metal wires and pins, a breadboard allows transferring electrical signals between the electronic components according to a circuit design. Similarly, Snappable defines the pins and wires that connect software components for building a collaborative application.
 
-Like in both analogies, the joints connecting software components (Lego's joint, and breadboard's conductive wire/pin) need to be simple and universal, which are the key features implemented by the Snappable library. 
+<img src="img/breadboard.webp" width="350" align="center">
 
-## An Universal Data Container
+Like in both analogies, the joints connecting software components (Lego's joint, and breadboard's conductive wire/pin) are the key for simple and universal physical components interfacing, and the Snappable library is implementing such joints for connecting software components. 
 
-The foundation technology of the Snappable API is an universal, text-based data encoding format called RDA (Recursive Delimited Array). Charian is a RDA codec API that renders RDA as a simple multi-dimemsional-array structure that promises having the ability to accomandate any arbitarary structured data.
+## Using A Universal Data Container
+
+The core technology of the Snappable API is a universal, text-based data encoding format called RDA (Recursive Delimited Array). Charian is an RDA codec API that renders RDA as a simple multidimensional array structure that promises having the ability to accommodate any arbitrary structured data.
 
 Attributed to its recursive, expandable multidimensional array structure, an RDA container can be used as a dynamically expandable, practically unlimited storage space that any data object can fit in. Also, as it can be converted to and from a text string, an RDA container can be passed between independent programs, such as via in-process or remote function calls, or via networked data transfer or anything in between.  
 
-## Unified Data Exchange Facilitation 
+## Facilitating Unified Data Exchange  
 
 Leveraging the RDA universal data container, the Snappable API defines a data transport layer consisit of set of classes and functions that a "snappable component" (explained below) would utilize and exchange data with the other snappable components. The way how a snappable component using the provided data transport layer is very straight-forward, and can be conceptually explained as below -
 
@@ -56,7 +56,7 @@ It shall be noted that even we are confident and positive with our code in this 
 
 Through using Snapple ourselves, and through our clients, we have seen promising outcome that encourges us to continue enbrace and support this project, and we hope the software development would agree with us by sharing and same vision and hopefully benefit from, or even contribute to, what are provided here in this repo.
 
-### Data Types Convertions
+### Data Types Conversions
 
 Obviosuly just because two components can be joined together and exchange data, doesn't necessarily mean they will work together smoothly, just like you can randomly connect two Lego pieces but the result may not be a interesting model that you wanted. Components work together need to understand the data they are sending and receiving. In the above exmples, the data type is the well defined HL7 message, so components designed to work with HL7 data type will work automatically. This is understandable just like a light bulb from a hardware store may only work with sockets supplies 220v AC.
 
@@ -95,6 +95,8 @@ In Emflow API's design, the process of using a component is modeled as a factory
 ### Enflow Win_Service
 
 ## Summary
+
+Truly generic software components also mean they are freely interchangeable,  "generic" software components, we need a mechanism that allows the components to flexibly interface with each other to exchange data, without being bound by their different data models (tight-coupling).
 
 The Enflow component-based computing framework promotes high-level modular software re-use, by specifying a simple and practical open standard of software components and solution runtime, so both a component and a runtime can be independly developped, and are interchangible. 
 

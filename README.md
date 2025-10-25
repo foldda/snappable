@@ -9,11 +9,10 @@ Without pre-establishing a compatible data model, it's a challenge for cross-app
 [^1]: Using middleware products to mitigate incompatible data models in the data communication is not an effective solution because 1) component-level interfacing is too fine-grained for using middleware, and 2) the data conversion logic inside the middleware ties the interface to the data models used at either end's communicating party, making it a high-maintenance, tight-coupling solution. Besides, a middleware-based solution ties the components to the middleware product, making the components product-dependent on the middleware.
 
 ## A "Lego Joint" Inspiration
-
-*Q:* What do all Lego blocks have in common?
-*A:* They all have standardized joints that can be used for connecting other blocks.
-
 <img src="img/legoP.webp" width="350" align="center">
+
+*Q:* What do all Lego blocks have in common?  
+*A:* They all have standardized joints that can be used for connecting other blocks.
 
 Snappable is a library that provides generic component interfacing, through which software components (even are completely independent of each other) can be "joined" together and exchange data. Component interfacing using Snappable is the key that enables general component-based applications development (i.e., app-building by simply assembling pre-built generic components), just like Lego joints enable building Lego models using Lego blocks, regardless of their individual shape and color. 
 

@@ -9,12 +9,13 @@ Without pre-establishing a compatible data model, it's a challenge for cross-app
 [^1]: Using middleware products to mitigate incompatible data models in the data communication is not an effective solution because 1) component-level interfacing is too fine-grained for using middleware, and 2) the data conversion logic inside the middleware ties the interface to the data models used at either end's communicating party, making it a high-maintenance, tight-coupling solution. Besides, a middleware-based solution ties the components to the middleware product, making the components product-dependent on the middleware.
 
 ## A "Lego Joint" Inspiration
-<img src="img/legoP.webp" width="474" align="center">
+<img src="img/legoP.webp" width="350" align="center">
 
-*Q:* What do all Lego blocks have in common?  
-*A:* They all have standardized joints that can be used for connecting other blocks.
+**Q:** What do all Lego blocks have in common?  
+**A:** They all have standardized joints for connecting to the other blocks.
 
-Snappable is a library that provides generic component interfacing, through which software components (even are completely independent of each other) can be "joined" together and exchange data. Component interfacing using Snappable is the key that enables general component-based applications development (i.e., app-building by simply assembling pre-built generic components), just like Lego joints enable building Lego models using Lego blocks, regardless of their individual shape and color. 
+Snappable is a library that provides generic component interfacing, through which software components can be "joined" together and exchange data, regardless of the differences in their data models, just like Lego joints enable building Lego models using Lego blocks, regardless of their individual shape and color. Such component interfacing, as from using Snappable, is the key to making generic software components because now components can evolve on their data model without breaking the connectivity to the other generic components.
+
 
 Technically, Snappable provides a unified, universal data transport layer API, through which connected components can _freely exchange arbitrarily complex data between each other_ regardless of how different or incompatible their internal data models[^2]. Snappable allows these "snappable" and "detachable" components can be independently developed or be separately acquired, meaning Logo-like flexibility in app-building and component reuse.
 

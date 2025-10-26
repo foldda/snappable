@@ -4,7 +4,7 @@ In software engineering, a software component is a modular, independent, and reu
 
 There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e., Netflix cannot use Shopify-developed components and vice versa. This is because it's impractical for companies to adhere to "compatible" data models between independently developed applications, which are also constantly evolving. 
 
-Without pre-establishing a compatible data model, it's a challenge for cross-application generic software components to exchange data and collaborate because of the high costs of building and maintaining the custom data linkage between the components. Ideally, it would need a general interface that is standardized and independent, immune to any changes to an application's business logic, and that means, technically speaking, generalized component interfacing without tight-coupling.[^1]
+Without pre-establishing a compatible data model, it'd be challenging for software components to exchange data and collaborate because of the high costs of building and maintaining the custom data linkage between the components. Ideally, the data exchange would be through a standardized general interface that is independent and immune to changes to an application's business logic, and that means, technically speaking, generalized component interfacing without tight-coupling.[^1]
 
 [^1]: Using middleware products to mitigate incompatible data models in the data communication is not an effective solution because 1) component-level interfacing is too fine-grained for using middleware, and 2) the data conversion logic inside the middleware ties the interface to the data models used at either end's communicating party, making it a high-maintenance, tight-coupling solution. Besides, a middleware-based solution ties the components to the middleware product, making the components product-dependent on the middleware.
 
@@ -16,8 +16,7 @@ Without pre-establishing a compatible data model, it's a challenge for cross-app
 
 Snappable is a library that provides generic component interfacing, through which software components can be "joined" together and exchange data, regardless of the differences in their data models, just like Lego joints enable building Lego models using Lego blocks, regardless of their individual shape and color. Such component interfacing, as from using Snappable, is the key to making generic software components because now components can evolve on their data model without breaking the connectivity to the other generic components.
 
-
-Technically, Snappable provides a unified, universal data transport layer API, through which connected components can _freely exchange arbitrarily complex data between each other_ regardless of how different or incompatible their internal data models[^2]. Snappable allows these "snappable" and "detachable" components can be independently developed or be separately acquired, meaning Logo-like flexibility in app-building and component reuse.
+Essentially, Snappable provides a unified, universal data transport layer API, through which connected components can _freely exchange arbitrarily complex data between each other_ regardless of how different or incompatible their internal data models[^2]. Snappable allows these "snappable" and "detachable" components can be independently developed or be separately acquired, meaning Lego-like flexibility in modular app-building and ultimate component reuse.
 
 [^2]: While the data transport layer allows physically exchanging data between the components collaborative interaction, there is still a "logical" application-layer typically implemented in the components themselves, where the data is interpreted and consumed. 
 
@@ -29,9 +28,11 @@ Like in both analogies, the joints connecting software components (Lego's joint,
 
 ## Using A Universal Data Container
 
-The core technology of the Snappable API is a universal, text-based data encoding format called RDA (Recursive Delimited Array). Charian is an RDA codec API that renders RDA as a simple multidimensional array structure that promises having the ability to accommodate any arbitrary structured data.
+The core technology of the Snappable component interfacing API is Charian, which defines a universal data container class called Rda. Rda is a simple multidimensional array structure that promises the ability to accommodate any arbitrary structured data.
 
-Attributed to its recursive, expandable multidimensional array structure, an RDA container can be used as a dynamically expandable, practically unlimited storage space that any data object can fit in. Also, as it can be converted to and from a text string, an RDA container can be passed between independent programs, such as via in-process or remote function calls, or via networked data transfer or anything in between.  
+Attributed to its recursive, expandable multidimensional array structure, an Rda container provides a dynamically expandable, practically unlimited storage space that any data object can fit in. Snappable uses Rda containers extensively for loose-couple component interfacing because data exchange using the schemaless Rda container is not affected by data model changes.  
+
+Also, using Charian, an Rda container can be converted to and from a text string, so it can be passed between programs cross-language and cross-platform, such as via in-process or remote function calls, or via networked data transfer or anything in between. So in theory, Snappable component interfacing can be used in remote, distributed computing.
 
 ## Facilitating Unified Data Exchange  
 

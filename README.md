@@ -20,9 +20,11 @@ Another analogy for describing Snappable is the breadboard used for building pro
 
 <img src="img/breadboard.webp" width="350" align="center">
 
-Like in both analogies, it's key to have a common, universal software component interface that functions like Lego's joint and a breadboard's conductive wire/pin, for building generic component-based software. Snappable implements such a "joint" as a unified, universal data transport layer API, through which components can send and receive unified data containers, and these containers can accommodate arbitrarily complex data. As such, components can remain connected by the data transport layer regardless of how different or incompatible their internal data models are - meaning these components can freely evolve their internal logic and data model[^2]. With Snappable's loosely coupled interface, components become "snappable" and "detachable", giving Lego-like flexibility in building modular component-based apps, and they are potentially interchangeable and can be acquired separately from different vendors.
+Like in both analogies, it's key to have a common, universal software component interface that functions like Lego's joint and a breadboard's conductive wire/pin, for building generic component-based software. Snappable implements such a "joint" as a unified, universal data transport layer API, through which components can send and receive unified data containers, and these containers can accommodate arbitrarily complex data. The data transport layer keeps the components connected regardless of how different or incompatible their internal data models are - meaning they can freely evolve their internal logic and data model[^2] without breaking the connection. 
 
 [^2]: While the data transport layer allows physically exchanging data between the components collaborative interaction, there is still a "logical" application-layer typically implemented in the components themselves, where the data is interpreted and consumed. 
+
+When assembling a modular app, compatible generic components can be easily and freely disconnected ("detached") from and reconnected ("re-attached") to an app through the Snappable interface, and technically, components made by different vendors are interchangeable through the interface, giving it Lego-like flexibility and (in some ways) experiences.
 
 ## Using A Universal Data Container
 

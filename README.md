@@ -14,17 +14,15 @@ Without pre-establishing a compatible data model, it'd be challenging for softwa
 **Q:** What do all Lego blocks have in common?  
 **A:** They all have standardized joints for connecting to the other blocks.
 
-Snappable is a library that provides generic component interfacing, through which software components can be "joined" together and exchange data, regardless of the differences in their data models, just like Lego joints enable building Lego models using Lego blocks, regardless of their individual shape and color. Such component interfacing, as from using Snappable, is the key to making generic software components because now components can evolve on their data model without breaking the connectivity to the other generic components.
-
-Essentially, Snappable provides a unified, universal data transport layer API, through which connected components can _freely exchange arbitrarily complex data between each other_ regardless of how different or incompatible their internal data models[^2]. Snappable allows these "snappable" and "detachable" components can be independently developed or be separately acquired, meaning Lego-like flexibility in modular app-building and ultimate component reuse.
-
-[^2]: While the data transport layer allows physically exchanging data between the components collaborative interaction, there is still a "logical" application-layer typically implemented in the components themselves, where the data is interpreted and consumed. 
+Just like Lego joints enable building Lego models using Lego blocks, regardless of their individual shape and color, Snappable is a library that provides generic component interfacing, through which software components can be "connected" together and exchange data, regardless of the differences in their data models. Loosely coupled component interfacing, as from using Snappable, is the key to making generic software components because it allows components to evolve on their data model without breaking their data-exchanging interface to the other components.
 
 Another analogy for describing Snappable is the breadboard used for building prototype electronic circuits. By connecting electronic components and ICs via conductive metal wires and pins, a breadboard allows transferring electrical signals between the electronic components according to a circuit design. Similarly, Snappable defines the pins and wires that connect software components for building a collaborative application.
 
 <img src="img/breadboard.webp" width="350" align="center">
 
-Like in both analogies, the joints connecting software components (Lego's joint, and breadboard's conductive wire/pin) are the key for simple and universal physical components interfacing, and the Snappable library is implementing such joints for connecting software components. 
+Like in both analogies, it's key to have a common, universal software component interface that functions like Lego's joint and a breadboard's conductive wire/pin, for building generic component-based software. Snappable implements such a "joint" as a unified, universal data transport layer API, through which components can send and receive unified data containers, and these containers can accommodate arbitrarily complex data. As such, components can remain connected by the data transport layer regardless of how different or incompatible their internal data models are - meaning these components can freely evolve their internal logic and data model[^2]. With Snappable's loosely coupled interface, components become "snappable" and "detachable", giving Lego-like flexibility in building modular component-based apps, and they are potentially interchangeable and can be acquired separately from different vendors.
+
+[^2]: While the data transport layer allows physically exchanging data between the components collaborative interaction, there is still a "logical" application-layer typically implemented in the components themselves, where the data is interpreted and consumed. 
 
 ## Using A Universal Data Container
 

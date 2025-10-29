@@ -1,4 +1,4 @@
-# Snappable - Connecting Generic Software Component
+# Snappable - Connecting Vendor-Neutral, Interchangeable Software Components
 
 In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
@@ -8,7 +8,7 @@ Software components aren't generic and interchangeable because, for them to effe
 
 [^1]: Using middleware products to mitigate incompatible data models in the data communication is not an effective solution because 1) component-level interfacing is too fine-grained for using middleware, and 2) the data conversion logic inside the middleware ties the interface to the data models used at either end's communicating party, making it a high-maintenance, tight-coupling solution. Besides, a middleware-based solution ties the components to the middleware product, making the components product-dependent on the middleware.
 
-So, for solving the problem of building generic and interchangeable software components, we need a way for generic component interfacing and data exchange, which needs to be independent of a component's individual business requirements and its internal data model; in technical terms, it means generalized component interfacing without tight-coupling.
+So, for solving the problem of building generic and interchangeable software components, we need generic component interfacing and data exchange that are independent of individual components' business requirements and their internal data model; in technical terms, it means "loose-coupling" in component connections inside an application.
 
 ## A "Lego Joint" Inspiration
 <img src="img/legoP.webp" width="350" align="center">
@@ -26,7 +26,7 @@ Like in both analogies, it's key to have a common, universal software component 
 
 [^2]: While the data transport layer allows physically exchanging data between the components collaborative interaction, there is still a "logical" application-layer typically implemented in the components themselves, where the data is interpreted and consumed. 
 
-When assembling a modular app, compatible generic components can be easily and freely disconnected ("detached") from and reconnected ("re-attached") to an app through the Snappable interface, and technically, components made by different vendors are interchangeable through the interface, giving it Lego-like flexibility and (in some ways) experiences.
+When assembling a modular app, Snappable-compatible software components can easily exchange data between each other using the provided interface without having to be committed to a fixed data model, and from the application's perspective, these components are interchangeable because the interface they use for communication is generic and universal - just like any  lightbult would a standard compatible household light bulb socket, meaning freely disconnected ("detached") from and reconnected ("re-attached") to an app through the Snappable interface, and technically, components made by different vendors are interchangeable through the interface, giving it Lego-like flexibility and (in some ways) experiences.
 
 ## Using A Universal Data Container
 

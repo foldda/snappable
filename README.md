@@ -1,14 +1,14 @@
-# Snappable - Connecting Vendor-Neutral, Interchangeable Software Components
+# A Vendor-Neutral Interface Making Software Components Interchangeable
 
 In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
-There are many successful products and real-world projects that have been built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e., Netflix cannot use Shopify-developed components and vice versa. 
+There are many real-world products and projects that are built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e., Netflix cannot use Shopify-developed components and vice versa. 
 
-Software components aren't generic and interchangeable because, for them to effectively exchange data and collaborate, they would need to adhere to a common data model. It's impractical for independent companies to establish and maintain a "compatible" data model between them, because each company's software development has its own evolving business requirements, and consequently, it has been lacking of a way for building and maintaining the custom data linkage between the components.[^1]
+Cross-company software components aren't interchangeable because to effectively exchange data and collaborate, they need to adhere to a common data model. It's impractical for independent companies to establish and maintain a "compatible" data model between them, because each company's software development has its own evolving business requirements, so data exchange between independently-built software is normally through dedicated custom interfaces, which are expensive to build and to maintain.[^1]
 
 [^1]: Using middleware products to mitigate incompatible data models in the data communication is not an effective solution because 1) component-level interfacing is too fine-grained for using middleware, and 2) the data conversion logic inside the middleware ties the interface to the data models used at either end's communicating party, making it a high-maintenance, tight-coupling solution. Besides, a middleware-based solution ties the components to the middleware product, making the components product-dependent on the middleware.
 
-So, for solving the problem of building generic and interchangeable software components, we need generic component interfacing and data exchange that are independent of individual components' business requirements and their internal data model; in technical terms, it means "loose-coupling" in component connections inside an application.
+To have generic and interchangeable software components, we'll need a generic component interface and data exchange mechanism that is independent of individual components, regarding their business requirements and internal data model - a feature called "loose-coupling" in software engineering.
 
 ## A "Lego Joint" Inspiration
 <img src="img/legoP.webp" width="350" align="center">

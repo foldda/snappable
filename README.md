@@ -1,4 +1,4 @@
-# A Vendor-Neutral Interface Making Software Components Interchangeable
+# Making "Lego-like" Interchangeable Software Components 
 
 In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
@@ -16,9 +16,9 @@ To have generic and interchangeable software components, we'll need a generic co
 **Q:** What do all Lego blocks have in common?  
 **A:** They all have standardized joints for connecting to the other blocks.
 
-Just like Lego joints enable building Lego models using Lego blocks, regardless of their individual shape and color, Snappable is a library that provides generic component interfacing, through which software components can be "connected" together and exchange data, regardless of the differences in their data models. Loosely coupled component interfacing, as from using Snappable, is the key to making generic software components because it allows components to evolve on their data model without breaking their data-exchanging interface to the other components.
+Snappable is a library that provides generic component interfacing. Just like Lego joints enable building Lego models using Lego blocks, regardless of their individual shape and color, software components can be "connected" by Snappable and exchange data, regardless of the differences in their data models. Such a feature is the key to making "Lego-like" generic software components because it allows components to evolve on their data model without breaking their data-exchanging interface to the other components.
 
-Another analogy for describing Snappable is the breadboard used for building prototype electronic circuits. By connecting electronic components and ICs via conductive metal wires and pins, a breadboard allows transferring electrical signals between the electronic components according to a circuit design. Similarly, Snappable defines the pins and wires that connect software components for building a collaborative application.
+Another analogy for describing Snappable is the breadboard, which is used for building prototype electronic circuits by connecting electronic components and ICs via conductive metal wires and pins. Components in a breadboard are interchangeable as long as their pins are compatible with the breadboard, and the breadboard's function is simply connecting the components and transmitting the electrical signals between them. In an analogy comparing Snappable compatible software components to the electrical components on a breadboard, the Snappable-provided interface is like the pins and holes of the breadboard, and the data between the software components is like the electrical signals of a breadboard circuit.
 
 <img src="img/breadboard.webp" width="350" align="center">
 

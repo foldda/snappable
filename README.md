@@ -1,4 +1,4 @@
-# Making "Lego-like" Interchangeable Software Components 
+# A Library For Making "Lego-like" Interchangeable Software Components 
 
 In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
@@ -28,9 +28,9 @@ Like in both analogies, it's the key of a software component interface that func
 
 [^2]: While the data transport layer allows physically exchanging data between the components collaborative interaction, there is still a "logical" application-layer typically implemented in the components themselves, where the data is interpreted and consumed. 
 
-When assembling a modular app, Snappable-compatible software components can easily exchange data between each other using the provided interface without having to be committed to a fixed data model, and from the application's perspective, these components are interchangeable because the interface they use for communication is generic and universal - just like any  lightbult would a standard compatible household light bulb socket, meaning freely disconnected ("detached") from and reconnected ("re-attached") to an app through the Snappable interface, and technically, components made by different vendors are interchangeable through the interface, giving it Lego-like flexibility and (in some ways) experiences.
+When assembling a modular app, Snappable allows compatible software components to easily exchange data between each other using the provided interface without having to be committed to a fixed data model. From the application builder's perspective, these components are interchangeable because the interface they use for communication is generic and universal - just like you can change a household lightbulb as long as it fits into the standard socket. Thanks to the Snappable interface, components can be freely disconnected ("detached") from and reconnected ("re-attached") to an app, meaning components made by different vendors are interchangeable, giving assembling an application the Lego-like flexibility and experiences.
 
-## Using A Universal Data Container
+## Schema-insensitive Universal Data Transport
 
 The core technology of the Snappable component interfacing API is Charian, which defines a universal data container class called Rda. Rda is a simple multidimensional array structure that promises the ability to accommodate any arbitrary structured data.
 

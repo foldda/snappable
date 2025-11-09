@@ -16,7 +16,7 @@ To have generic and interchangeable software components, we'll need a way of low
 **Q:** What do all Lego blocks have in common?  
 **A:** They use the same type of joints for connecting to the other blocks.
 
-Lego inspires us that a universal joint structure for connecting the modules, that is both generic and simple, can support an ultimately flexible and expandable modular architecture. For achiving a similar modular software architecture, this means it would require generic and universal component interfacing - that is, in the software terms, a standardized system and method for software component modules to exchange data, 
+Lego inspires us that a universal joint structure for connecting the modules is the key that supports an ultimately flexible and expandable modular architecture. For achiving a similar modular software architecture, this means it would require generic and universal component interfacing - that is, in the software terms, a standardized system and method for software component modules to exchange data, 
 
 Snappable is a library for such generic component interfacing. Just like the generic Lego joints that enable joining and Lego blocks when building Lego models, the Snappable component interface allows any compatible components to connect and exchange data between each other, while allows the components to independently changing their data models. Like the Lego joints, the simple Snappable interface is "static" and maintainance-free, and it makes compatible software components "Lego-like" - meaning they can be independently developed, freely evolve and, by always maintaining inter-components-communication, interchangeable (more on how this is achieved later).
 
@@ -30,7 +30,11 @@ Like in both analogies, it's the key of a software component interface that func
 
 When assembling a modular app, Snappable allows compatible software components to easily exchange data between each other using the provided interface without having to be committed to a fixed data model. From the application builder's perspective, these components are interchangeable because the interface they use for communication is generic and universal - just like you can change a household lightbulb as long as it fits into the standard socket. Thanks to the Snappable interface, components can be freely disconnected ("detached") from and reconnected ("re-attached") to an app, meaning components made by different vendors are interchangeable, giving assembling an application the Lego-like flexibility and experiences.
 
-## Schema-insensitive Universal Data Transport
+## CONCEPT: Schema-Neutral Data Transport
+
+In the concept of Snappable component interfacing, the data exchange between two components happens in two layers: the bottom layer, called the "data transport layer", is responsible for transferring the data content from one component to the other; and the top layer, called the "application layer", is responsible for interpretate the data content in the context of the application i.e., the context of the two components' interaction and collabration. The Snappable library only implements the data transport layer and the application layer is left to be implemented in the components. 
+
+Such a logical separation is the key to the Snappable component architecture design. It means the Snappable library is only responsible for physically _connecting_ the components, and the components themselves are responsible for interpretate and consume the data. It allows the data transport layer to be issolated from the application's data model i.e., to be "schema neutral". Using the breadboard analogy, the data transport layer is like the metal wiring between the electrical components, it connectes the components and allows any data to be passed throiugh, just like the breadboard wires allowing any electrical signal to pass through (regardless the signal's waveform and voltage, etc). 
 
 The core technology of the Snappable component interfacing API is Charian, which defines a universal data container class called Rda. Rda is a simple multidimensional array structure that promises the ability to accommodate any arbitrary structured data.
 

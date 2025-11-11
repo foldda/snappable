@@ -46,9 +46,11 @@ Attributed to its recursive, expandable multidimensional array structure, an Rda
 
 Also, as a bonus, the Charian API allows an Rda container to be converted to and from a text string, so it can be easily passed between programs cross-language and cross-platform, such as via in-process or remote function calls, or via networked data transfer or anything in between. So in theory, Snappable component interfacing can also be used in remote, distributed computing.
 
-## Facilitating Unified Data Exchange  
+## The Component-Interfacing API  
 
-Leveraging the RDA universal data container, the Snappable API defines a data transport layer consisit of set of classes and functions that a "snappable component" (explained below) would utilize and exchange data with the other snappable components. The way how a snappable component using the provided data transport layer is very straight-forward, and can be conceptually explained as below -
+Leveraging the RDA universal data container, the Snappable API defines how a component can become a "snappable component" by implementing the ISnappable interface (explained below), and an environment where snappable components can use to send and receive data utilizing the underlying universal data transport layer. Using the post office as the analogy, snappalbe components like a "customer" must have certain characters such as having a name/id and delivery address, and the API provides a set of methods, like a post office's counter, for these component "customers" to deposit and to collect data packages.
+
+consisit of set of classes and functions that a  would utilize and exchange data with the other snappable components. The way how a snappable component using the provided data transport layer is very straight-forward, and can be conceptually explained as below -
 
 n software architecture consist of a set of standardized classes and functions that plays their roles in an interactive scenario of how Snappable components can exchange data. In such highly abstracted scenario, a Snappable component is provided with a work environment consists of an input data source, and an output data sink. The component runs in a process loop, pulling input data from the input data source, do "some processing" about it, and dispose any output to the output data sink, and both the input and output data are in the form of RDA.
 

@@ -40,11 +40,11 @@ Another benefit of Snappable's two-layer component interfacing design is that, b
 
 ## IMPLEMENTATION: A Universal Data Container
 
-To implement the schema-neutral data transport layer, Snappable uses a universal data container class from the Charian data serialization API, called Rda. Rda is a simple multidimensional array structure that promises the ability to accommodate any arbitrary structured data.
+To implement the schema-neutral data transport layer, Snappable uses a universal data container class from the Charian data serialization API, called Rda, which can be used as a versatile container to accommodate any arbitrary structured data. 
 
-Attributed to its recursive, expandable multidimensional array structure, an Rda container provides a dynamically expandable, practically unlimited storage space that any data object can fit in. Snappable uses Rda containers extensively for loose-couple component interfacing because data exchange using the schemaless Rda container is not affected by data model changes.  
+Attributed to its recursive, expandable multidimensional array structure, an Rda container provides a dynamically expandable, practically unlimited storage space that any data object can fit in. Imagine an Rda container is a carton box, and Snappable is the post office and each software component is the customer, so if a component customer wants to send some data to another component, it'd firstly pack the data into an Rda container, and then send the container "box" to Snappable the data transport layer ("post office") to deliver the container to the receiver component, and the reciver, would unpack the Rda container and retrieve the stored data to consume. In this scenario, the "packing and unpacking" processes are related to their intended data models and are implemented by the sending and the receiving components, in the data exchange's application layer. Snappable, on the other hand, only handles the schemaless Rda containers and is not affected by the components' data model changes.  
 
-Also, using Charian, an Rda container can be converted to and from a text string, so it can be passed between programs cross-language and cross-platform, such as via in-process or remote function calls, or via networked data transfer or anything in between. So in theory, Snappable component interfacing can be used in remote, distributed computing.
+Also, as a bonus, the Charian API allows an Rda container to be converted to and from a text string, so it can be easily passed between programs cross-language and cross-platform, such as via in-process or remote function calls, or via networked data transfer or anything in between. So in theory, Snappable component interfacing can also be used in remote, distributed computing.
 
 ## Facilitating Unified Data Exchange  
 

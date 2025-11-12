@@ -4,11 +4,11 @@ In software engineering, a software component is a modular, independent, and reu
 
 There are many real-world products and projects that are built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e., Netflix cannot use Shopify-developed components and vice versa. 
 
-Cross-company software components aren't interchangeable because each company has its own evolving business requirements in its software development, and it's difficult to establish and maintain "compatible" data models with the other companies, which is required for cross-company software to exchange data and collaborate. Data exchange between independently-developped software normally require dedicated custom-built interfaces, but it is inpractical between software components.[^1]
+Cross-company software components aren't interchangeable because companies' software development are isolated and independent, so it's difficult for them to agree and maintain "compatible" data models, which is required for cross-company software to exchange data and collaborate. Typically, data exchange between independently-developped software require dedicated custom-built interfaces, which is inpractical between software components.[^1]
 
 [^1]: Using middleware products to mitigate incompatible data models in the data communication is not an effective solution because 1) component-level interfacing is too fine-grained for using middleware, and 2) the data conversion logic inside the middleware ties the interface to the data models used at either end's communicating party, making it a high-maintenance, tight-coupling solution. Besides, a middleware-based solution ties the components to the middleware product, making the components product-dependent on the middleware.
 
-To have generic and interchangeable software components, we'll need a way of low-cost, easy-to-maintain component-level interfacing and data exchanging that is resistant or immute to individual components' business requirements and internal data model changes.
+So for having generic and interchangeable software components, it's a requirement to have low-cost, easy-to-maintain component-level interfacing that is irrelavent to individual components' business requirements and internal data model changes.
 
 ## The "Lego Joint" Inspiration
 <img src="img/legoP.webp" width="350" align="center">

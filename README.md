@@ -10,15 +10,16 @@ Cross-company software components aren't interchangeable because companies' soft
 
 So for having generic and interchangeable software components, it's a requirement to have low-cost, easy-to-maintain component-level interfacing that is irrelavent to individual components' business requirements and internal data model changes.
 
-## The "Lego Joint" Inspiration
-<img src="img/legoP.webp" width="350" align="center">
+## The Lego Joint "Inspiration"
 
 **Q:** What do all Lego blocks have in common?  
 **A:** They use the same type of joints for connecting to the other blocks.
 
-Lego inspires us that a universal joint structure for connecting the modules is the key that supports an ultimately flexible and expandable modular architecture. For achiving a similar modular software architecture, this means it would require generic and universal component interfacing - that is, in the software terms, a standardized system and method for software component modules to exchange data, 
+<img src="img/legoP.webp" width="350" align="center">
 
-Snappable is a library for such generic component interfacing. Just like the generic Lego joints that enable joining and Lego blocks when building Lego models, the Snappable component interface allows any compatible components to connect and exchange data between each other, while allows the components to independently changing their data models. Like the Lego joints, the simple Snappable interface is "static" and maintainance-free, and it makes compatible software components "Lego-like" - meaning they can be independently developed, freely evolve and, by always maintaining inter-components-communication, interchangeable (more on how this is achieved later).
+The success of Lego inspires us that it is the key to a flexible universal modular architecture to have a simple and generic mechanic or method of connecting all the modules. For modular software architecture, this means it would require generic and universal component interfacing - that is, in the software terms, a standardized system and method for software component modules to exchange data, 
+
+Snappable is a library for such generic component interfacing that allows any compatible components to connect and exchange data between each other, while allows the components to independently changing their data models. Like the simple and consistant Lego joints, the Snappable interface is "static" and maintainance-free, and it makes compatible software components "Lego-like" - meaning they are interchangeable and maintain inter-components-communication when connected, even though they are independently developed, and can freely evolve according to their individual requirements.
 
 Another analogy for describing Snappable is the breadboard that is used for building prototype electronic circuits. By connecting electronic components and ICs' conductive metal wires and pins to a breadboard, it allows building a circuit while these independent components transmit and exchange electrical signals via their connections through the board. The electronic components such as transistors and ICs are interchangeable as long as they have pins that are compatible with standard-sized plugs (holes) on the breadboard, and the breadboard's function is simply connecting the components and direct electrical signals according to the circuit. In this analogy, the Snappable-provided interface is like the pin holes on a breadboard, and the data between the software components is like the electrical signals of a breadboard circuit.
 

@@ -31,6 +31,28 @@ Like in both analogies, it's the key of a software component interface that func
 
 When assembling a modular app, Snappable allows compatible software components to easily exchange data between each other using the provided interface without having to be committed to a fixed data model. From the application builder's perspective, these components are interchangeable because the interface they use for communication is generic and universal - just like you can change a household lightbulb as long as it fits into the standard socket. Thanks to the Snappable interface, components can be freely disconnected ("detached") from and reconnected ("re-attached") to an app, meaning components made by different vendors are interchangeable, giving assembling an application the Lego-like flexibility and experiences.
 
+## A Working Demo
+
+Here is a demo of using some of the pre-made components avaiable from this repo to physically assemble an ETL app.
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=l0DjAjVoESo" target="_blank">
+    <img src="https://img.youtube.com/vi/l0DjAjVoESo/maxresdefault.jpg" alt="Watch the video" width="600">
+  </a>
+</p>
+
+This second clip explains how these components are configured indiviually and work collabourtively but are also interchangeable - 
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=etm8vNLH4po" target="_blank">
+    <img src="https://img.youtube.com/vi/etm8vNLH4po/maxresdefault.jpg" alt="Watch the video" width="600">
+  </a>
+</p>
+
+All the modules in the example are avaiable from this GitHub repo. Not only you can use and re-use them as in the demo, you can also, for example, use Company X's FTP module to replace the one in the example, and make it to work in a soution with your own self-developped DB-Writer module. That is how we can flexibly assemble apps using Snappable software components which are cross-compay share-able and interchangeable.
+
+Note in the example, Foldda's component runtime implementation uses Windows folder as the 'shell' to physically represent each software components. While it is visual and intuitive, you don't have to use Foldda runtime to enjoy the benefits of Snappable interchangeable software components. Think Foldda is a specific brand of breadboard and you don't have to use a specific brand of breadboard for developping an electrical circuit. More on this later.
+
 ## CONCEPT: Schema-Neutral Data Transport
 
 In the concept of Snappable component interfacing, the data exchange between two components happens in two layers: the bottom layer, called the "data transport layer", is responsible for transferring the data content from one component to the other; and the top layer, called the "application layer", is responsible for interpretate the data content in the context of the application i.e., the context of the two components' interaction and collabration. The Snappable library only implements the data transport layer and the application layer is left to be implemented in the components. 
@@ -62,6 +84,7 @@ n software architecture consist of a set of standardized classes and functions t
 ### IDataStore
 
 ### Working Examples Demo
+
 Any system implementing the Snappable API can benefit from its component-based computing architecture. For example, from this repo, there is a component called "HL7Networkreceiver", which can listen on a network port for receiving incoming HL7 messages. If your application requires such a function, you can implement the ISnappableManager interface, providing a "joint" where the HL7Networkreceiver can plug into and to dispose received messages to the output data store provided by your app. 
 
 You can also be a component developper, for example you can develop a component (implementing the ISnappable) that can covert input HL7 messages to write the data to a specialized database, and other people can use your component to join to the HL7Networkreceiver to assemble an app that can receive HL7 messages from the network and write to the database.

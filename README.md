@@ -17,7 +17,7 @@ So for having generic and interchangeable software components, it's a requiremen
 
 <img src="img/legoP.webp" width="350" align="center">
 
-The success of Lego inspires us that it is the key to a flexible universal modular architecture to have a simple and generic mechanic or method of connecting all the modules. For modular software architecture, this means it would require generic and universal component interfacing - that is, in the software terms, a standardized system and method for software component modules to exchange data, 
+The success of Lego inspires us that, for a flexible and universal modular architecture, it is the key to have a simple and generic way of connecting the modules which, in Lego's case, it's its joint mechanic. For modular software architecture, this means it would require generic and universal component interfacing - that is, in the software terms, a standardized system and method for software component modules to exchange data. 
 
 Snappable is a library for such generic component interfacing that allows any compatible components to connect and exchange data between each other, while allows the components to independently changing their data models. Like the simple and consistant Lego joints, the Snappable interface is "static" and maintainance-free, and it makes compatible software components "Lego-like" - meaning they are interchangeable and maintain inter-components-communication when connected, even though they are independently developed, and can freely evolve according to their individual requirements.
 
@@ -33,7 +33,7 @@ When assembling a modular app, Snappable allows compatible software components t
 
 ## A Working Demo
 
-Here is a demo of using some of the pre-made components avaiable from this repo to physically assemble an ETL app.
+Here is a demo of component-based computing - assembling an ETL app using pre-made Sanppable components avaiable from this repo.
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=l0DjAjVoESo" target="_blank">
@@ -55,20 +55,19 @@ Note in the example, Foldda's component runtime implementation uses Windows fold
 
 ## Who Would Use Snappable Components
 
-Modular application builder -
+Application builder - take advantage of using components from all companies.
 
-Component vendor - component can be greatly re-used and easier to maintained.
+Component vendor - developing component can be greatly re-used and easier to maintained.
 
-Individule developer - developing adaptors rather than full systems.
-
+Integration developer - extending components for specific applications, through developing adaptors rather than full systems.
 
 So how does Snappable work internally to enable these?
 
 ## CONCEPT: Schema-Neutral Data Transport
 
-In the concept of Snappable component interfacing, the data exchange between two components is conceptually separated into two layers: the bottom layer, called the "data transport layer", is responsible for transferring the data content from one component to the other; and the top layer, called the "application layer", is responsible for interpretate the data content in the context of the application i.e., the context of the two components' interaction and collabration. The Snappable library only implements the data transport layer and the application layer is left to be implemented in the components. 
+Snappable conceptually separate the components data exchange into two layers: the bottom layer, called the "data transport layer", is responsible for transferring the data content from one component to the other; and the top layer, called the "application layer", is responsible for interpretate the data content in the context of the application i.e., the context of the two components' interaction and collabration. The Snappable library only implements the data transport layer and the application layer is left to be implemented in the components. 
 
-Such a logical separation is the key to the Snappable's component interfacing design. It means the Snappable library is only responsible for _connecting and passing data_ from and to the components, and not for translating or interpretating the data. This allows the data transport layer to be isolated from the application's data model (being "schema-neutral") thus any component can connect and transfer data via the generic interface it provides. The schema-neutral data transport layer is like the metal wiring from the breadboard connecting the electrical components, it is simply the path for the electrical signals passing thru, regardless of what the waveform and voltage the signals are. 
+Such a logical separation is the key for making Snappable the Lego joint for component interfacing. It means the Snappable library is only responsible for _connecting and passing data_ from and to the components, and not for translating or interpretating the data. This allows the data transport layer to be isolated from the application's data model (being "schema-neutral") thus any component can connect and transfer data via the generic interface it provides. The schema-neutral data transport layer is like the metal wiring from the breadboard connecting the electrical components, it is simply the path for the electrical signals passing thru, regardless of what the waveform and voltage the signals are. 
 
 On the other hand, by leaving the responsibility of describing or interpretating the data to the application layer which resides in the components, it effectively allows loose-coupling - an important feature in modular architecture design that pevents components being overly depend on each other and resulting higher ongoing costs for maintaining compatibilities between the components.
 
@@ -92,11 +91,17 @@ n software architecture consist of a set of standardized classes and functions t
 
 ### ISnappable
 
+An abstraction of a Snappable component.
+
 ### ISnappableManager
+
+Post office counter and staff that facilitate the data transport.
 
 ### IDataStore
 
-### Working Examples Demo
+A standardized data storage for holding data.
+
+## How TO Use This Repo
 
 Any system implementing the Snappable API can benefit from its component-based computing architecture. For example, from this repo, there is a component called "HL7Networkreceiver", which can listen on a network port for receiving incoming HL7 messages. If your application requires such a function, you can implement the ISnappableManager interface, providing a "joint" where the HL7Networkreceiver can plug into and to dispose received messages to the output data store provided by your app. 
 

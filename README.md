@@ -1,4 +1,4 @@
-# A Library For Making "Lego-like" Interchangeable Software Components 
+# Making "Lego-like" Interchangeable Software Components 
 
 In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
@@ -53,6 +53,15 @@ All the modules in the example are avaiable from this GitHub repo. Not only you 
 
 Note in the example, Foldda's component runtime implementation uses Windows folder as the 'shell' to physically represent each software components. While it is visual and intuitive, you don't have to use Foldda runtime to enjoy the benefits of Snappable interchangeable software components. Think Foldda is a specific brand of breadboard and you don't have to use a specific brand of breadboard for developping an electrical circuit. More on this later.
 
+## Who Would Use Snappable Components
+
+Modular application builder -
+
+Component vendor - component can be greatly re-used and easier to maintained.
+
+Individule developer - developing adaptors rather than full systems.
+
+
 So how does Snappable work internally to enable these?
 
 ## CONCEPT: Schema-Neutral Data Transport
@@ -61,17 +70,19 @@ In the concept of Snappable component interfacing, the data exchange between two
 
 Such a logical separation is the key to the Snappable's component interfacing design. It means the Snappable library is only responsible for _connecting and passing data_ from and to the components, and not for translating or interpretating the data. This allows the data transport layer to be isolated from the application's data model (being "schema-neutral") thus any component can connect and transfer data via the generic interface it provides. The schema-neutral data transport layer is like the metal wiring from the breadboard connecting the electrical components, it is simply the path for the electrical signals passing thru, regardless of what the waveform and voltage the signals are. 
 
-A bonus benefit of Snappable's two-layer component interfacing design is that, by leaving the responsibility of describing or interpretating the data to the application layer which resides in the components, it effectively allows loose-coupling - an important feature in modular architecture design that pevents components being overly depend on each other and resulting higher ongoing costs for maintaining compatibilities between the components.
+On the other hand, by leaving the responsibility of describing or interpretating the data to the application layer which resides in the components, it effectively allows loose-coupling - an important feature in modular architecture design that pevents components being overly depend on each other and resulting higher ongoing costs for maintaining compatibilities between the components.
 
 ## IMPLEMENTATION: A Universal Data Container
 
-In Snappable' schema-neutral data transport layer, it uses a universal data container class from the Charian data serialization API for moving the data. The container class, called Rda, has a recursive, expandable multidimensional array structure; it also provides a dynamically expandable, practically unlimited storage space that any data object can fit in, so effectively it can accommodate any arbitrary structured data. 
+In Snappable' schema-neutral data transport layer, it uses a _universal data container class_ from the Charian data serialization API for moving the data. The container class, called Rda, has a recursive, expandable multidimensional array structure; it also provides a dynamically expandable, practically unlimited storage space that any data object can fit in, so effectively it can accommodate any arbitrary structured data. 
 
-Imagine Snappable' schema-neutral data transport operates like the post office: an Rda container is a carton box, and the Snappable component interface is the office counter where the component "customers" is the post office and the software components are the customers, when a component "customer" wants to send some data to another component, it'd firstly pack the data into an Rda container, and then send the container "box" to Snappable the data transport layer (the "post office") which delivers the container to the receiver component, which would unpack the Rda container and retrieve the stored data for consumption. In this scenario, the "packing and unpacking" processes are related to their intended data models and they are implemented by the sending and the receiving components, in the data exchange's application layer. Snappable, on the other hand, only handles the moving schemaless Rda containers "boxes" and is not affected by the components' data model changes.  
+In an analogy, the Snappable' schema-neutral data transport operates like the Post Office and the Rda containers are carton boxes: the Snappable component interface is like the office counter where the components are the "customers" who send and receive their data via the "counter" using the provided Rda container "boxes". When a component "customer" wants to send some data to another component, it'd firstly pack the data into an Rda container, and then send the container "box" to Snappable the data transport layer (the "post office") which delivers the container to the receiver component, and the receiver would unpack the Rda container and retrieve the stored data for consumption[^3]. 
 
-As a bonus, the Charian API allows an Rda container to be converted to and from a text string. As Strings are primary data types in most  so it can be easily passed between programs cross-language and cross-platform. Strings are  such as via in-process or remote function calls, or via networked data transfer or anything in between. So in theory, Snappable component interfacing can also be used in remote, distributed computing.
+[^3]: As a bonus, the Charian API allows an Rda container to be converted to and from a text string. As Strings are primary data types in most  so it can be easily passed between programs cross-language and cross-platform. Strings are  such as via in-process or remote function calls, or via networked data transfer or anything in between. So Snappable component interfacing can also be used in remote, distributed computing.
 
-## The Component-Interfacing API  
+So essentially, Snappable is an API for components to freely exchage data, and it does so by defines a schema-neutral data transport layer where data are inside the unified Rda containers. The "container packing and unpacking" processes which are related to application-specific data models are responsible by the sending and the receiving components, in their application-specific implementation. The data transportation ("joining the components") only handles the moving schemaless Rda containers "boxes" and is not affected by the components' data model changes.  
+
+## DETAILS: The Component-Interfacing API  
 
 Leveraging the RDA universal data container, the Snappable API defines how a component can become a "snappable component" by implementing the ISnappable interface (explained below), and an environment where snappable components can use to send and receive data utilizing the underlying universal data transport layer. Using the post office as the analogy, snappalbe components like a "customer" must have certain characters such as having a name/id and delivery address, and the API provides a set of methods, like a post office's counter, for these component "customers" to deposit and to collect data packages.
 

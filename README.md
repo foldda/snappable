@@ -49,15 +49,19 @@ This second clip explains how these components are configured indiviually and wo
   </a>
 </p>
 
-All the modules in the example are avaiable from this GitHub repo. Not only you can use and re-use them as in the demo, you can also, for example, use Company X's FTP module to replace the one in the example, and make it to work in a soution with your own self-developped DB-Writer module. That is how we can flexibly assemble apps using Snappable software components which are cross-compay share-able and interchangeable.
+An environment running apps assembled by using Snappable modules is called a "runtime". In the above demos, the runtime is called SnapFusion which is available from Foldda.com. Note when this repo defines Snappable components, it is free for companies to make their own runtime to host and drive apps assembled using the components. In other words, you don't have to commit to use Foldda's SnapFusion to take advantage the functions implemented in available Snappable components[^3]. In fact, the Developper Kit project from this repor is a fully functional runtime, although it is designed for developping and testing Snappable components. 
 
-Note in the example, Foldda's component runtime implementation uses Windows folder as the 'shell' to physically represent each software components. While it is visual and intuitive, you don't have to use Foldda runtime to enjoy the benefits of Snappable interchangeable software components. Think Foldda is a specific brand of breadboard and you don't have to use a specific brand of breadboard for developping an electrical circuit. More on this later.
+All the modules in the example are avaiable from this GitHub repo so you can download them to assamble apps like in the video or to use them as add-on modules in your app to extend its features. You can also use cross-company modules together in an app. For example, you can use Company X's FTP module to replace the one in the example, and make it to work in a soution with your own self-developped DB-Writer module. That is how we can flexibly assemble apps using Snappable software components which are cross-compay share-able and interchangeable.
+
+[^3]: Foldda SnapFusion uses a Windows folder for wrapping and representing a software component where the files content inside the folder contains information, such has location pointers, about the actual software component being used. While it is visual and intuitive, you don't have to use Foldda runtime to enjoy the benefits of Snappable interchangeable software components. Just like you don't have to use a specific brand of breadboard for developping an electrical circuit, think Foldda is a specific brand of (software component) breadboard. 
 
 ## Who Would Use Snappable Components
 
-Application builder - take advantage of using components from all companies.
+Application consumer - take advantage of using components from all companies.
 
-Component vendor - developing component can be greatly re-used and easier to maintained.
+Component developer - developing component can be greatly re-used and easier to maintained.
+
+Component 
 
 Integration developer - extending components for specific applications, through developing adaptors rather than full systems.
 

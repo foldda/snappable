@@ -10,7 +10,7 @@ Cross-company software components aren't interchangeable because companies' soft
 
 So for having generic and interchangeable software components, it's a requirement to have low-cost, easy-to-maintain component-level interfacing that is irrelavent to individual components' business requirements and internal data model changes.
 
-## The Lego Joint "Inspiration"
+## The Lego Joint Inspiration
 
 **Q:** What do all Lego blocks have in common?  
 **A:** They use the same type of joints for connecting to the other blocks.
@@ -57,13 +57,11 @@ All the modules in the example are avaiable from this GitHub repo so you can dow
 
 ## Who Would Use Snappable Components
 
-Application consumer - take advantage of using components from all companies.
+Application builder - take advantage of using market components from all companies.
 
 Component developer - developing component can be greatly re-used and easier to maintained.
 
-Component 
-
-Integration developer - extending components for specific applications, through developing adaptors rather than full systems.
+Integration developer - connecting applications, through lightweight component-interface adaptors rather than using heavy middleware systems.
 
 So how does Snappable work internally to enable these?
 
@@ -77,13 +75,13 @@ On the other hand, by leaving the responsibility of describing or interpretating
 
 ## IMPLEMENTATION: A Universal Data Container
 
-In Snappable' schema-neutral data transport layer, it uses a _universal data container class_ from the Charian data serialization API for moving the data. The container class, called Rda, has a recursive, expandable multidimensional array structure; it also provides a dynamically expandable, practically unlimited storage space that any data object can fit in, so effectively it can accommodate any arbitrary structured data. 
+In Snappable' schema-neutral data transport layer, it uses a _universal data container class_ from the Charian data serialization API for moving the data. The container class, called Rda, has a recursive, multidimensional array structure which is also dynamically expandable. It provides a practically unlimited storage space that effectively can accommodate any arbitrary structured data. 
 
-In an analogy, the Snappable' schema-neutral data transport operates like the Post Office and the Rda containers are carton boxes: the Snappable component interface is like the office counter where the components are the "customers" who send and receive their data via the "counter" using the provided Rda container "boxes". When a component "customer" wants to send some data to another component, it'd firstly pack the data into an Rda container, and then send the container "box" to Snappable the data transport layer (the "post office") which delivers the container to the receiver component, and the receiver would unpack the Rda container and retrieve the stored data for consumption[^3]. 
+The Snappable' schema-neutral data transport operates like the Post Office where everything are packaged inside carton boxes. In this analogy, the Snappable component interface is like the office counter where the components are the "customers" who send and receive their data via the "counter" using the provided Rda container "boxes". When components require exchanging data, they would be exchanging Rda containers through via the  data transport layer (the "post office") provided by the Snappable API. Later, a component must unpack the Rda container to retrieve the stored data for consumption[^3] and the unpacking and consuming data operations are the application layer inside compoments themselves.
 
-[^3]: As a bonus, the Charian API allows an Rda container to be converted to and from a text string. As Strings are primary data types in most  so it can be easily passed between programs cross-language and cross-platform. Strings are  such as via in-process or remote function calls, or via networked data transfer or anything in between. So Snappable component interfacing can also be used in remote, distributed computing.
+[^3]: As a bonus, the Charian API allows an Rda container to be converted to and from a text string. As Strings are primary data types in most so it can be easily passed between programs cross-language and cross-platform. Strings are  such as via in-process or remote function calls, or via networked data transfer or anything in between. So Snappable component interfacing can also be used in remote, distributed computing.
 
-So essentially, Snappable is an API for components to freely exchage data, and it does so by defines a schema-neutral data transport layer where data are inside the unified Rda containers. The "container packing and unpacking" processes which are related to application-specific data models are responsible by the sending and the receiving components, in their application-specific implementation. The data transportation ("joining the components") only handles the moving schemaless Rda containers "boxes" and is not affected by the components' data model changes.  
+So essentially, Snappable is an API for components to freely exchage data, and it does so by defines a schema-neutral data transport layer where data are inside the unified Rda containers. The "container packing and unpacking" processes which are related to application-specific data models are responsible by the sending and the receiving components, in their application-specific implementation. By separating the two layers, data transport can becoming simple and unified and not being affected by the components' data model changes - we have now a Lego joint for joining components.  
 
 ## DETAILS: The Component-Interfacing API  
 

@@ -33,7 +33,7 @@ When assembling a modular app, Snappable allows compatible software components t
 
 ## A Working Demo
 
-Here is a demo of component-based computing - assembling an ETL app using pre-made Sanppable components avaiable from this repo.
+Above may sound fictionary, let's take a look at a working demo to visualize component-based computing in-action. This video below shows assembling an ETL app using pre-made Sanppable components which are avaiable from this repo.
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=l0DjAjVoESo" target="_blank">
@@ -49,7 +49,9 @@ This second clip explains how these components are configured indiviually and wo
   </a>
 </p>
 
-An environment running apps assembled by using Snappable modules is called a "runtime". In the above demos, the runtime is called SnapFusion which is available from Foldda.com. Note when this repo defines Snappable components, it is free for companies to make their own runtime to host and drive apps assembled using the components. In other words, you don't have to commit to use Foldda's SnapFusion to take advantage the functions implemented in available Snappable components[^3]. In fact, the Developper Kit project from this repor is a fully functional runtime, although it is designed for developping and testing Snappable components. 
+An environment running apps assembled by using Snappable modules is called a "runtime". In the above demos, the runtime is called SnapFusion which is available from Foldda.com. It shall be noted Snappable API from this repo _defines_ "Snappable components" and the associated runtime, it is for companies and developpers to make compatible components and runtimes. In other words, you don't have to commit to use Foldda's SnapFusion runtime to take advantage the functions implemented in available Snappable components[^3][^4], and Snappable-compatible components from any third-party can be used in any of the compatible runtimes.
+
+[^4]: In fact, the Developper Kit project from this open-source repo is another fully functional runtime, although it is designed for developping and testing Snappable components. 
 
 All the modules in the example are avaiable from this GitHub repo so you can download them to assamble apps like in the video or to use them as add-on modules in your app to extend its features. You can also use cross-company modules together in an app. For example, you can use Company X's FTP module to replace the one in the example, and make it to work in a soution with your own self-developped DB-Writer module. That is how we can flexibly assemble apps using Snappable software components which are cross-compay share-able and interchangeable.
 
@@ -57,19 +59,19 @@ All the modules in the example are avaiable from this GitHub repo so you can dow
 
 ## Who Would Use Snappable Components
 
-Application builder - take advantage of using market components from all companies.
+Application builder - taking advantage of all available market components from all companies - loosely-coupled modular architecture leads to faster app development cycle, component interchangeablility leads to more choices, meaning portentially lower cost and higher quality thanks to competition.
 
-Component developer - developing component can be greatly re-used and easier to maintained.
+Component developer - developing components that can be greatly re-used and easier to maintained, for bigger market.
 
-Integration developer - connecting applications, through lightweight component-interface adaptors rather than using heavy middleware systems.
+Integration builder - connecting applications through using standard component-interface or by implementing lightweight "adaptor" components to bridge incompatible data models, rather than using high-cost middleware systems.
 
-So how does Snappable work internally to enable these?
+So how does Snappable work internally to deliver these benefits?
 
 ## CONCEPT: Schema-Neutral Data Transport
 
-Snappable conceptually separate the components data exchange into two layers: the bottom layer, called the "data transport layer", is responsible for transferring the data content from one component to the other; and the top layer, called the "application layer", is responsible for interpretate the data content in the context of the application i.e., the context of the two components' interaction and collabration. The Snappable library only implements the data transport layer and the application layer is left to be implemented in the components. 
+Snappable conceptually separates the components data exchange into two layers: the bottom layer, called the "data transport layer", is responsible for transferring the data content from one component to the other; and the top layer, called the "application layer", is responsible for interpretate the data content in the context of the application i.e., the context of the two components' interaction and collabration. The Snappable library only implements the data transport layer and the application layer is left to be implemented in the components. 
 
-Such a logical separation is the key for making Snappable the Lego joint for component interfacing. It means the Snappable library is only responsible for _connecting and passing data_ from and to the components, and not for translating or interpretating the data. This allows the data transport layer to be isolated from the application's data model (being "schema-neutral") thus any component can connect and transfer data via the generic interface it provides. The schema-neutral data transport layer is like the metal wiring from the breadboard connecting the electrical components, it is simply the path for the electrical signals passing thru, regardless of what the waveform and voltage the signals are. 
+Such a logical separation is the key to Snappable's software-component architecture, as it defines "the Lego joint" equivlant for component interfacing, which is the data transport layer. It means the Snappable library is only responsible for _connecting and passing data_ from and to the components, and not for translating or interpretating the data. This allows the data transport layer to be isolated from the application's data model (being "schema-neutral") thus any component can connect and transfer data via the generic interface it provides. The schema-neutral data transport layer is like the metal wiring from the breadboard connecting the electrical components, it is simply the path for the electrical signals passing thru, regardless of what the waveform and voltage the signals are. 
 
 On the other hand, by leaving the responsibility of describing or interpretating the data to the application layer which resides in the components, it effectively allows loose-coupling - an important feature in modular architecture design that pevents components being overly depend on each other and resulting higher ongoing costs for maintaining compatibilities between the components.
 

@@ -49,13 +49,11 @@ This second clip explains how these components are configured indiviually and wo
   </a>
 </p>
 
-An environment running apps assembled by using Snappable modules is called a "runtime". In the above demos, the runtime is called SnapFusion which is available from Foldda.com. It shall be noted Snappable API from this repo _defines_ "Snappable components" and the associated runtime, it is for companies and developpers to make compatible components and runtimes. In other words, you don't have to commit to use Foldda's SnapFusion runtime to take advantage the functions implemented in available Snappable components[^3][^4], and Snappable-compatible components from any third-party can be used in any of the compatible runtimes.
-
-[^4]: In fact, the Developper Kit project from this open-source repo is another fully functional runtime, although it is designed for developping and testing Snappable components. 
-
-All the modules in the example are avaiable from this GitHub repo so you can download them to assamble apps like in the video or to use them as add-on modules in your app to extend its features. You can also use cross-company modules together in an app. For example, you can use Company X's FTP module to replace the one in the example, and make it to work in a soution with your own self-developped DB-Writer module. That is how we can flexibly assemble apps using Snappable software components which are cross-compay share-able and interchangeable.
+The program doing the demos is called SnapFusion, it contains a "runtime" environment that conforms the Sanppable API for providing the joining linkage connecting the components and implementing the data communication for the components data exchange needs[^3]. From the fast development of modular apps perpsective, it may not appear to be anything exciting, but the true value of the Snappable API is that it _defines_ "Snappable components" and the corresponding runtimes, based on which companies and developpers can make compatible components and runtimes that are interchangeable or be used together. In other words, you don't have to commit to use Foldda's SnapFusion runtime to take advantage the available Snappable components, and any Snappable-compatible components from any third-party can be used in any of the compatible runtimes[^4].
 
 [^3]: Foldda SnapFusion uses a Windows folder for wrapping and representing a software component where the files content inside the folder contains information, such has location pointers, about the actual software component being used. While it is visual and intuitive, you don't have to use Foldda runtime to enjoy the benefits of Snappable interchangeable software components. Just like you don't have to use a specific brand of breadboard for developping an electrical circuit, think Foldda is a specific brand of (software component) breadboard. 
+
+[^4]: In fact, the Developper Kit project from this open-source repo is another fully functional runtime, although it is designed for developping and testing Snappable components. 
 
 ## Who Would Use Snappable Components
 
@@ -166,14 +164,14 @@ In Emflow API's design, the process of using a component is modeled as a factory
 
 Truly generic software components also mean they are freely interchangeable,  "generic" software components, we need a mechanism that allows the components to flexibly interface with each other to exchange data, without being bound by their different data models (tight-coupling).
 
-The Enflow component-based computing framework promotes high-level modular software re-use, by specifying a simple and practical open standard of software components and solution runtime, so both a component and a runtime can be independly developped, and are interchangible. 
+The Snappable component-based computing framework promotes high-level modular software re-use, by specifying a simple and practical open standard of software components and solution runtime, so both a component and a runtime can be independly developped, and are interchangible. 
 
 Functional implementations of the Enflow Components and Runtime are available
 pipelines for integration and data automation. "Portable" means Enflow components and assembled applications can be used on any computer[^1] without setup or installation. 
 
 [^1]: On any Windows computers only at the moment.
 
-Enflow leverages Charian, a universal data serializer, for connected components to exchange arbitrarily complex data, effectively allowing any Enflow-compliant components, from any person or company, to join and work together without pre-setting, and being constrained by, a data model.
+SnapFusion leverages Charian, a universal data serializer, for connected components to exchange arbitrarily complex data, effectively allowing any Enflow-compliant components, from any person or company, to join and work together without pre-setting, and being constrained by, a data model.
 
 > Just like a LEGO joint can connect arbitrarily shaped pieces to function as a more complex unit, Enflow works by providing a "universal joint" for coupling software components to become a bigger module or an app.
 

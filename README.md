@@ -4,11 +4,11 @@ In software engineering, a software component is a modular, independent, and reu
 
 There are many real-world products and projects that are built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e., Netflix cannot use Shopify-developed components and vice versa. 
 
-Cross-company software components aren't interchangeable because it requires those independently-developped software to exchange data and collaborate, and it's difficult for companies to agree and maintain "compatible" data models for the data exchange. Typically, data exchange between incompatible data models require dedicated custom-built middleware, which is inpractical between software components.[^1]
+Cross-company software components aren't interchangeable because, fundamentally, for components to collabrate it requires communication and exchanging data, and it's difficult for companies to agree and maintain "compatible" data models in their software development for the data exchange. Data exchange between independently developed software is usually "after thought" and typically requires dedicated, custom-built middleware to convert incompatible data models, which is inpractical between software components.[^1]
 
 [^1]: Using middleware products to mitigate incompatible data models in the data communication is not an effective solution because 1) component-level interfacing is too fine-grained for using middleware, and 2) the data conversion logic inside the middleware ties the interface to the data models used at either end's communicating party, making it a high-maintenance, tight-coupling solution. Besides, a middleware-based solution ties the components to the middleware product, making the components product-dependent on the middleware.
 
-So for having generic and interchangeable software components, it's a requirement to have low-cost, easy-to-maintain component-level interfacing that is irrelavent to individual components' business requirements and internal data model changes.
+So for having generic and interchangeable software components, we need a low-cost, easy-to-maintain component-level interfacing for components with evolving business requirements and different internal data model to exchange data.
 
 ## The Lego Joint Inspiration
 
@@ -17,7 +17,7 @@ So for having generic and interchangeable software components, it's a requiremen
 
 <img src="img/legoP.webp" width="350" align="center">
 
-The success of Lego inspires us that, for designing a flexible and universal modular architecture, it can be as simple as desining how the modules can be _universdally_ joined togehter - in Lego's case, it's the Lgo joints. Similarily, for a designing modular software architecture that components are interchangeable, this means we need _a universal way how components can comminicate and exchange data between each other - that is, we need a way of standard and **generic component interfacing**. 
+The success of Lego inspires us that, for designing a flexible and universal modular architecture, it can be as simple as designing how the modules can be _universally_ joined togehter - in Lego's case, it's the Lego joints. Similarily, for a designing modular software architecture that components are interchangeable, this means we need _a universal way how components can comminicate and exchange data between each other - that is, we need a way of standard and **generic component interfacing**. 
 
 Snappable is a library for such generic component interfacing that allows any compatible components to connect and exchange data between each other. Like the simple and consistant Lego joints, the Snappable interface is "static" and maintainance-free, and it makes compatible software components "Lego-like" - meaning the components can be independently developped using incompatible data models which can also evolve independently because requirement changes.
 

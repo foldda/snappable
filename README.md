@@ -31,7 +31,7 @@ Like in both analogies, it's the key of a software component interface that func
 
 When assembling a modular app, Snappable allows compatible software components to easily exchange data between each other using the provided interface without having to be committed to a fixed data model. From the application builder's perspective, these components are interchangeable because the interface they use for communication is generic and universal - just like you can change a household lightbulb as long as it fits into the standard socket. Thanks to the Snappable interface, components can be freely disconnected ("detached") from and reconnected ("re-attached") to an app, meaning components made by different vendors are interchangeable, giving assembling an application the Lego-like flexibility and experiences.
 
-> So essentially, Snappable is a framework of data connections with sockets for connecting exchangeable software components - think it's a wired house that you can change lightbulbs and electrical appliances.
+> So essentially, Snappable is a framework of data connections with sockets for connecting exchangeable software components - think it's a wired house that with sockets where you can plug in lightbulbs and electrical appliances.
 
 ## A Working Demo
 
@@ -69,13 +69,13 @@ So how does Snappable work internally to deliver these benefits?
 
 ## CONCEPT: Schema-Neutral Data Transport
 
-Snappable conceptually separates the components data exchange into two layers: the bottom layer, called the "data transport layer", is responsible for transferring the data content from one component to the other; and the top layer, called the "application layer", is responsible for interpretate the data content in the context of the application i.e., the context of the two components' interaction and collabration. The Snappable library only implements the data transport layer and the application layer is left to be implemented in the components. 
+Snappable conceptually separates the components data exchange into two layers: the bottom layer, called the "data transport layer", is responsible for transferring the data content from one component to the other; and the top layer, called the "application layer", is responsible for interpretating the data content in the context of the application i.e., the context of the two components' interaction and collabration. The Snappable library only implements the data transport layer and the application layer is left to be implemented in the components. 
 
-Such a logical separation is the key to Snappable's software-component architecture, as it defines "the Lego joint" equivlant for component interfacing, which is the data transport layer. Because the Snappable library is now only responsible for _connecting and passing data_ from and to the components, and not for translating or interpretating the data, it is "schema-neutral" (i.e., being isolated from the application's data model changes) thus any component can connect and transfer data via the generic interface it provides. The schema-neutral data transport layer is like the metal wiring from the breadboard connecting the electrical components, it is simply the path for the electrical signals passing thru, regardless of what the waveform and voltage the signals are. 
+Such a logical separation is the key to Snappable's software-component architecture, as the data transport layer is "the Lego joint" equivlant for component interfacing. Because the Snappable library is now only responsible for _connecting and passing data_ from and to the components, and not for translating or interpretating the data, the generic interface it provides can be "schema-neutral" (i.e., being immute from the application's data model changes) and allow any component to connect and transfer data. The schema-neutral data transport layer is like the metal wiring from the breadboard connecting the electrical components, it is simply the path for the electrical signals passing thru, regardless of what the waveform and voltage the signals are. 
 
-On the other hand, by leaving the responsibility of describing or interpretating the data to the application layer which resides in the components, it effectively allows loose-coupling - an important feature in modular architecture design that pevents components being overly depend on each other and resulting higher ongoing costs for maintaining compatibilities between the components.
+And, by leaving the responsibility of describing or interpretating the data to the application layer which resides in the components, it elimites logical dependency to the physical connection and allows greater flexibility and lower costs in maintaining the components and the application.
 
-## IMPLEMENTATION: A Universal Data Container
+## IMPLEMENTATION: Data Transport Using Universal Data Container
 
 In Snappable' schema-neutral data transport layer, it uses a _universal data container class_ from the Charian data serialization API for moving the data. The container class, called Rda, has a recursive, multidimensional array structure which is also dynamically expandable. It provides a practically unlimited storage space that effectively can accommodate any arbitrary structured data. 
 

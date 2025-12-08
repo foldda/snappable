@@ -35,7 +35,7 @@ When assembling a modular app, Snappable allows compatible software components t
 
 ## A Working Demo
 
-Above may sound fictionary, let's take a look at a working demo to visualize component-based computing in-action. This video below shows assembling an ETL app using pre-made Sanppable components which are avaiable from this repo.
+If the above theory and analogies sound a bit abstractive or even fictionary, let's take a look at a working demo to visualize echangeable components in-action. This video below shows assembling an ETL app using pre-made Sanppable components which are avaiable from this repo.
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=l0DjAjVoESo" target="_blank">

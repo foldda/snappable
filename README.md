@@ -4,11 +4,9 @@ In software engineering, a software component is a modular, independent, and reu
 
 There are many real-world products and projects that are built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e., Netflix cannot use Shopify-developed components and vice versa. 
 
-Cross-company software components aren't interchangeable because, fundamentally, for components to collabrate it requires communication and exchanging data, and it's difficult for companies to agree and maintain "compatible" data models in their software development for the data exchange. Data exchange between independently developed software is usually "after thought" and typically requires dedicated, custom-built middleware to convert incompatible data models, which is inpractical between software components.[^1]
+Cross-company software components aren't interchangeable because component-based modular application implies the components are interacting and exchanging data in the application. For components developped independently by separate companies, they need to agree and maintain "compatible" data models for the data exchange, which is difficult especially considering each company has it's own evolving business requirement. Data exchange between independently developed software is usually an after-thought and typically requires a building and maintaining dedicated middleware to bridge incompatible data models, and such approach is inpractical between software components because of the larger number of variations and the smaller grainunarity.
 
-[^1]: Using middleware products to mitigate incompatible data models in the data communication is not an effective solution because 1) component-level interfacing is too fine-grained for using middleware, and 2) the data conversion logic inside the middleware ties the interface to the data models used at either end's communicating party, making it a high-maintenance, tight-coupling solution. Besides, a middleware-based solution ties the components to the middleware product, making the components product-dependent on the middleware.
-
-So for making generic and interchangeable software components, we are lacking a way of component-level interfacing that can cater for exchanging data between components with evolving business requirements and different internal data models.
+So, how can we enable independently developed software component to effectively exchange data and also avoid the high cost of bridging incompatible data models? 
 
 ## The Lego Joint Inspiration
 

@@ -23,13 +23,20 @@ Another analogy for a component-based software architecture is the breadboard th
 
 ## Snappable - A Component-Based Software Architecture
 
-Snappable is a library for such generic component interfacing with an aim that any compatible components to connect and exchange data between each other. Like the simple and consistant Lego joints or a breadboard's sockets and pin holes, the Snappable interface is "static" and maintainance-free, and it makes compatible software components like Lego pieces or electrical components - meaning all the components work (communicate and collabrate) in a same app via the provided common interface, while they can be independently developped using incompatible data models which can also evolve independently if the requirement changes.
+Snappable is a library for such generic component interfacing with an aim that any compatible components to connect and exchange data between each other. Simply, it defines and implements the "joint" that connects software components, and surprisingly, it is all required for a component-based computing architecture that delivers all the above-mentioned benefits.
+
+
+
 
 Like in both analogies, the key for building generic component-based software architecture is to have a software component interface that functions like Lego's joint and a breadboard's conductive wire/pin. Snappable implements such a "joint" as a unified, universal data transport layer API, through which components can send and receive unified data containers, and these containers can accommodate arbitrarily complex data. The data transport layer keeps the components connected regardless of how different or incompatible their internal data models are - meaning they can freely evolve their internal logic and data model[^2] without breaking the connection. 
 
 [^2]: While the data transport layer allows physically exchanging data between the components collaborative interaction, there is still a "logical" application-layer typically implemented in the components themselves, where the data is interpreted and consumed. 
 
-When assembling a modular app, Snappable allows compatible software components to easily exchange data between each other using the provided interface without having to be committed to a fixed data model. From the application builder's perspective, these components are interchangeable because the interface they use for communication is generic and universal - just like you can change a household lightbulb as long as it fits into the standard socket. Thanks to the Snappable interface, components can be freely disconnected ("detached") from and reconnected ("re-attached") to an app, meaning components made by different vendors are interchangeable, giving assembling an application the Lego-like flexibility and experiences.
+When assembling a modular app, Snappable allows compatible software components to easily exchange data between each other using the provided interface without having to be committed to a fixed data model. 
+
+Implementatio-wise, the Snappable interface is "static" and maintainance-free, and it makes connecting and using compatible software components a close experience like assembling Lego models or buiding electric circuits using breadboard.
+
+From the application builder's perspective, these components are interchangeable because the interface they use for communication is generic and universal - just like you can change a household lightbulb as long as it fits into the standard socket. Thanks to the Snappable interface, components can be freely disconnected ("detached") from and reconnected ("re-attached") to an app, this means potentially components made by different vendors are interchangeable.
 
 > So essentially, Snappable is a framework of data connections with sockets for connecting exchangeable software components - think it's a wired house that with sockets where you can plug in lightbulbs and electrical appliances.
 

@@ -1,14 +1,14 @@
-# Building Modular Applications from Interchangeable Software Components
+# Building Interchangeable Software Components
 
 In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
 There are many real-world products and projects that are built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e., Netflix cannot use Shopify-developed components and vice versa. 
 
-Cross-company software components aren't interchangeable because component-based modular application implies the components are interacting and exchanging data in the application. For components developped independently by separate companies, they need to agree and maintain "compatible" data models for the data exchange, which is difficult especially considering each company has it's own evolving business requirement. Data exchange between independently developed software is usually an after-thought and typically requires a building and maintaining dedicated middleware to bridge incompatible data models, and such approach is inpractical between software components because of the larger number of variations and the smaller grainunarity.
+Cross-company software components aren't interchangeable because it would require components interacting and exchanging data in an application, which implies maintaning compatiblilty with an agreed data model during the interaction and data exchange. This is difficult if components developped independently by different companies, as it's likely each companies' components would evlove independently with their own evolving business requirement. If two independently developed applications must collabrate and exchange data, it's usually implemented as an after-thought and typically requires building and maintaining a dedicated middleware to bridge incompatible data models, and such approach is inpractical between software components because of the larger number of variations and the smaller grainunarity.
 
 So, how can we enable independently developed software component to effectively exchange data and also avoid the high cost of bridging incompatible data models? 
 
-## Lego and Breadboard - The Physical World Inspirations
+## Lego and Breadboard - Real World Inspirations
 
 **Q:** What do all Lego blocks have in common?  
 **A:** They use the same type of joints for connecting to the other blocks.

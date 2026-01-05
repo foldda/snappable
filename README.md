@@ -10,23 +10,20 @@ So, how can we enable independently developed software component to effectively 
 
 ## Lego and Breadboard - Real World Inspirations
 
-**Q:** What do all Lego blocks have in common?  
-**A:** They use the same type of joints for connecting to the other blocks.
+**Q:** What do Lego blocks have in common?  
+**A:** They all use the same type of joints for connecting to the other blocks.
 
 <img src="img/legoP.webp" width="350" align="center">
 
-From structure and design perspective, Lego owes is remarkable success to its unique modular architecture that allows any two Lego pieces to be joined together, and eventually, by joining more pieces together, people can build arbiturary models to their desire. The key to Lego's modular architecture mechanism is the simple yet univerally applicable joints that present on every Lego pieces - the uniformed joints that allows _universally gurranteed_ locking and connecting any two Lego pieces together, regardless how difference the other aspects of the two are. Inspired by this, we come to realise a component-based modular software architecture, where the components are interchangeable, requires _a universal way_ of connecting components - that is, we need to develop a generic "component joint", or, in software development terms, **a common component communication and data exchanging interface**. 
+From a structure and design perspective, Lego owes its remarkable success to its standardized joint that appears in every Lego block, and (un) suprisingly, such a simple structural design powers the whole Lego modular architecture "eco system" - allowing people to build arbitrarily expansive models to their desire without incurring exponential complexity. The uniform joints that allow _universally guaranteed_ locking and connecting any two Lego pieces together, regardless of how different the other aspects of the two are. Inspired by this, we come to realise that, in a component-based modular software architecture, the key to control complexcity while more and more components are connected, is to _simplify and standardize the way how components are connected_ - as in Lego, we need to develop a generic "component joint", or, in software development terms, **a common component connection and data-exchanging interface**. 
 
-Another analogy for a component-based software architecture is the breadboard that is used for building prototype electronic circuits. By connecting electronic components and ICs' conductive metal wires and pins to a breadboard, it allows building a circuit while these independent components transmit and exchange electrical signals through the connections the board provides. The electronic components such as transistors and ICs are interchangeable as long as they have pins that are compatible with standard-sized plugs (holes) on the breadboard, and the breadboard's function is simply connecting the components and direct electrical signals according to the circuit. In this analogy, the component interface we seek to build is like the pin holes on a breadboard, and the data between the software components is like the electrical signals of a breadboard circuit.
+Another analogy for a component-based software architecture is the breadboard that is used for building prototype electronic circuits. By connecting electronic components and ICs' conductive metal wires and pins to a breadboard, allows building a circuit while these independent components transmit and exchange electrical signals through the connections provided by the board. The electronic components, such as transistors and ICs, are interchangeable as long as they have pins that are compatible with standard-sized plugs (holes) on the breadboard, and the breadboard's function is simply connecting the components and direct electrical signals according to the circuit. In this analogy, the component interface we seek to build is like the pin holes on a breadboard, and the data between the software components is like the electrical signals of a breadboard circuit.
 
 <img src="img/breadboard.webp" width="350" align="center">
 
 ## Snappable - A Component-Based Software Architecture
 
-Snappable is a library for such generic component interfacing with an aim that any compatible components to connect and exchange data between each other. Simply, it defines and implements the "joint" that connects software components, and surprisingly, it is all required for a component-based computing architecture that delivers all the above-mentioned benefits.
-
-
-
+Snappable is a library for such generic component interfacing with the aim that any compatible components to connect and exchange data between each other. Simply, it defines and implements the "joint" that connects software components, and surprisingly, it is all required for a component-based computing architecture that delivers all the above-mentioned benefits.
 
 Like in both analogies, the key for building generic component-based software architecture is to have a software component interface that functions like Lego's joint and a breadboard's conductive wire/pin. Snappable implements such a "joint" as a unified, universal data transport layer API, through which components can send and receive unified data containers, and these containers can accommodate arbitrarily complex data. The data transport layer keeps the components connected regardless of how different or incompatible their internal data models are - meaning they can freely evolve their internal logic and data model[^2] without breaking the connection. 
 

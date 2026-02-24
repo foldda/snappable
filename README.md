@@ -119,7 +119,20 @@ In these cases, both the apps and the components can be independently developped
 
 ### Component Developper Kit
 
-## Commercial And Industrial Usage
+
+## License & Commercial Use
+
+This project is released under **GPL‑3.0** for open‑source use.
+
+If you want to use it in a **proprietary or closed‑source product**, or distribute it without GPL obligations, a **commercial license is available**.
+
+Commercial licensing offers:
+- Permission for closed‑source usage
+- Legal clarity for enterprises
+- Optional support & long‑term maintenance
+
+📧 contact@foldda.com
+
 
 ## Our Vision 
 One objective of this project is to overcome one of the major challenge of implementing ture cross-vendor software component collabration and sharing. We have demonstrated that using the novel RDA encoding and the Charian serialization API, a small code-base API can achieve rather effective and practical component-based computing.

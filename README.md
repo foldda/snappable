@@ -2,11 +2,15 @@
 
 In software engineering, a software component is a modular, independent, and reusable unit of software that encapsulates specific functionality, with well-defined interfaces for interaction with other components. Components simplify development by allowing systems to be assembled like building blocks, encouraging reusability, maintainability, and scalability.
 
-There are many real-world products and projects that are built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, components for these architectures and systems can only work in a company's specific domain, i.e., Netflix cannot use Shopify-developed components and vice versa. 
+There are many real-world products and projects that are built using software components and component-based software engineering, such as Netflix's microservice-based and composable architecture, and Shopify's reusable React components in its Polaris design system. However, these components can only work in a company's specific domain and aren't interchangeable, i.e., Netflix cannot use Shopify-developed components and vice versa. 
 
-If cross-company software components are mixed within an application, need to interact and exchange data, and are interchangeable, it means the collaboration and data exchange between these components must be based on a pre-agreed data model that doesn't change. This is difficult if components are developed independently by different companies, because each company would have its own business requirements that determine the data models to be used, which are often evolving. If two independently developed applications must collaborate and exchange data, it's usually implemented as an afterthought. It typically requires building and maintaining dedicated middleware to bridge incompatible data models, and such an approach is impractical at the software components' granularity.
+## The Problem
 
-So, for component-based software development using interchangeable software components, we need a consistent and stable yet flexible and capable interface for independently developed components to exchange data without incurring the high cost of bridging incompatible data models.
+If software components made by different companies are interchangeable, it means their collaboration is through a consistant mechanism, including using a pre-agreed static data model for any underlying data exchange. This is difficult because the data model would ahere to each company's functional and business requirements, which are often evolving over time. 
+
+So instead of interchanging plug-n-play software modules, we often require extra effort to "integrate" two independently developed software, for their collaboration and exchanging data. For integrating larger scale applications, it typically requires building and maintaining dedicated middleware to bridge incompatible data models, but such an approach is impractical at the software components' granularity.
+
+Indeed, for implementing truely interchangeable software components, we need a generic and consistent and static way for the components to collabrate, specifically, we need a generic plug-n-play component date-exhanging inteface, for all the current and future components, and such an interface cannot have a restricting data model because every component's data model is dynamically depend on its business and functional requirements and may (inevitably) change over time.
 
 ## Lego and Breadboard - The Real World Inspirations
 

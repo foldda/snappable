@@ -8,36 +8,21 @@ There are many real-world products and projects that are built using software co
 
 If software components made by different companies are interchangeable, it means their collaboration is through a consistant mechanism, including using a pre-agreed static data model for any underlying data exchange. This is difficult because the data model would ahere to each company's functional and business requirements, which are often evolving over time. 
 
-So instead of interchanging plug-n-play software modules, we often require extra effort to "integrate" two independently developed software, for their collaboration and exchanging data. For integrating larger scale applications, it typically requires building and maintaining dedicated middleware to bridge incompatible data models, but such an approach is impractical at the software components' granularity.
+So instead of interchanging plug-n-play software modules, extra work are often required to "integrate" two pieces of independently developed software, for their collaboration and exchanging data. For integrating larger scale applications, it typically requires building and maintaining dedicated middleware to bridge incompatible data models, but such an approach is impractical at the software components' granularity.
 
-Indeed, for implementing truely interchangeable software components, we need a generic and consistent and static way for the components to collabrate, specifically, we need a generic plug-n-play component date-exhanging inteface, for all the current and future components, and such an interface cannot have a restricting data model because every component's data model is dynamically depend on its business and functional requirements and may (inevitably) change over time.
+Indeed, for implementing true interchangeable software components, we need a generic and consistent and static way for the components to collaborate, specifically, we need a generic plug-n-play component data-exchanging inteface, for all the current and future components, and such an interface cannot have a restricting data model because every component's data model is dynamically depend on its business and functional requirements and may (inevitably) change over time.
 
-## Lego and Breadboard - The Real World Inspirations
+## Building a software component breadboard
 
-**Q:** What do Lego blocks have in common?  
-**A:** They all use the same type of joints for connecting to the other blocks.
-
-<img src="img/legoP.webp" width="350" align="center">
-
-From a product design perspective, the key to Lego's remarkable success is the standardized joint that appears in every Lego block. It's a feature that sets the foundation of the "modular architecture" of the entire Lego toy system, a feature that allows people to build arbitrarily expandable models without incurring exponential complexity. Lego joints allow any two Lego pieces to be _uniformly_ locking and connecting together, regardless of how different their other aspects are. Inspired by this, we come to realise that, in a component-based modular software architecture, the key to control complexcity while more and more components are connected, is to _simplify and standardize the way how components are connected_ - as in Lego, we need to develop a generic "component joint", or, in software development terms, **a common component connection and data-exchanging interface**. 
-
-Another analogy for a component-based software architecture is the breadboard, which is a tool used for wiring electrical components and developing prototype electronic circuits. Connecting electronic components and ICs' conductive metal wires and pins to a breadboard allows building a circuit, while these independent components transmit and exchange electrical signals through the connections provided by the board. The electronic components, such as transistors and ICs, are interchangeable as long as they have pins that are compatible with standard-sized plugs (holes) on the breadboard, and the breadboard's function is simply connecting the components and directing electrical signals according to the circuit. In this analogy, the component interface we seek to build is like the pin holes on a breadboard, and the data between the software components is like the electrical signals of a breadboard circuit.
+Snappable is a component-based software framework. It's core concept works like a software version of the breadboard, which is a tool used for wiring electrical components and developing prototype electronic circuits. Connecting electronic components and ICs' conductive metal wires and pins to a breadboard allows building a circuit, while these independent components transmit and exchange electrical signals through the connections provided by the board. The electronic components, such as transistors and ICs, are interchangeable as long as they have pins that are compatible with standard-sized plugs (holes) on the breadboard, and the breadboard's function is simply connecting the components and directing electrical signals according to the circuit.
 
 <img src="img/breadboard.webp" width="350" align="center">
 
-## Snappable - A Software Component Interfacing API
+Similarly, just like a breadboard's pin-holes and wires, the Snappable framework defines and implements the "joint" that connects software components, allowing simple and unified connection and data exchange. As in the analogy, the Snappable "breadboard" provides the functions of pin holes and wirings, through a unified, universal data transport layer API, through which components can send and receive unified data containers, and these containers can accommodate arbitrarily complex data. Using a technique known as [late-binding](), the data transport layer keeps the components connected regardless of how different or incompatible their internal data models are, which means it allows any compatible components to plug-and-play without re-compilation.
 
-Snappable is a library for such generic component interfacing that allows any compatible components to connect and exchange data between each other. Simply, it defines and implements the "joint" that connects software components, and just like the Lego joint, by allowing simple and unified connection and data exchange, it is the key for a component-based software construction framework.
+From a component vendor's perspective, software components can be independently developed because the provided data transport layer allows exchanging data between the components without having to be committed to a fixed data model. 
 
-Snappable implements such a "joint" as a unified, universal data transport layer API, through which components can send and receive unified data containers, and these containers can accommodate arbitrarily complex data. The data transport layer keeps the components connected regardless of how different or incompatible their internal data models are - meaning they can freely evolve their internal logic and data model[^2] without breaking the connection. 
-
-[^2]: While the data transport layer allows physically exchanging data during the components' collaborative interaction, there is still a "logical" application-layer typically implemented in the components themselves, where the data is interpreted and consumed. 
-
-When assembling a modular app, Snappable allows compatible software components to easily exchange data between each other using the provided interface without having to be committed to a fixed data model. 
-
-Implementation-wise, the Snappable interface is "static" and maintenance-free, and it makes connecting and using compatible software components a close experience like assembling Lego models or building electric circuits using a breadboard.
-
-From the application builder's perspective, these components are interchangeable because the interface they use for communication is generic and universal - just like you can change a household lightbulb as long as it fits into the standard socket. Thanks to the Snappable interface, components can be freely disconnected ("detached") from and reconnected ("re-attached") to an app, this means that potentially components made by different vendors are interchangeable.
+From a component consumer's perspective, the interchangeable Snappable components are just like you can change a household lightbulb as long as it fits into the standard socket - because the interface components use for communication is generic and universal. 
 
 > So essentially, Snappable is a framework of data connections with sockets for connecting exchangeable software components - think of it as a wired house with sockets where you can plug in lightbulbs and electrical appliances.
 
@@ -75,7 +60,7 @@ Integration builder - connecting applications through using standard component-i
 
 So how does Snappable work internally to deliver these benefits?
 
-## CONCEPT: Schema-Neutral Data Transport
+## CONCEPT: Data exchange late-binding
 
 Snappable conceptually separates the components data exchange into two layers: the bottom layer, called the "data transport layer", is responsible for transferring the data content from one component to the other; and the top layer, called the "application layer", is responsible for interpretating the data content in the context of the application i.e., the context of the two components' interaction and collabration. The Snappable library only implements the data transport layer and the application layer is left to be implemented in the components. 
 
@@ -113,7 +98,7 @@ Post office counter and staff that facilitate the data transport.
 
 A standardized data storage for holding data.
 
-## How TO Use This Repo
+## How to Use This Repo
 
 Any system implementing the Snappable API can benefit from its component-based computing architecture. For example, from this repo, there is a component called "HL7Networkreceiver", which can listen on a network port for receiving incoming HL7 messages. If your application requires such a function, you can implement the ISnappableManager interface, providing a "joint" where the HL7Networkreceiver can plug into and to dispose received messages to the output data store provided by your app. 
 
@@ -177,94 +162,21 @@ In Emflow API's design, the process of using a component is modeled as a factory
 
 ## Standardized Runtimes
 
-### Snappable Component Deverloper Kit
+### Snappable Component Developer Kit
 
-### iSnap - A Commercial Product
+### SnapFusion - A Commercial Application
 
-### iSnap Win_Service
+### SnapFusion Win_Service
 
 ## Summary
 
-Truly generic software components also mean they are freely interchangeable,  "generic" software components, we need a mechanism that allows the components to flexibly interface with each other to exchange data, without being bound by their different data models (tight-coupling).
+# Foldda Handler - The Design Concept
 
-The Snappable component-based computing framework promotes high-level modular software re-use, by specifying a simple and practical open standard of software components and solution runtime, so both a component and a runtime can be independly developped, and are interchangible. 
+All components connect to the framework though a standardized "handler" interface, which is modeled on an analogy of a factory processing line: a worker (a "handler") takes items from an input bucket, processes them, and places the processed items (or other types of output) into an output bucket.
 
-Functional implementations of the Enflow Components and Runtime are available
-pipelines for integration and data automation. "Portable" means Enflow components and assembled applications can be used on any computer[^1] without setup or installation. 
+The framework provides a work environment for the workers called a "runtime", which is responsible for providing the worker an input bucket, an output bucket, and, if applicable, passing the output from a worker to the next worker.
 
-[^1]: On any Windows computers only at the moment.
-
-SnapFusion leverages Charian, a universal data serializer, for connected components to exchange arbitrarily complex data, effectively allowing any Enflow-compliant components, from any person or company, to join and work together without pre-setting, and being constrained by, a data model.
-
-> Just like a LEGO joint can connect arbitrarily shaped pieces to function as a more complex unit, Enflow works by providing a "universal joint" for coupling software components to become a bigger module or an app.
-
-> Another analogy is that Enflow works like a breadboard where electrical components connect to it and work together as they use universal standard pins for sending and receiving signals. Enflow components send and receive data using the simple channel and format defined by the API.
-
-This repo contains files and resources for Enflow component development, including -
-
-1. The framework's component and runtime API, for anyone to make compatible components, with arbitrary features that can collaborate and interact with Enflow components made by any other vendors.
-2. Source code of many Enflow components for various modularized tasks and functions, which can be used as they are, or as spoilerplates for further customizing a component tailored to your specific requirement.
-3. An easy-to-use "Developer Kit" program with GUI allows debugging and tracing the execution of connected Enflow components in Visual Studio.
-
-## Background: Component-Based Computing - The Challenge 
-
-Component-based computing promises many attractive benefits with its modularized architecture and interoperability feature, including better reusability, scalability, maintainability, and flexibility. However, implementing such a system has proven challenging and very few have succeeded. One fundamental problem to be addressed when implementing component-based computing is how components are going to connect and exchange data - to achieve maximum interoperability, minimum assumptions should be made between components about each other's data model and behavior, on the other hand, there shall be a level of "agreement" (i.e. a protocol) between the connected components about what and how data are exchanged for an interactive transaction. Note any such agreement being established would inevitably set a boundary to components about what can and cannot be done, so one of the design challenges for a true interoperable component-based computing system is to have the data exchange protocol as flexible as possible while maintaining operatable.
-
-> Einstein once said: Everything should be made as simple as possible, but not simpler.
-
-One example of such an agreement is the REST API where schema 
-
-The ultimate goal of Enflow Component API is to become the base of an open-sourced software component marketplace, where free and premium components from different vendors are made available for people to assemble apps without programming. Not only component-based software development is much more productive and easier to maintain as you see in the demo, but a market of software components also has great economic value because it encourages a very high degree of software reuse. Theoretically, when a new component is developed and added to the market's collection, the number of possible apps from these components would multiply and grow exponentially, and, unlike using hardware electronic components, software components can be easily copied and reused in an app without much effort or additional cost. 
-
-In the past, despite these attractive benefits, one thing that stopped realizing component-based computing was how to define "a component's boundary" so it could co-exist and collaborate with the other components in an app. We need a standard interface that allows software components to freely and meaningfully exchange data.
-
-Foldda Enflow is an attempt to solve the above problem, that is, it defines and implements such a "universal interface", for software components to exchange data while working together - even if the components are from different vendors, or developed at various times, and have little or no pre-established knowledge of each other[^1]. 
-
-[^1]: This feature is called "late binding" in software engineering.
-
-## Enflow: Defining A Simple Component-Based Computing Framework
-
-In an analogy, Enflow Components works much like "the breadboard for software" which essentially is a framework for simple and practical component-based computing. That is, like a breadboard defining the intended electric signals between electrical components and how they are connected, the API defines a generic data package standard for exchanging between software components and defines the interface of how each component can be connected and collaboratively function together in a runtime environment like Enflow. Think of a defining "universal plug" for software components that works like the pins and pin-holes in a physical breadboard project. Also, for a software component operatable like a physical electrical component, it has to be data-model-neutral, meaning the data exchange cannot be bound to a specific data model controlled by a vendor - think "the pin" and "pin-hole" for the breadboard have to be neutral and generic. 
-
-<div align="center">
-<img src="_Resources/foldda-breadboard.png" width="450" align="center">
-</div>
-
-Based on the "pins" and "plugs" defined by the API. "Off-the-shelf" Enflow components can be made by any third party, giving you unrestricted choices of vendors for software components which you can use to create custom data processing and automation pipelines. And of course, you can also create components yourself without depending on a vendor. 
-
-## "Breadboard-Like" App-Building Operations 
-
-An Enflow project (called a "solution") consists of a selection of components (called "handlers") that collectively work together to perform an application. Unlike the other modular software development frameworks, where software modules only exist in a proprietary IDE environment, Enflow components are packaged as file system folders, which can be physically carried in a USB, and be built into an app using plain Windows desktop operations such as drag-and-drop - i.e. without the need of an IDE. That is why building a Foldda app is more like a breadboard project except the outcome is a software application. This [short video below](https://www.youtube.com/watch?v=l0DjAjVoESo) is a demo of building and running an ETP pipeline with Foldda components.
-
-[![Foldda Demo](https://img.youtube.com/vi/l0DjAjVoESo/0.jpg)](https://www.youtube.com/watch?v=l0DjAjVoESo)
-
-As seen in the video, app-building with Enflow components does not require any vendor-specific tool, which means you can build or change an "Enflow app" from any _bare_ Windows computer. 
-
-## Using This Repo
-
-To achieve organic growth for the intended software component market, Enflow Framework must allow a user to modify a component, or to create new components, according to his/her specific requirement, rather than trying to provide a large number of components and try to satisfy all users' needs. So the API is designed to be (extremely) simple, flexible, and non-restrictive.
-
-This repo hosts the open-sourced Foldda Automation API as well as the source code of many quality components developed by Foldda according to the API. These components can be used as they are, as you saw in the video, or serve as a boilerplate for you to customize or to start a brand-new component development, to suit your specific requirements. It is hoped these source codes will assist developers in understanding and developing their compatible software components.
-
-The "Developer Kit" project included in this repo is a simple reference runtime. It is also designed to be used for the convenience of custom handler development as you can use it to debug your components' code by following a data processing flow across components.
-
-# The Framework - Technical Details 
-
-In a Foldda app, each folder encapsulates a specific function of a data-processing step, the parent-children relationship of the stacked folders defines the data flow of the processing.
-
-<<A pic of Foldda program flow>>
-
-When a Foldda app executes in a runtime, each module's logic (a specific data-process step) is turned into a process by the runtime, and the app's intended data-processing is performed sequentially as laid out by the folder's hierarchical structure.
-
-<< foldda app execution with runtime >>
-
-# Foldda Handler Explained - A Design Analogy
-
-The framework is modeled as a factory processing line, where a worker (known as a "handler") takes items from an input bucket, processes them, and places the processed items (or other types of output) into an output bucket.
-
-The Foldda "runtime" is the work environment for the workers, which includes providing the worker its input bucket, and output bucket, and, if applicable, passing the output from a worker to the next worker.
-
-So in a Foldda handler, all it does is take data records from the provided input container, do the intended processing to these records, and then place the produced output to the provided output container. As defined by the framework, a Foldda handler would implement the IDataHandler interface - 
+So for a Foldda handler, its task is simplified as taking data records from the provided input container, "processing these records", and then placing the output to the provided output container. Thus the most important part of a handler, as defined by the framework's IDataHandler interface, is to implement the following -  
 
 ```csharp
   public interface IDataHandler
@@ -276,17 +188,6 @@ So in a Foldda handler, all it does is take data records from the provided input
       Task ProcessData(CancellationToken cancellationToken);
   }
 ```
-
-## Framework API Overview
-
-## Charian - Universal Data Exchange
-
-A Foldda runtime needs to address the problem of defining and implementing the interface between the components - which can be potentially independently developed and have no assumed knowledge of one other. And that is another key piece of tech from Foldda - the Charian object serialization API.
-
-With Charian, Foldda runtime has this real power which is that it allows plug-n-play of third-party developed handlers that would work with existing handlers without having to recompile the app. It means you can have a handler built to your specific requirements while taking advantage of the existing prebuilt handlers, which means ultimate flexibility and control. And when a newly developed handler combines with the existing handlers, it multiplies the number of possible apps that can be built.
-
-This allows Foldda Runtime to function as "the (software) breadboard", i.e. it powers up, and connects the input and the output of, the handler modules. More technically speaking, it navigates through a Foldda solution's folder hierarchy, executes the instructions in each module's folder, and provides data exchange between connected modules. An example of Foldda runtime is the Foldda Windows app.
-
 
 ## Handlers
 

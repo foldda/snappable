@@ -14,15 +14,6 @@ Visual Studio Code extensions and Adobe Photoshop plugins are familiar examples.
 
 This is true of most plugin and extension architectures: they create useful component ecosystems, but those ecosystems are closed around a particular host. A component that could be useful elsewhere must usually be adapted or rewritten for every new framework.
 
-Snappable separates two concerns:
-
-- The **host or runtime** connects components and directs the flow of data.
-- Each **component** interprets that data through its own model and performs its own specialised work.
-
-The runtime does not need to adopt the component's domain model, and the component does not need to compile against the runtime's domain classes. The boundary is based on RDA and the Snappable conventions.
-
-This removes a major source of host coupling. It does not remove the need for meaningful component contracts: two components can work together only when their functions and their interpretations of the exchanged data are compatible.
-
 ## A Breadboard for Software
 
 Snappable takes its central analogy from the breadboard used to prototype electronic circuits.
@@ -39,6 +30,15 @@ Snappable plays the equivalent role for software:
 - It remains neutral about each component's internal data model and business logic.
 - It lets a runtime arrange components into a working data-flow circuit.
 - It leaves functional compatibility and correct composition to component developers and application builders.
+
+Snappable separates two concerns:
+
+- The **host or runtime** connects components and directs the flow of data.
+- Each **component** interprets that data through its own model and performs its own specialised work.
+
+The runtime does not need to adopt the component's domain model, and the component does not need to compile against the runtime's domain classes. The boundary is based on RDA and the Snappable conventions.
+
+This removes a major source of host coupling. It does not remove the need for meaningful component contracts: two components can work together only when their functions and their interpretations of the exchanged data are compatible.
 
 <p align="left">
   <img src="img/snappable_breadboard_diagram.png" width="700" alt="Two components exchanging RDA data through the Snappable framework">

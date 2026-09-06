@@ -1,96 +1,92 @@
-# Snappable — A Breadboard for Software Components
+# Snappable — Runtime-Portable Software Components
 
-Snappable is a software-component framework for building applications from independently developed components.
+**Build a component once. Compile it once. Host the same compiled component unchanged in different Snappable-compatible runtimes.**
 
-Instead of coupling a component to one host application's interfaces and domain-object model, Snappable provides neutral, standardized "wiring": components exchange data through evolvable [RDA](https://github.com/foldda/rda) containers and can be connected and driven by different Snappable runtimes.
+Snappable is a framework that defines a common contract for building applications from independently developed software components. It standardises the connection between a component and the runtime that hosts it, so the component depends on Snappable rather than on one particular application's API or domain-object model.
 
-Like a physical breadboard, Snappable does not decide whether the connected components are functionally compatible or whether the resulting "circuit" is correctly designed. Component developers define and understand their components' data and functional contracts; application builders select suitable components and connect them correctly.
+Different runtimes can offer completely different interfaces, execution models, and data-flow structures while exposing the same Snappable connection. The **Component Developer Kit** and **SnapFusion** demonstrate this today: a component developed and tested in the Developer Kit can be loaded and used in SnapFusion without recompilation or source-code changes.
 
-## Background: The Problem
+Snappable builds on two other Foldda projects:
 
-A software component is a modular unit that encapsulates a specific capability behind a well-defined interface. Component-based systems can be easier to assemble, extend, test, and maintain than monolithic applications.
+- [RDA](https://github.com/foldda/rda) provides the neutral data containers exchanged between components.
+- [Charian](https://github.com/foldda/charian) converts a component's own object model to and from RDA through its `IRda` interface — a pattern called **self-binding**.
 
-Visual Studio Code extensions and Adobe Photoshop plugins are familiar examples. Both demonstrate the value of letting third parties extend an application. However, a VS Code extension cannot be loaded into Photoshop, and a Photoshop plugin cannot be used by VS Code. Each component is designed around its host's API, lifecycle, and domain-object model.
+## Contents
 
-This is true of most plugin and extension architectures: they create useful component ecosystems, but those ecosystems are closed around a particular host. A component that could be useful elsewhere must usually be adapted or rewritten for every new framework.
+- [The Problem](#the-problem)
+- [The Breadboard Analogy](#the-breadboard-analogy)
+- [Snappable Advantages: Portability, Composability, and Interchangeability](#snappable-advantages-portability-composability-and-interchangeability)
+- [Demo: Portable Components Across Runtimes](#demo-portable-components-across-runtimes)
+- [Who Snappable Is For](#who-snappable-is-for)
+  - [Component developers](#component-developers)
+  - [Application builders](#application-builders)
+  - [Runtime developers](#runtime-developers)
+- [Get Involved](#get-involved)
+- [License and Commercial Use](#license-and-commercial-use)
 
-## A Breadboard for Software
+## The Problem
 
-Snappable takes its central analogy from the breadboard used to prototype electronic circuits.
+Plugin systems make applications extensible, but their components normally belong to one host. A Visual Studio Code extension is built for Visual Studio Code; a Photoshop plugin is built for Photoshop. Each depends on its host's API, lifecycle, and often its domain-object model.
+
+Even when a component's underlying function would be useful elsewhere, moving it to another host normally requires an adapter, source-code changes, or a complete rewrite.
+
+Snappable separates the component from the runtime implementation. A component targets one common Snappable contract, and any compatible runtime implements the corresponding hosting contract. This makes the compiled component **host-neutral** and **runtime-portable** within the supported Snappable and platform versions.
+
+## The Breadboard Analogy
+
+Snappable takes its central analogy from a breadboard used to prototype electronic circuits.
 
 <p align="left">
   <img src="img/breadboard.png" width="350" alt="Electronic components connected on a physical breadboard">
 </p>
 
-A physical breadboard provides neutral electrical connections between the components plugged into it. It does not need to understand what a resistor, capacitor, switch, or integrated circuit does. It also does not guarantee that the chosen parts have compatible voltages or that the circuit will perform a useful function. Those decisions belong to the circuit designer.
+A physical breadboard provides standard connection points into which electronic components can be plugged. Different breadboards may wire those points into different circuits, but a compatible component does not have to be rebuilt for each breadboard.
 
-Snappable plays the equivalent role for software:
+Snappable applies the same separation to software:
 
-- It provides common connections through which components exchange RDA containers.
-- It remains neutral about each component's internal data model and business logic.
-- It lets a runtime arrange components into a working data-flow circuit.
-- It leaves functional compatibility and correct composition to component developers and application builders.
+| Breadboard concept | Snappable equivalent |
+|---|---|
+| Electronic component | Independently compiled software component |
+| Standard connection point | Snappable component–runtime contract |
+| Electrical signal | RDA container |
+| Component lead or pin | Charian `IRda` conversion boundary |
+| Wired breadboard | A Snappable-compatible runtime |
+| Completed circuit | A component-based application |
 
-Snappable separates two concerns:
-
-- The **host or runtime** connects components and directs the flow of data.
-- Each **component** interprets that data through its own model and performs its own specialised work.
-
-The runtime does not need to adopt the component's domain model, and the component does not need to compile against the runtime's domain classes. The boundary is based on RDA and the Snappable conventions.
-
-This removes a major source of host coupling. It does not remove the need for meaningful component contracts: two components can work together only when their functions and their interpretations of the exchanged data are compatible.
+The Snappable framework defines the standard connections. A runtime implements a particular wiring arrangement by loading, configuring, connecting, and driving components.
 
 <p align="left">
-  <img src="img/snappable_breadboard_diagram.png" width="700" alt="Two components exchanging RDA data through the Snappable framework">
+  <img src="img/snappable_breadboard_diagram_2.png" width="700" alt="Two components connecting through the Snappable framework to a runtime that exchanges RDA data">
 </p>
 
-In the diagram:
+The breadboard does not decide whether an electronic circuit is valid, and Snappable does not decide whether two software components perform compatible functions. Developers still choose appropriate components and design the application circuit.
 
-- **Component A** and **Component B** are independently developed components with their own internal models, `DataModelX` and `DataModelY`.
-- **`IRda`** is the conversion boundary through which each component translates between its own model and an RDA container.
-- **Snappable** is the neutral connection layer. It transports RDA containers without needing to know the component's internal object model.
-- A **Snappable runtime** loads, connects, configures, and drives components to form an application.
+## Snappable Advantages: Portability, Composability, and Interchangeability
 
-If `DataModelX` and `DataModelY` express compatible information, the components can communicate directly. If they do not, an appropriate mapping or transformation component may be required—just as a circuit may need an adapter or voltage converter between otherwise incompatible parts.
+These terms describe different properties and should not be confused:
 
-When components understand compatible data and fulfil compatible roles, they can work together. Components implementing the same contract can potentially be substituted. Snappable provides the foundation that makes this composition, reuse, and potential interchangeability possible—it does not claim that arbitrary components are automatically compatible.
+| Term | Meaning in Snappable | Provided by Snappable? |
+|---|---|---|
+| **Runtime-portable** | The same compiled component can run unchanged in different compatible runtimes | Yes — this is a core purpose |
+| **Pluggable** | A component can connect to a runtime exposing the compatible Snappable contract | Yes |
+| **Composable** | A runtime can connect components into an application data flow | Yes, structurally |
+| **Data-compatible** | Connected components understand compatible meanings and representations | Determined by their data contracts |
+| **Functionally interchangeable** | One component can replace another in the same application role | Only when their functional and data contracts are compatible |
 
-> **Snappable provides the wiring. Developers design the circuit.**
+Snappable guarantees a standard route to runtime portability and pluggability. It does **not** claim that arbitrary components are functionally equivalent.
 
-## Working Demos
+If two components understand compatible RDA data, they can communicate directly. If their representations differ, the application may require a mapping or transformation component. If two components fulfil the same functional and data contracts, a runtime builder may substitute one for the other without changing unrelated components.
 
-Snappable is not only a proposal for how software components might work. The API, runtime implementations, and a growing set of components are functional today.
+Four elements work together in the Snappable architecture:
 
-[SnapFusion](https://foldda.com/snapfusion/) is a visual Snappable runtime in which existing components can be selected, configured, and connected into useful data-processing applications. Its hierarchical data-flow structure lets builders rearrange processing steps and replace suitable components without rebuilding the entire application.
+1. A **Snappable component** contains a focused capability and owns its internal object model.
+2. **Charian (`IRda`)** converts between that internal model and a neutral RDA container at the Snappable connection boundary.
+3. The **Snappable framework** defines the common contract through which the compiled component connects to a runtime.
+4. A **Snappable-compatible runtime** implements that contract, controls component lifecycle and execution, and moves RDA containers through its chosen data-flow structure.
 
-Click image below to watch a YouTube demonstration that shows an ETL application being assembled from pre-built Snappable components:
+For example, Component A may use `DataModelX`, while Component B uses `DataModelY`. Neither model has to be compiled into the runtime. Each component performs its own model–RDA conversion, and the runtime carries the resulting RDA containers without adopting or interpreting either model.
 
-<p align="left">
-  <a href="https://www.youtube.com/watch?v=l0DjAjVoESo" target="_blank">
-    <img src="https://img.youtube.com/vi/l0DjAjVoESo/maxresdefault.jpg" alt="Watch an ETL application being assembled from Snappable components" width="600">
-  </a>
-</p>
-
-The second demonstration shows how components are configured individually, collaborate through the runtime, and can be replaced when another component fulfils a compatible role:
-
-<p align="left">
-  <a href="https://www.youtube.com/watch?v=etm8vNLH4po" target="_blank">
-    <img src="https://img.youtube.com/vi/etm8vNLH4po/maxresdefault.jpg" alt="Watch Snappable components being configured and interchanged" width="600">
-  </a>
-</p>
-
-The Component Developer Kit included in this repository provides another, deliberately simple runtime: a one-direction pipeline that drives data through three connected components. Together, the Developer Kit and SnapFusion demonstrate that the same component model can support runtimes with very different interfaces and data-flow structures.
-
-These implementations already deliver practical value. They also demonstrate the larger potential: an ecosystem in which components are built around focused capabilities rather than around one vendor-specific host.
-
-## How Components Exchange Data
-
-Snappable is built on two other Foldda projects:
-
-- [RDA](https://github.com/foldda/rda) provides the self-describing, delimiter-based data container used for exchange.
-- [Charian](https://github.com/foldda/charian) converts component-specific data models to and from the data-model-neutral RDA.
-
-Charian's `IRda` interface defines the conversion boundary:
+Charian's `IRda` interface provides the model-conversion mechanism:
 
 ```csharp
 public interface IRda
@@ -100,98 +96,91 @@ public interface IRda
 }
 ```
 
-`ToRda()` converts a component's model into a neutral container. `FromRda()` attempts to reconstruct the model from values in an incoming container and reports an error when required values cannot be matched.
+`ToRda()` converts an object's state into an RDA container. `FromRda()` reconstructs the object from an incoming container and reports an error when required values cannot be matched. Because the object resolves its own fields at runtime instead of depending on a compiled schema shared with the host, this pattern is called **self-binding**.
 
-This approach does **not** make unrelated models semantically identical. Its purpose is to remove the requirement for components and runtimes to share the same compiled domain classes. Compatibility still depends on the data and functional contracts understood by the participating components.
+The result is separation on two levels:
 
-Because matching occurs at runtime, data representations can also evolve more flexibly. A component can concentrate on the values it understands rather than forcing every participant to depend on one centrally compiled object model.
+- **Runtime separation:** the component targets Snappable, not one particular runtime implementation.
+- **Model separation:** the runtime transports RDA containers without depending on the component's domain classes.
 
-## Runtimes Connect and Drive Components
+## Demo: Portable Components Across Runtimes
 
-A Snappable runtime provides the environment in which components are loaded, configured, connected, and executed. A runtime is a role rather than a prescribed user interface or data-flow design.
+Snappable is not merely an architectural proposal. Its API, runtime implementations, and components are functional today.
 
-It may be:
+The **Component Developer Kit** included in this repository is a deliberately simple development and testing runtime. It provides a one-direction pipeline in which developers can build, configure, execute, and test Snappable components.
 
-- a small host that connects and drives a single component;
-- a linear pipeline such as the Component Developer Kit;
-- a branching or hierarchical processing graph such as SnapFusion; or
-- another host designed for a specialised application or market.
+After compilation, the same component can be loaded and used unchanged in [SnapFusion](https://foldda.com/snapfusion/). SnapFusion is a substantially different runtime: it provides a visual, hierarchical environment for composing data-processing applications. The component does not need to be recompiled, rewritten, or adapted to SnapFusion's domain-object model.
 
-The runtime controls the connections and movement of RDA containers. Each component remains responsible for interpreting its input, performing its function, and producing its output.
+This demonstrates Snappable's central technical value in working software: **the compiled component depends on the common Snappable contract, not on the runtime in which it was originally developed and tested.**
 
-This separation allows a component to be used by different Snappable runtimes without being redesigned around each runtime's domain-object model. When another component implements a compatible functional and data contract, an application builder may also substitute it without changing unrelated parts of the circuit.
+The following demonstration shows an ETL application being assembled from pre-built Snappable components:
 
-## What Snappable Provides—and What It Does Not
+<p align="left">
+  <a href="https://www.youtube.com/watch?v=l0DjAjVoESo" target="_blank">
+    <img src="https://img.youtube.com/vi/l0DjAjVoESo/maxresdefault.jpg" alt="Watch an ETL application being assembled from Snappable components" width="600">
+  </a>
+</p>
 
-### Snappable provides
+The second demonstration shows components being configured individually, collaborating through the runtime, and being swapped when another component fulfils a compatible role:
 
-- A host-neutral way for components to exchange data through RDA containers.
-- A common component and runtime convention for connecting and directing data flow.
-- Separation between a component's internal model and a host's domain-object model.
-- A foundation for composing independently developed components.
-- The possibility of reusing a component in different Snappable runtimes.
-- The possibility of substituting components that implement compatible contracts.
-- An architecture that allows data-processing applications to be rearranged and extended component by component.
+<p align="left">
+  <a href="https://www.youtube.com/watch?v=etm8vNLH4po" target="_blank">
+    <img src="https://img.youtube.com/vi/etm8vNLH4po/maxresdefault.jpg" alt="Watch Snappable components being configured and interchanged" width="600">
+  </a>
+</p>
 
-### Component and application developers remain responsible for
+## Who Snappable Is For
 
-- Defining the meaning and constraints of a component's inputs and outputs.
-- Determining whether two components' data and functions are compatible.
-- Selecting the correct components for an application.
-- Adding mapping or transformation where representations differ.
-- Connecting components in an order and structure that produces a valid result.
-- Testing and validating the completed software circuit.
+Snappable serves three related roles: **component developers** create portable building blocks, **application builders** compose them into working applications, and **runtime developers** create the environments that host and connect them. One person or team may take on more than one role.
 
-Snappable therefore enables composition and potential interchangeability; it does not promise that every Snappable component can be connected meaningfully to every other one.
+### Component developers
 
-## Why Build with Snappable?
+Build focused software capabilities without tying them to one host application's domain model or proprietary plugin API.
 
-### For component developers
+- **Reach multiple runtimes:** Compile a component once and deploy the same binary unchanged to SnapFusion or another compatible runtime.
+- **Preserve implementation independence:** Keep the component's logic and internal object model separate from runtime-specific classes.
+- **Simplify development:** Build and test in the lightweight Component Developer Kit before using the component in a larger runtime.
+- **Increase reuse:** Maintain one portable component instead of separate integrations for each compatible host.
 
-- Build a focused capability without adopting a particular host application's domain classes.
-- Reuse the same component in runtimes with different interfaces and data-flow structures.
-- Concentrate on the component's own data and functional contract.
-- Offer alternative implementations with different features, performance, support, or price.
-- Improve a component independently without redesigning an entire application.
+See **[Building a Snappable Component](docs/Building-Components.md)** for the complete pattern, worked examples, and links to example components in this repository.
 
-### For application and runtime builders
+### Application builders
 
-- Assemble applications from focused processing components.
-- Add, rearrange, or replace suitable components without changing unrelated components.
-- Choose among compatible implementations instead of depending on a single built-in feature.
-- Keep the runtime focused on composition and execution rather than every component's internal model.
-- Create specialised runtime experiences while continuing to use the common Snappable component foundation.
+Use a Snappable-compatible runtime to combine components into an application that meets a technical or business need. The runtime supplies the wiring; the application builder chooses the parts and designs the circuit.
 
-The long-term opportunity is an open component ecosystem in which developers can produce competing and complementary components, and application builders can compose them into software for purposes the original component authors may not have anticipated.
+- **Assemble applications faster:** Reuse existing components instead of implementing every capability from scratch.
+- **Build at different scales:** Create anything from a single hosted extension to a processing pipeline or a hierarchical SnapFusion application.
+- **Adapt the circuit:** Add mappings where data representations differ, or replace a component when another fulfils compatible functional and data contracts.
+- **Focus on the outcome:** Concentrate on workflow design and validation while the runtime handles hosting, lifecycle, and data transport.
 
-## Build with Snappable
+Snappable makes components structurally pluggable; the application builder remains responsible for choosing components that can work together correctly.
 
-Choose the guide that matches what you want to build:
+See **[SnapFusion](https://foldda.com/snapfusion/)** for a ready-to-use runtime to start assembling components into an application, or the [demos above](#demo-portable-components-across-runtimes) for a walkthrough of the process.
 
-- **[Building a Snappable Component](docs/Building-Components.md)** — implement the component pattern, convert models through RDA, and explore worked examples from this repository.
-- **[Implementing the Snappable Runtime API](docs/Implementing-the-Runtime-API.md)** — host the Snappable API, load and connect components, and use the Component Developer Kit as a reference implementation.
+### Runtime developers
 
-The APIs and core components from this repositry are functional, although interfaces may continue to evolve. Feedback, experiments, and contributions are welcome.
+Create a specialised environment for hosting and composing portable components while exposing the same standard Snappable connection.
+
+- **Reuse portable components:** Host compatible compiled components without requiring runtime-specific versions or recompilation.
+- **Differentiate the runtime:** Provide a distinctive user interface, topology, or execution model while retaining component compatibility.
+- **Avoid domain-model coupling:** Exchange RDA containers without adopting or interpreting each component's internal object model.
+- **Support varied applications:** Implement anything from a single embedded component plug to a linear pipeline or visual hierarchy.
+
+See **[Implementing the Snappable Runtime API](docs/Implementing-the-Runtime-API.md)** for runtime-hosting guidance and the Component Developer Kit reference implementation.
 
 ## Get Involved
 
-Snappable's broader value will grow with the number and variety of compatible components and runtimes built around it.
-
 ### Build and share components
 
-Create focused components that solve real problems and document their input, output, and functional contracts. Each useful component expands the range of applications that can be composed from the ecosystem.
+Create focused components and document their input, output, and functional contracts. Each well-defined component expands the set of applications that can be composed from the available parts.
 
-### Build new runtimes
+### Build runtimes
 
-Explore different ways to connect and operate components: visual designers, embedded pipelines, automated services, specialised industry tools, or other runtime experiences.
+Explore different ways to host and connect the same compiled components: visual designers, embedded pipelines, automated services, specialised tools, or other runtime experiences.
 
-### Add API and component tests
+### Improve tests and documentation
 
-The Snappable API is intentionally small, but thorough compatibility, lifecycle, failure, and integration tests are important for a framework that connects independently developed software.
-
-### Improve documentation and examples
-
-Help explain the breadboard model, component contracts, runtime implementation, data evolution, and practical composition patterns. Additional end-to-end examples will make it easier for developers to assess and adopt the framework.
+Add component, runtime, lifecycle, failure, and cross-runtime portability tests. Additional end-to-end examples will also make the framework easier to evaluate and adopt.
 
 ## License and Commercial Use
 
@@ -201,9 +190,8 @@ If you want to use it in a proprietary or closed-source product, or distribute i
 
 Commercial licensing offers:
 
-- Permission for closed-source usage
+- Permission for closed-source use
 - Legal clarity for enterprises
 - Optional support and long-term maintenance
 
 Contact the project owner at contact@foldda.com with questions or enquiries.
-

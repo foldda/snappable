@@ -15,7 +15,7 @@ Snappable builds on two other Foldda projects:
 
 - [The Problem](#the-problem)
 - [The Breadboard Analogy](#the-breadboard-analogy)
-- [Snappable Advantages: Portability, Composability, and Interchangeability](#snappable-advantages-portability-composability-and-interchangeability)
+- [Snappable Components: Portability, Composability, and Interchangeability](#snappable-components-portability-composability-and-interchangeability)
 - [Demo: Portable Components Across Runtimes](#demo-portable-components-across-runtimes)
 - [Who Snappable Is For](#who-snappable-is-for)
   - [Component developers](#component-developers)
@@ -57,7 +57,7 @@ The Snappable framework defines the standard component connections. A runtime im
 
 And just like the breadboard does not decide whether an electronic circuit is valid, Snappable does not decide whether two software components perform compatible functions. Developers still choose appropriate components and design the application circuit.
 
-## Snappable Advantages: Portability, Composability, and Interchangeability
+## Snappable Components: Portability, Composability, and Interchangeability
 
 These terms describe Snappable's properties and advantages need to be clarified upfront:
 
@@ -67,11 +67,9 @@ These terms describe Snappable's properties and advantages need to be clarified 
 | **Pluggable** | A component can connect to a runtime exposing the compatible Snappable contract | Yes |
 | **Composable** | A runtime can connect components into an application data flow | Yes, structurally |
 | **Data-compatible** | Connected components understand compatible meanings and representations | Determined by their data contracts |
-| **Functionally interchangeable** | One component can replace another in the same application role | Only when their functional and data contracts are compatible |
+| **Functionally interchangeable[^1]** | One component can swap with another in the same application role | Only when their functional and data contracts are compatible |
 
-Snappable guarantees a standard route of component-to-runtime portability and pluggability. It does **not** claim that arbitrary components are functionally equivalent or interchangeable.[^1]
-
-[^1]: If two components understand compatible RDA data, they can communicate directly. If their representations differ, the application may require a mapping or transformation component. If two components fulfil the same functional and data contracts, an application builder may substitute one for the other without changing unrelated components.
+[^1]: It shall be clear that while Snappable defines a standard route of component-to-runtime portability and pluggability, there is **no indication** that arbitrary components are _functionally_ equivalent or interchangeable. If two components understand compatible RDA data, they can communicate directly. If their representations differ, the application may require a mapping or transformation component. If two components fulfil the same functional and data contracts, an application builder may substitute one for the other without affecting the other components.
 
 <p align="left">
   <img src="img/snappable_breadboard_diagram_2.png" width="700" alt="Two components connecting through the Snappable framework to a runtime that exchanges RDA data">

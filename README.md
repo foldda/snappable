@@ -21,6 +21,7 @@ Snappable builds on two other Foldda projects:
   - [Component developers](#component-developers)
   - [Runtime developers](#runtime-developers)
   - [Application builders](#application-builders)
+- [Relationship to SnapFusion](#relationship-to-snapfusion)
 - [Get Involved](#get-involved)
 - [License and Commercial Use](#license-and-commercial-use)
 
@@ -164,8 +165,14 @@ Use a Snappable-compatible runtime to combine components into an application tha
 
 Snappable makes components structurally pluggable; the application builder remains responsible for choosing components that can work together correctly.
 
-See **[SnapFusion](https://foldda.com/snapfusion/)** for a ready-to-use runtime to start assembling components into an application, or the [demos above](#demo-portable-components-across-runtimes) for a walkthrough of the process.
+## Relationship to SnapFusion
 
+Snappable components from this repo are originally built for **[SnapFusion](https://foldda.com/snapfusion/)**, Foldda's commercial integration/data-processing platform. Because SnapFusion is designed to be compliant with the Snappable's runtime API, technically all its components (binary) can be used in any other Snappable runtimes, such as the Developer Kit program included in this repo, without recompilation or linking.
+
+Compared to the Developer Kit, SnapFusion builds on this same foundation and adds a packaged, closed-source layer on
+top: a visual designer, prebuilt connectors, managed deployment, and support — aimed at
+teams who want the benefits of this component model without building and maintaining
+the tooling around it themselves. Watch the [demos above](#demo-portable-components-across-runtimes) for a walkthrough of the process.
 
 ## Get Involved
 

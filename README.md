@@ -106,10 +106,6 @@ The result is separation on two levels:
 
 Snappable is not merely an architectural proposal. Its API, runtime implementations, and components are functional today.
 
-The **Component Developer Kit** included in this repository is a deliberately simple development and testing runtime. It provides a one-direction pipeline in which developers can build, configure, execute, and test Snappable components.
-
-After compilation, the same component binary can be loaded and used unchanged in [SnapFusion](https://foldda.com/snapfusion/). SnapFusion is a substantially different runtime: it provides a visual, hierarchical environment for composing data-processing applications. The component does not need to be recompiled, rewritten, or adapted to SnapFusion's domain-object model.
-
 This demonstrates Snappable's central technical value in working software: **the compiled component depends on the common Snappable contract, not on the runtime in which it was originally developed and tested.**
 
 The following demonstration shows an ETL application being assembled from pre-built Snappable components:
@@ -127,6 +123,10 @@ The second demonstration shows components being configured individually, collabo
     <img src="https://img.youtube.com/vi/etm8vNLH4po/maxresdefault.jpg" alt="Watch Snappable components being configured and interchanged" width="600">
   </a>
 </p>
+
+The **Component Developer Kit** included in this repository is a reference runtime, doubled as a component development tool. It provides a visual one-direction pipeline in which developers can build, configure, execute, and test Snappable components.
+
+The same compiled component binary from Developer Kit can be loaded and used unchanged in [SnapFusion](https://foldda.com/snapfusion/). The component does not need to be recompiled, rewritten, or adapted to SnapFusion's domain-object model.
 
 ## Who Snappable Is For
 
@@ -167,7 +167,9 @@ Snappable makes components structurally pluggable; the application builder remai
 
 ## SnapFusion
 
-Snappable components from this repo are originally built for **[SnapFusion](https://foldda.com/snapfusion/)**, Foldda's commercial integration/data-processing platform. In SnapFusion, a data-processing pipeline application (a "solution") is assembled using Snappable components and can be managed through its minimalist GUI interface. The [demos above](#demo-portable-components-across-runtimes) is a walkthrough of the process.
+Snappable components from this repo are originally built for **[SnapFusion](https://foldda.com/snapfusion/)**, Foldda's commercial integration/data-processing platform. 
+
+SnapFusion provides a visual, hierarchical environment for composing data-processing applications using Snappable components, as well as for real-time monitoring these applications. The [demos above](#demo-portable-components-across-runtimes) is a walkthrough of the process.
 
 <p align="left">
   <img src="img/Foldda-SnapFusion.jpg" width="700" alt="Foldda SnapFusion's GUI interface allows visual real-time monitoring of the hosted integration pipelines.">
@@ -175,7 +177,7 @@ Snappable components from this repo are originally built for **[SnapFusion](http
 
 Because SnapFusion is built based on the Snappable's runtime API, technically all its components (binary) can be used in any other Snappable runtime and vise versa, without recompilation or linking. And that's the value of Snappable components: portable, composable, and interchangeable.
 
-Compared to the Developer Kit, a reference Snappable runtime included in this repo, SnapFusion adds a packaged, closed-source layer on top, offering: more sophisticated visual control and monitoring, prebuilt solution templates, cut-n-paste deployment, and support — aimed at teams who want the benefits of this component model without building and maintaining the tooling around it themselves. 
+Compared to the Developer Kit reference runtime from this repo, SnapFusion adds a packaged, closed-source layer on top, offering: more sophisticated visual control and monitoring, prebuilt solution templates, cut-n-paste deployment, and support — aimed at teams who want the benefits of this component model without building and maintaining the tooling around it themselves. 
 
 ## Get Involved
 

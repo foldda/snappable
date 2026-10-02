@@ -108,7 +108,7 @@ Snappable is not merely an architectural proposal. Its API, runtime implementati
 
 The **Component Developer Kit** included in this repository is a deliberately simple development and testing runtime. It provides a one-direction pipeline in which developers can build, configure, execute, and test Snappable components.
 
-After compilation, the same component can be loaded and used unchanged in [SnapFusion](https://foldda.com/snapfusion/). SnapFusion is a substantially different runtime: it provides a visual, hierarchical environment for composing data-processing applications. The component does not need to be recompiled, rewritten, or adapted to SnapFusion's domain-object model.
+After compilation, the same component binary can be loaded and used unchanged in [SnapFusion](https://foldda.com/snapfusion/). SnapFusion is a substantially different runtime: it provides a visual, hierarchical environment for composing data-processing applications. The component does not need to be recompiled, rewritten, or adapted to SnapFusion's domain-object model.
 
 This demonstrates Snappable's central technical value in working software: **the compiled component depends on the common Snappable contract, not on the runtime in which it was originally developed and tested.**
 
@@ -167,15 +167,15 @@ Snappable makes components structurally pluggable; the application builder remai
 
 ## SnapFusion
 
-Snappable components from this repo are originally built for **[SnapFusion](https://foldda.com/snapfusion/)**, Foldda's commercial integration/data-processing platform. In SnapFusion, a data-processing pipeline application (a "solution") is assembled using Snappable components and can be managed through its minimalist GUI interface.
+Snappable components from this repo are originally built for **[SnapFusion](https://foldda.com/snapfusion/)**, Foldda's commercial integration/data-processing platform. In SnapFusion, a data-processing pipeline application (a "solution") is assembled using Snappable components and can be managed through its minimalist GUI interface. The [demos above](#demo-portable-components-across-runtimes) is a walkthrough of the process.
 
 <p align="left">
   <img src="img/Foldda-SnapFusion.jpg" width="700" alt="Foldda SnapFusion's GUI interface allows visual real-time monitoring of the hosted integration pipelines.">
 </p>
 
-Because SnapFusion is designed to be compliant with the Snappable's runtime API, technically all its components (binary) can be used in any other Snappable runtimes, such as the Developer Kit program included in this repo, without recompilation or linking.
+Because SnapFusion is built based on the Snappable's runtime API, technically all its components (binary) can be used in any other Snappable runtime and vise versa, without recompilation or linking. And that's the value of Snappable components: portable, composable, and interchangeable.
 
-Compared to the Developer Kit runtime included in this repo, SnapFusion builds on this same foundation and adds a packaged, closed-source layer on top: a visual designer, prebuilt solution templates, cut-n-paste deployment, and support — aimed at teams who want the benefits of this component model without building and maintaining the tooling around it themselves. Watch the [demos above](#demo-portable-components-across-runtimes) for a walkthrough of the process.
+Compared to the Developer Kit, a reference Snappable runtime included in this repo, SnapFusion adds a packaged, closed-source layer on top, offering: more sophisticated visual control and monitoring, prebuilt solution templates, cut-n-paste deployment, and support — aimed at teams who want the benefits of this component model without building and maintaining the tooling around it themselves. 
 
 ## Get Involved
 

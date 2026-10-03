@@ -124,9 +124,13 @@ The second demonstration shows components being configured individually, collabo
   </a>
 </p>
 
-The **Component Developer Kit** included in this repository is a reference runtime, doubled as a component development tool. It provides a visual one-direction pipeline in which developers can build, configure, execute, and test Snappable components.
+The **Snappable Developer Kit** included in this repository is a reference runtime, doubled as a component development tool. It provides a visual one-direction pipeline in which developers can configure, execute, and test Snappable components.
 
-The same compiled component binary from Developer Kit can be loaded and used unchanged in [SnapFusion](https://foldda.com/snapfusion/). The component does not need to be recompiled, rewritten, or adapted to SnapFusion's domain-object model.
+<p align="left">
+  <img src="img/Snappable_Developer_Kit.png" width="800" alt="Snappable Developer Kit allows visually testing developed Snappable components.">
+</p>
+
+The same compiled component binary from the Developer Kit can be loaded and used unchanged in [SnapFusion](https://foldda.com/snapfusion/). The component does not need to be recompiled, rewritten, or adapted to SnapFusion's domain-object model.
 
 ## Who Snappable Is For
 

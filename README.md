@@ -23,7 +23,7 @@ Snappable builds on two other Foldda projects:
   - [Application builders](#application-builders)
 - [SnapFusion](#snapfusion)
 - [Get Involved](#get-involved)
-- [License and Commercial Use](#license-and-commercial-use)
+- [Contact](#contact)
 
 ## The Problem
 
@@ -60,7 +60,7 @@ And just like the breadboard does not decide whether an electronic circuit is va
 
 ## Snappable Components: Portability, Composability, and Interchangeability
 
-These terms describe Snappable's properties and advantages need to be clarified upfront:
+These terms describe Snappable's properties and advantages that need to be clarified upfront:
 
 | Term | Meaning in Snappable | Provided by Snappable? |
 |---|---|---|
@@ -70,7 +70,7 @@ These terms describe Snappable's properties and advantages need to be clarified 
 | **Data-compatible** | Connected components understand compatible meanings and representations | Determined by their data contracts |
 | **Functionally interchangeable[^1]** | One component can swap with another in the same application role | Only when their functional and data contracts are compatible |
 
-[^1]: It shall be clear that while Snappable defines a standard route of component-to-runtime portability and pluggability, there is **no indication** that arbitrary components are _functionally_ equivalent or interchangeable. If two components understand compatible RDA data, they can communicate directly. If their representations differ, the application may require a mapping or transformation component. If two components fulfil the same functional and data contracts, an application builder may substitute one for the other without affecting the other components.
+[^1]: It shall be clear that while Snappable defines a standard route of component-to-runtime portability and pluggability, there is **no indication** that arbitrary components would be _functionally_ equivalent or interchangeable. If two components understand compatible RDA data, they can communicate directly. If their representations differ, the application may require a mapping or transformation component. If two components fulfil the same functional and data contracts, an application builder may substitute one for the other without affecting the other components.
 
 <p align="left">
   <img src="img/snappable_breadboard_diagram_2.png" width="700" alt="Two components connecting through the Snappable framework to a runtime that exchanges RDA data">
@@ -95,7 +95,7 @@ public interface IRda
 }
 ```
 
-`ToRda()` converts an object's state into an RDA container. `FromRda()` reconstructs the object from an incoming container and reports an error when required values cannot be matched. These methods reflect a pattern, called **self-binding**, that allows the object to resolve its own fields at runtime instead of depending on a compiled schema shared with the host, this .
+`ToRda()` converts an object's state into an RDA container. `FromRda()` reconstructs the object from an incoming container and reports an error when required values cannot be matched. These methods reflect a pattern, called **self-binding**, that allows the object to resolve its own fields at runtime instead of depending on a compiled schema shared with the host.
 
 The result is separation on two levels:
 
@@ -173,7 +173,7 @@ Snappable makes components structurally pluggable; the application builder remai
 
 Snappable components from this repo are originally built for **[SnapFusion](https://foldda.com/snapfusion/)**, Foldda's commercial integration/data-processing platform. 
 
-SnapFusion provides a visual, hierarchical environment for composing data-processing applications using Snappable components, as well as for real-time monitoring these applications. The [demos above](#demo-portable-components-across-runtimes) is a walkthrough of the process.
+SnapFusion provides a visual, hierarchical environment for composing data-processing applications using Snappable components, as well as for real-time monitoring of these applications. [Watch the demos above](#demo-portable-components-across-runtimes) that walk through the process.
 
 <p align="left">
   <img src="img/Foldda-SnapFusion.jpg" width="700" alt="Foldda SnapFusion's GUI interface allows visual real-time monitoring of the hosted integration pipelines.">
@@ -181,7 +181,7 @@ SnapFusion provides a visual, hierarchical environment for composing data-proces
 
 Because SnapFusion is built based on the Snappable's runtime API, technically all its components (binary) can be used in any other Snappable runtime and vise versa, without recompilation or linking. And that's the value of Snappable components: portable, composable, and interchangeable.
 
-Compared to the Developer Kit reference runtime from this repo, SnapFusion adds a packaged, closed-source layer on top, offering: more sophisticated visual control and monitoring, prebuilt solution templates, cut-n-paste deployment, and support — aimed at teams who want the benefits of this component model without building and maintaining the tooling around it themselves. 
+Compared to the Developer Kit reference runtime from this repo, SnapFusion adds a packaged, closed-source layer on top, offering: more sophisticated visual control and monitoring, prebuilt solution templates, cut-and-paste deployment, and support — aimed at teams who want the benefits of this component model without building and maintaining the tooling around it themselves. 
 
 ## Get Involved
 
@@ -197,16 +197,6 @@ Explore different ways to host and connect the same compiled components: visual 
 
 Add component, runtime, lifecycle, failure, and cross-runtime portability tests. Additional end-to-end examples will also make the framework easier to evaluate and adopt.
 
-## License and Commercial Use
-
-This project is released under **GPL-3.0** for open-source use.
-
-If you want to use it in a proprietary or closed-source product, or distribute it without GPL obligations, a commercial license is available.
-
-Commercial licensing offers:
-
-- Permission for closed-source use
-- Legal clarity for enterprises
-- Optional support and long-term maintenance
+## Contact
 
 Contact the project owner at contact@foldda.com with questions or enquiries.

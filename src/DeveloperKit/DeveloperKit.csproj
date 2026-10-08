@@ -63,9 +63,12 @@
     <Content Include="Resources\**\*" />
   </ItemGroup>
 
-  <!-- Post-build script -->
+  <!-- Post-build script
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="Powershell.exe -file &quot;$(SolutionDir)_Scripts\runtime-host-post-build.ps1&quot; $(TargetDir) CsvHandler;HL7Handler;EventHandler;Trigger;CustomHandler $(ProjectName)" />
   </Target>
+
+  -->
 
 </Project>
